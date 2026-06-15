@@ -1,0 +1,17 @@
+{
+  "tokenSetOrder": [
+    "raw-colors/mode-1",
+    "semantic-colors/light",
+    "semantic-colors/dark",
+    "shadows/base",
+    "chart-colors/light",
+    "chart-colors/dark",
+    "brand-colors/base",
+    "alpha/base",
+    "typography/base",
+    "spacing/base",
+    "border-radii/base",
+    "spacing-absolute/base",
+    "border-radii-absolute/base"
+  ]
+}

@@ -1,0 +1,240 @@
+{
+  "general": {
+    "background": {
+      "$type": "color",
+      "$value": "{brand-neutrals.950}",
+      "$description": "Use for general backgrounds."
+    },
+    "foreground": {
+      "$type": "color",
+      "$value": "{brand-neutrals.50}"
+    },
+    "primary": {
+      "$type": "color",
+      "$value": "{brand-neutrals.100}"
+    },
+    "primary foreground": {
+      "$type": "color",
+      "$value": "{brand-neutrals.950}"
+    },
+    "secondary": {
+      "$type": "color",
+      "$value": "{brand-neutrals.800}"
+    },
+    "secondary foreground": {
+      "$type": "color",
+      "$value": "{brand-neutrals.100}"
+    },
+    "muted": {
+      "$type": "color",
+      "$value": "{brand-neutrals.900}"
+    },
+    "muted foreground": {
+      "$type": "color",
+      "$value": "{brand-neutrals.400}"
+    },
+    "accent": {
+      "$type": "color",
+      "$value": "{brand-neutrals.900}",
+      "$description": "Level 1, official"
+    },
+    "accent foreground": {
+      "$type": "color",
+      "$value": "{brand-neutrals.100}"
+    },
+    "destructive": {
+      "$type": "color",
+      "$value": "#9e4042"
+    },
+    "border": {
+      "$type": "color",
+      "$value": "{brand-neutrals.700}",
+      "$description": "level 2, official. See docs."
+    },
+    "input": {
+      "$type": "color",
+      "$value": "{white.alpha-5}"
+    },
+    "destructive foreground": {
+      "$type": "color",
+      "$value": "{white.alpha-100}"
+    }
+  },
+  "focus": {
+    "ring": {
+      "$type": "color",
+      "$value": "{brand-neutrals.700}",
+      "$description": "Focus ring"
+    },
+    "ring error": {
+      "$type": "color",
+      "$value": "#6d2e2f",
+      "$description": "Focus ring error"
+    }
+  },
+  "card": {
+    "card": {
+      "$type": "color",
+      "$value": "{brand-neutrals.900}"
+    },
+    "card foreground": {
+      "$type": "color",
+      "$value": "{white.alpha-100}"
+    }
+  },
+  "popover": {
+    "popover": {
+      "$type": "color",
+      "$value": "{white.alpha-100}"
+    },
+    "popover foreground": {
+      "$type": "color",
+      "$value": "{black.alpha-100}"
+    }
+  },
+  "unofficial": {
+    "border 1": {
+      "$type": "color",
+      "$value": "{brand-neutrals.900}"
+    },
+    "accent 2": {
+      "$type": "color",
+      "$value": "{brand-neutrals.800}"
+    },
+    "accent 3": {
+      "$type": "color",
+      "$value": "{brand-neutrals.700}"
+    },
+    "accent 0": {
+      "$type": "color",
+      "$value": "{brand-neutrals.950}"
+    },
+    "border 0": {
+      "$type": "color",
+      "$value": "{brand-neutrals.950}"
+    },
+    "border 3": {
+      "$type": "color",
+      "$value": "{brand-neutrals.700}"
+    },
+    "primary hover": {
+      "$type": "color",
+      "$value": "{brand-neutrals.300}"
+    },
+    "secondary hover": {
+      "$type": "color",
+      "$value": "{brand-neutrals.900}"
+    },
+    "mid alt": {
+      "$type": "color",
+      "$value": "{brand-neutrals.400}"
+    },
+    "ghost hover": {
+      "$type": "color",
+      "$value": "{white.alpha-10}"
+    },
+    "ghost foreground": {
+      "$type": "color",
+      "$value": "{brand-neutrals.200}"
+    },
+    "destructive subtle": {
+      "$type": "color",
+      "$value": "{red.950}"
+    },
+    "backdrop": {
+      "$type": "color",
+      "$value": "{black.alpha-60}"
+    },
+    "border 4": {
+      "$type": "color",
+      "$value": "{brand-neutrals.600}"
+    },
+    "border 5": {
+      "$type": "color",
+      "$value": "{brand-neutrals.500}"
+    },
+    "destructive border": {
+      "$type": "color",
+      "$value": "{red.500}"
+    },
+    "outline": {
+      "$type": "color",
+      "$value": "{white.alpha-5}"
+    },
+    "outline hover": {
+      "$type": "color",
+      "$value": "{white.alpha-10}"
+    },
+    "foreground alt": {
+      "$type": "color",
+      "$value": "{brand-neutrals.300}",
+      "$description": "Please use this for body text."
+    },
+    "ghost": {
+      "$type": "color",
+      "$value": "{white.alpha-001}"
+    },
+    "body background": {
+      "$type": "color",
+      "$value": "{brand-neutrals.950}"
+    },
+    "outline active": {
+      "$type": "color",
+      "$value": "{white.alpha-15}"
+    },
+    "destructive text": {
+      "$type": "color",
+      "$value": "{red.400}"
+    }
+  },
+  "sidebar": {
+    "sidebar foreground": {
+      "$type": "color",
+      "$value": "{brand-neutrals.300}"
+    },
+    "sidebar accent": {
+      "$type": "color",
+      "$value": "{brand-neutrals.900}"
+    },
+    "sidebar primary": {
+      "$type": "color",
+      "$value": "{brand-neutrals.50}"
+    },
+    "sidebar primary foreground": {
+      "$type": "color",
+      "$value": "{brand-neutrals.900}"
+    },
+    "sidebar accent foreground": {
+      "$type": "color",
+      "$value": "{brand-neutrals.100}"
+    },
+    "sidebar": {
+      "$type": "color",
+      "$value": "{brand-neutrals.950}"
+    },
+    "sidebar border": {
+      "$type": "color",
+      "$value": "{brand-neutrals.800}"
+    },
+    "sidebar ring": {
+      "$type": "color",
+      "$value": "{brand-neutrals.700}"
+    },
+    "unofficial": {
+      "sidebar muted": {
+        "$type": "color",
+        "$value": "{brand-neutrals.500}"
+      }
+    }
+  },
+  "obra-shadcn-docs": {
+    "obra shadcn ui docs 1": {
+      "$type": "color",
+      "$value": "#111628"
+    },
+    "obra shadcn ui docs 2": {
+      "$type": "color",
+      "$value": "#201d1b"
+    }
+  }
+}

@@ -1,0 +1,126 @@
+{
+  "brand-neutrals": {
+    "50": {
+      "$type": "color",
+      "$value": "{neutral.50}"
+    },
+    "100": {
+      "$type": "color",
+      "$value": "{neutral.100}"
+    },
+    "200": {
+      "$type": "color",
+      "$value": "{neutral.200}"
+    },
+    "300": {
+      "$type": "color",
+      "$value": "{neutral.300}"
+    },
+    "400": {
+      "$type": "color",
+      "$value": "{neutral.400}"
+    },
+    "500": {
+      "$type": "color",
+      "$value": "{neutral.500}"
+    },
+    "600": {
+      "$type": "color",
+      "$value": "{neutral.600}"
+    },
+    "700": {
+      "$type": "color",
+      "$value": "{neutral.700}"
+    },
+    "800": {
+      "$type": "color",
+      "$value": "{neutral.800}"
+    },
+    "900": {
+      "$type": "color",
+      "$value": "{neutral.900}"
+    },
+    "950": {
+      "$type": "color",
+      "$value": "{neutral.950}"
+    }
+  },
+  "brand-shades": {
+    "50": {
+      "$type": "color",
+      "$value": "{blue.50}"
+    },
+    "100": {
+      "$type": "color",
+      "$value": "{blue.100}"
+    },
+    "200": {
+      "$type": "color",
+      "$value": "{blue.200}"
+    },
+    "300": {
+      "$type": "color",
+      "$value": "{blue.300}"
+    },
+    "400": {
+      "$type": "color",
+      "$value": "{blue.400}"
+    },
+    "500": {
+      "$type": "color",
+      "$value": "{blue.500}"
+    },
+    "600": {
+      "$type": "color",
+      "$value": "{blue.600}"
+    },
+    "700": {
+      "$type": "color",
+      "$value": "{blue.700}"
+    },
+    "800": {
+      "$type": "color",
+      "$value": "{blue.800}"
+    },
+    "900": {
+      "$type": "color",
+      "$value": "{blue.900}"
+    },
+    "950": {
+      "$type": "color",
+      "$value": "{blue.950}"
+    }
+  },
+  "brand-combinations": {
+    "1": {
+      "brand": {
+        "$type": "color",
+        "$value": "{brand-shades.600}"
+      },
+      "brand foreground": {
+        "$type": "color",
+        "$value": "{white}"
+      }
+    },
+    "2": {
+      "brand": {
+        "$type": "color",
+        "$value": "{brand-shades.100}"
+      },
+      "brand foreground": {
+        "$type": "color",
+        "$value": "{brand-shades.800}"
+      }
+    },
+    "3": {
+      "brand": {
+        "$type": "color",
+        "$value": "{brand-shades.950}"
+      },
+      "brand foreground": {
+        "$type": "color",
+        "$value": "{brand-shades.300}"
+      }
+    }
+  }
+}

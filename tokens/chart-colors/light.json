@@ -1,0 +1,52 @@
+{
+  "categorical": {
+    "chart 1": {
+      "$type": "color",
+      "$value": "#f54a00"
+    },
+    "chart 2": {
+      "$type": "color",
+      "$value": "#009689"
+    },
+    "chart 3": {
+      "$type": "color",
+      "$value": "#104e64"
+    },
+    "chart 4": {
+      "$type": "color",
+      "$value": "#ffb900"
+    },
+    "chart 5": {
+      "$type": "color",
+      "$value": "#fe9a00"
+    }
+  },
+  "sentiment": {
+    "positive": {
+      "$type": "color",
+      "$value": "#009689"
+    },
+    "negative": {
+      "$type": "color",
+      "$value": "#f54a00"
+    }
+  },
+  "shades": {
+    "fill": {
+      "$type": "color",
+      "$value": "#bfdeffb3"
+    },
+    "stroke": {
+      "$type": "color",
+      "$value": "#8ec5ff"
+    },
+    "fill 2": {
+      "$type": "color",
+      "$value": "#aaccffb3"
+    },
+    "stroke 2": {
+      "$type": "color",
+      "$value": "#3f8dff"
+    }
+  }
+}
