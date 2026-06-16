@@ -13,16 +13,16 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/naman-sharma-syscore/ns-design-system-poc.git"
+    "url": "git+https://github.com/naman-sharma-syscore/1w-ds-poc.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "module",
   "bugs": {
-    "url": "https://github.com/naman-sharma-syscore/ns-design-system-poc/issues"
+    "url": "https://github.com/naman-sharma-syscore/1w-ds-poc/issues"
   },
-  "homepage": "https://github.com/naman-sharma-syscore/ns-design-system-poc#readme",
+  "homepage": "https://github.com/naman-sharma-syscore/1w-ds-poc#readme"
   "dependencies": {
     "react": "^19.2.7",
     "react-dom": "^19.2.7"
