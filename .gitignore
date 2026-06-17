@@ -2,3 +2,11 @@ node_modules
 *.log
 dist
 storybook-static
+
+# Operating system files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Local agent settings
+.claude/

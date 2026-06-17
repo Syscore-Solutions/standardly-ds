@@ -103,7 +103,7 @@ You need three folders. You can create them directly in GitHub's web interface b
 
 ```
 poc-design-system/
-├── README.md          ← already created
+├── readme.md          ← already created
 ├── DESIGN.md          ← you'll write this in Phase 3
 └── tokens/            ← exported Figma tokens go here
 ```

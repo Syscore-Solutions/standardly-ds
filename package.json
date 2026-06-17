@@ -1,5 +1,5 @@
 {
-  "name": "ns-design-system-poc",
+  "name": "1w-design-system-poc",
   "version": "1.0.0",
   "description": "",
   "scripts": {
@@ -22,7 +22,7 @@
   "bugs": {
     "url": "https://github.com/naman-sharma-syscore/1w-ds-poc/issues"
   },
-  "homepage": "https://github.com/naman-sharma-syscore/1w-ds-poc#readme"
+  "homepage": "https://github.com/naman-sharma-syscore/1w-ds-poc#readme",
   "dependencies": {
     "react": "^19.2.7",
     "react-dom": "^19.2.7"
@@ -35,6 +35,7 @@
     "@storybook/addon-vitest": "^10.4.4",
     "@storybook/react-vite": "^10.4.4",
     "@tokens-studio/sd-transforms": "^2.0.3",
+    "@types/node": "^25.9.3",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.2",

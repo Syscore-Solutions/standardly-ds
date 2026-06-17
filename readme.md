@@ -127,9 +127,20 @@ Supports `leftIcon` and `rightIcon` slots.
 - **Playwright** — browser-based component testing
 - **a11y addon** — accessibility compliance checks
 
-## Design Spec
+## Directory Layout & Operations
 
-See [`DESIGN.md`](./DESIGN.md) for the full design system specification — token naming conventions, component anatomy, and Figma sync instructions.
+All AI agents (Gemini, Claude, OpenAI, and others) MUST refer to [`agents.md`](./agents.md) for master operational guidelines, development standards, and coordination workflows.
+
+| Path / File | Description |
+| :--- | :--- |
+| `agents.md` | [Agent Operations Manual](./agents.md) defining standards and planning protocols. |
+| `design.md` | [UX/UI Design Specifications](./design.md) (Design Tokens, Typography, Palette, User Flow). |
+| `architecture.md` | [Architecture Specifications](./architecture.md) detailing pipeline & module communication. |
+| `setup.md` | [Local Setup Guide](./setup.md) detailing installation and build verification commands. |
+| `tasks.md` | [Active Tasks Checklist](./tasks.md) tracking project milestones. |
+| `plan.md` | [Active Proposal Scratchpad](./plan.md) for pre-execution user reviews. |
+| `memory.md` | [Project Memory & Context](./memory.md) tracking history and decisions. |
+| `changelog.md` | [Activity Changelog](./changelog.md) append-only agent ledger. |
 
 ## POC Plan
 
