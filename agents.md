@@ -60,6 +60,21 @@ To avoid coordinate clashes and messy state modifications, follow this strict pr
 
 ---
 
+## Graphify Knowledge Retrieval (Mandatory First Step)
+
+**Prerequisite:** Ensure `graphify` is installed (`which graphify`) and the graph has been built (`graphify update .` from project root).
+
+1. **Session start** → run `graphify update .` (fast AST re-extraction, no LLM cost)
+2. **Every task/question** → run `graphify query "<the question>" --budget 2000` before grep, before guessing, before reading files
+3. **Deep-dive on a concept** → `graphify explain "<node label>"`
+4. **Trace relationships** → `graphify path "<A>" "<B>"`
+
+**Why:** The graph extracts entities, relationships, and cross-file connections from the entire codebase. Querying it first eliminates blind file spelunking, surfaces links `grep` won't find, and saves tokens. Fall back to `grep` only when the graph returns nothing relevant.
+
+**When the graph is stale after code changes:** run `graphify update .` again (idempotent, fast, free).
+
+---
+
 ## Logs Protocol
 
 Upon completion of any workspace run, you must update the persistent memory ledger:
@@ -80,3 +95,4 @@ Upon completion of any workspace run, you must update the persistent memory ledg
      - **Summary of Actions:**
        - [bullet points of actions taken]
      ```
+
