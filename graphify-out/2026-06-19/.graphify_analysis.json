@@ -1,35 +1,6 @@
 {
   "communities": {
     "0": [
-      "a11y_addon",
-      "agents_md",
-      "architecture_md",
-      "changelog_md",
-      "claude_agent",
-      "claude_md",
-      "dark_theme_tokens",
-      "design_md",
-      "figma_tool",
-      "gemini_agent",
-      "light_theme_tokens",
-      "memory_md",
-      "openai_agent",
-      "plan_md",
-      "playwright_tool",
-      "poc_plan_md",
-      "primitive_tokens",
-      "readme_md",
-      "semantic_tokens",
-      "setup_md",
-      "src_styles_directory",
-      "storybook_10",
-      "storybook_directory",
-      "style_dictionary_tool",
-      "tasks_md",
-      "tokens_directory",
-      "tokens_studio_plugin"
-    ],
-    "1": [
       "accordion_accordion",
       "accordion_accordion_accordion",
       "accordion_accordion_accordioncontent",
@@ -55,6 +26,33 @@
       "accordion_accordion_useaccordion",
       "accordion_accordion_useitem",
       "accordion_index"
+    ],
+    "1": [
+      "package",
+      "package_author",
+      "package_bugs",
+      "package_bugs_url",
+      "package_dependencies",
+      "package_dependencies_react",
+      "package_dependencies_react_dom",
+      "package_description",
+      "package_homepage",
+      "package_keywords",
+      "package_license",
+      "package_name",
+      "package_repository",
+      "package_repository_type",
+      "package_repository_url",
+      "package_scripts",
+      "package_scripts_build",
+      "package_scripts_build_storybook",
+      "package_scripts_build_tokens",
+      "package_scripts_dev",
+      "package_scripts_storybook",
+      "package_scripts_test",
+      "package_scripts_typecheck",
+      "package_type",
+      "package_version"
     ],
     "2": [
       "button_button",
@@ -103,6 +101,27 @@
       "package_devdependencies_vitest_coverage_v8"
     ],
     "4": [
+      "agents_file",
+      "architecture_file",
+      "readme_gitattributes",
+      "readme_graphify",
+      "readme_package_json",
+      "readme_playwright",
+      "readme_sd_config_js",
+      "readme_src",
+      "readme_src_components",
+      "readme_src_styles",
+      "readme_storybook",
+      "readme_storybook_tool",
+      "readme_style_dictionary",
+      "readme_tsconfig_json",
+      "readme_vite",
+      "readme_vite_config_ts",
+      "readme_vitest",
+      "readme_vitest_config_ts",
+      "setup_file"
+    ],
+    "5": [
       "tsconfig",
       "tsconfig_compileroptions",
       "tsconfig_compileroptions_allowimportingtsextensions",
@@ -122,35 +141,23 @@
       "tsconfig_compileroptions_usedefineforclassfields",
       "tsconfig_include"
     ],
-    "5": [
-      "package",
-      "package_author",
-      "package_bugs",
-      "package_bugs_url",
-      "package_dependencies",
-      "package_dependencies_react",
-      "package_dependencies_react_dom",
-      "package_description",
-      "package_homepage",
-      "package_keywords",
-      "package_license",
-      "package_name",
-      "package_repository",
-      "package_repository_type",
-      "package_repository_url",
-      "package_type",
-      "package_version"
-    ],
     "6": [
-      "accordion_component",
-      "button_component",
-      "card_component",
-      "form_input_component",
-      "navigation_component",
-      "react_19",
-      "src_components_directory",
-      "typescript_6",
-      "vitest_4"
+      "design_file",
+      "readme_accordion",
+      "readme_alpha",
+      "readme_border_radii",
+      "readme_border_radii_absolute",
+      "readme_brand_colors",
+      "readme_chart_colors",
+      "readme_figma",
+      "readme_file",
+      "readme_raw_colors",
+      "readme_semantic_colors",
+      "readme_shadows",
+      "readme_spacing",
+      "readme_spacing_absolute",
+      "readme_tokens",
+      "readme_typography"
     ],
     "7": [
       "sd_config",
@@ -164,28 +171,34 @@
       "sd_config_rewriterefs"
     ],
     "8": [
-      "package_scripts",
-      "package_scripts_build",
-      "package_scripts_build_storybook",
-      "package_scripts_build_tokens",
-      "package_scripts_dev",
-      "package_scripts_storybook",
-      "package_scripts_test",
-      "package_scripts_typecheck"
+      "poc_plan_file",
+      "readme_button",
+      "readme_card",
+      "readme_claude_code",
+      "readme_claude_design",
+      "readme_form_input",
+      "readme_navigation_bar",
+      "readme_tokens_studio"
     ],
     "9": [
+      "changelog_file",
+      "claude_file",
+      "memory_file",
+      "plan_file",
+      "readme_antigravity_ide",
+      "readme_gitignore",
+      "tasks_file"
+    ],
+    "10": [
       "storybook_main",
       "storybook_main_config"
     ],
-    "10": [
+    "11": [
       "storybook_preview",
       "storybook_preview_preview"
     ],
-    "11": [
-      "src_vite_env_d"
-    ],
     "12": [
-      "vite_8"
+      "src_vite_env_d"
     ],
     "13": [
       "vite_config"
@@ -198,16 +211,16 @@
     ]
   },
   "cohesion": {
-    "0": 0.12535612535612536,
-    "1": 0.12,
+    "0": 0.12,
+    "1": 0.08,
     "2": 0.1038961038961039,
     "3": 0.1,
-    "4": 0.1111111111111111,
-    "5": 0.11764705882352941,
-    "6": 0.2222222222222222,
+    "4": 0.19883040935672514,
+    "5": 0.1111111111111111,
+    "6": 0.25,
     "7": 0.4166666666666667,
     "8": 0.25,
-    "9": 1.0,
+    "9": 0.6190476190476191,
     "10": 1.0,
     "11": 1.0,
     "12": 1.0,
@@ -222,18 +235,8 @@
       "degree": 16
     },
     {
-      "id": "agents_md",
-      "label": "Agent Operations Manual",
-      "degree": 12
-    },
-    {
-      "id": "readme_md",
-      "label": "Project Overview",
-      "degree": 9
-    },
-    {
-      "id": "src_components_directory",
-      "label": "React Components Directory",
+      "id": "readme_tokens",
+      "label": "tokens/",
       "degree": 9
     },
     {
@@ -242,90 +245,67 @@
       "degree": 8
     },
     {
-      "id": "design_md",
-      "label": "UX/UI Design Specifications",
-      "degree": 8
-    },
-    {
-      "id": "architecture_md",
-      "label": "Architecture Specifications",
+      "id": "readme_src_styles",
+      "label": "src/styles/",
       "degree": 7
     },
     {
-      "id": "setup_md",
-      "label": "Local Setup Guide",
-      "degree": 6
-    },
-    {
-      "id": "tokens_directory",
-      "label": "Design Token Files Directory",
+      "id": "readme_src_components",
+      "label": "src/components/",
       "degree": 6
     },
     {
       "id": "sd_config_buildtokens",
       "label": "buildTokens()",
       "degree": 5
+    },
+    {
+      "id": "accordion_accordion_accordiontrigger",
+      "label": "AccordionTrigger()",
+      "degree": 5
+    },
+    {
+      "id": "readme_storybook",
+      "label": ".storybook/",
+      "degree": 5
+    },
+    {
+      "id": "readme_figma",
+      "label": "Figma",
+      "degree": 5
+    },
+    {
+      "id": "readme_storybook_tool",
+      "label": "Storybook",
+      "degree": 5
     }
   ],
   "surprises": [
     {
-      "source": "Figma Design Tool",
-      "target": "Design Token Files Directory",
+      "source": "Figma",
+      "target": "tokens/",
       "source_files": [
-        "poc-plan.md",
-        "agents.md"
+        "architecture.md",
+        "readme.md"
       ],
-      "confidence": "INFERRED",
-      "relation": "exports_to",
-      "why": "inferred connection - not explicitly stated in source; connects across different repos/directories; peripheral node `Figma Design Tool` unexpectedly reaches hub `Design Token Files Directory`"
+      "confidence": "EXTRACTED",
+      "relation": "references",
+      "why": "connects across different repos/directories"
     },
     {
-      "source": "Accordion Component",
-      "target": "React Components Directory",
+      "source": "src/components/",
+      "target": "Vitest",
       "source_files": [
         "readme.md",
         "architecture.md"
       ],
-      "confidence": "INFERRED",
-      "relation": "located_in",
-      "why": "inferred connection - not explicitly stated in source; connects across different repos/directories; peripheral node `Accordion Component` unexpectedly reaches hub `React Components Directory`"
-    },
-    {
-      "source": "Button Component",
-      "target": "React Components Directory",
-      "source_files": [
-        "readme.md",
-        "architecture.md"
-      ],
-      "confidence": "INFERRED",
-      "relation": "located_in",
-      "why": "inferred connection - not explicitly stated in source; connects across different repos/directories; peripheral node `Button Component` unexpectedly reaches hub `React Components Directory`"
-    },
-    {
-      "source": "Card Component",
-      "target": "React Components Directory",
-      "source_files": [
-        "poc-plan.md",
-        "architecture.md"
-      ],
-      "confidence": "INFERRED",
-      "relation": "implemented_as",
-      "why": "inferred connection - not explicitly stated in source; connects across different repos/directories; peripheral node `Card Component` unexpectedly reaches hub `React Components Directory`"
-    },
-    {
-      "source": "Form Input Component",
-      "target": "React Components Directory",
-      "source_files": [
-        "poc-plan.md",
-        "architecture.md"
-      ],
-      "confidence": "INFERRED",
-      "relation": "implemented_as",
-      "why": "inferred connection - not explicitly stated in source; connects across different repos/directories; peripheral node `Form Input Component` unexpectedly reaches hub `React Components Directory`"
+      "confidence": "EXTRACTED",
+      "relation": "references",
+      "why": "connects across different repos/directories"
     }
   ],
   "tokens": {
-    "input": 11319,
-    "output": 4926
+    "input": 11001,
+    "output": 21834
   }
 }
