@@ -1,15 +1,30 @@
 {
   "name": "1w-design-system-poc",
   "version": "1.0.0",
-  "description": "",
+  "description": "1WORX design system components and tokens",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
+    "build:lib": "vite build --mode lib && tsc -p tsconfig.build.json --emitDeclarationOnly",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "test": "vitest --project storybook run",
     "typecheck": "tsc --noEmit",
-    "build:tokens": "node sd.config.js"
+    "build:tokens": "node sd.config.js",
+    "prepublishOnly": "bun run build:lib"
   },
   "repository": {
     "type": "git",
@@ -23,10 +38,11 @@
     "url": "https://github.com/naman-sharma-syscore/1w-ds-poc/issues"
   },
   "homepage": "https://github.com/naman-sharma-syscore/1w-ds-poc#readme",
-  "dependencies": {
-    "react": "^19.2.7",
-    "react-dom": "^19.2.7"
+  "peerDependencies": {
+    "react": ">=18",
+    "react-dom": ">=18"
   },
+  "dependencies": {},
   "devDependencies": {
     "@chromatic-com/storybook": "^5.2.1",
     "@storybook/addon-a11y": "^10.4.4",
@@ -42,6 +58,8 @@
     "@vitest/browser-playwright": "^4.1.9",
     "@vitest/coverage-v8": "^4.1.9",
     "playwright": "^1.60.0",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
     "storybook": "^10.4.4",
     "style-dictionary": "^5.4.4",
     "typescript": "^6.0.3",
