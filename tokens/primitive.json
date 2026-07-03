@@ -1002,5 +1002,35 @@
       "$type": "spacing",
       "$value": "80"
     }
+  },
+  "radius": {
+    "none": {
+      "$type": "borderRadius",
+      "$value": "0"
+    },
+    "sm": {
+      "$type": "borderRadius",
+      "$value": "4"
+    },
+    "md": {
+      "$type": "borderRadius",
+      "$value": "8"
+    },
+    "lg": {
+      "$type": "borderRadius",
+      "$value": "12"
+    },
+    "xl": {
+      "$type": "borderRadius",
+      "$value": "16"
+    },
+    "2xl": {
+      "$type": "borderRadius",
+      "$value": "24"
+    },
+    "full": {
+      "$type": "borderRadius",
+      "$value": "9999"
+    }
   }
 }
