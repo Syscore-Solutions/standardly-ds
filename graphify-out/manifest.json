@@ -1,0 +1,22 @@
+{
+  "tokens/$metadata.json": {
+    "mtime": 1783059714.0,
+    "ast_hash": "8d60f29517d88f5225b38e4a85fa687f",
+    "semantic_hash": "8d60f29517d88f5225b38e4a85fa687f"
+  },
+  "tokens/$themes.json": {
+    "mtime": 1783059714.0,
+    "ast_hash": "d751713988987e9331980363e24189ce",
+    "semantic_hash": "d751713988987e9331980363e24189ce"
+  },
+  "tokens/primitive.json": {
+    "mtime": 1783081905.20482,
+    "ast_hash": "d40c84253dc916d894a9321c1c4dc558",
+    "semantic_hash": "d40c84253dc916d894a9321c1c4dc558"
+  },
+  "tokens/semantic.json": {
+    "mtime": 1783059714.0,
+    "ast_hash": "99914b932bd37a50b983c5e7c90ae93b",
+    "semantic_hash": "99914b932bd37a50b983c5e7c90ae93b"
+  }
+}

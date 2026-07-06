@@ -1,0 +1,118 @@
+{
+  "communities": {
+    "0": [
+      "figma",
+      "github",
+      "readme",
+      "tokens_metadata",
+      "tokens_themes"
+    ],
+    "1": [
+      "git_sync_workflow",
+      "main_branch",
+      "tokens_studio_branch",
+      "tokens_studio_plugin"
+    ],
+    "2": [
+      "standardly_design_system",
+      "tokens_primitive_tokens",
+      "tokens_semantic_tokens"
+    ]
+  },
+  "cohesion": {
+    "0": 0.4,
+    "1": 0.5,
+    "2": 1.0
+  },
+  "gods": [
+    {
+      "id": "standardly_design_system",
+      "label": "Standardly Design System",
+      "degree": 3
+    },
+    {
+      "id": "tokens_primitive_tokens",
+      "label": "Primitive Tokens",
+      "degree": 3
+    },
+    {
+      "id": "tokens_semantic_tokens",
+      "label": "Semantic Tokens",
+      "degree": 3
+    },
+    {
+      "id": "git_sync_workflow",
+      "label": "Git Sync Workflow",
+      "degree": 3
+    },
+    {
+      "id": "tokens_studio_plugin",
+      "label": "Tokens Studio Plugin",
+      "degree": 2
+    },
+    {
+      "id": "tokens_studio_branch",
+      "label": "tokens-studio branch",
+      "degree": 2
+    },
+    {
+      "id": "tokens_metadata",
+      "label": "Tokens $metadata.json",
+      "degree": 1
+    },
+    {
+      "id": "tokens_themes",
+      "label": "Tokens $themes.json",
+      "degree": 1
+    },
+    {
+      "id": "figma",
+      "label": "Figma",
+      "degree": 1
+    },
+    {
+      "id": "github",
+      "label": "GitHub",
+      "degree": 1
+    }
+  ],
+  "surprises": [
+    {
+      "source": "Standardly Design System",
+      "target": "Primitive Tokens",
+      "source_files": [
+        "README.md",
+        "tokens/primitive.json"
+      ],
+      "confidence": "INFERRED",
+      "relation": "conceptually_related_to",
+      "why": "inferred connection - not explicitly stated in source; crosses file types (doc \u2194 code); connects across different repos/directories"
+    },
+    {
+      "source": "Standardly Design System",
+      "target": "Semantic Tokens",
+      "source_files": [
+        "README.md",
+        "tokens/semantic.json"
+      ],
+      "confidence": "INFERRED",
+      "relation": "conceptually_related_to",
+      "why": "inferred connection - not explicitly stated in source; crosses file types (doc \u2194 code); connects across different repos/directories"
+    },
+    {
+      "source": "Semantic Tokens",
+      "target": "Primitive Tokens",
+      "source_files": [
+        "tokens/semantic.json",
+        "tokens/primitive.json"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "references",
+      "why": "cross-file semantic connection"
+    }
+  ],
+  "tokens": {
+    "input": 1298,
+    "output": 3049
+  }
+}
