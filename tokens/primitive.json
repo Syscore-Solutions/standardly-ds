@@ -1032,5 +1032,27 @@
       "$type": "borderRadius",
       "$value": "9999"
     }
+  },
+  "border": {
+    "none": {
+      "$type": "borderWidth",
+      "$value": "0"
+    },
+    "sm": {
+      "$type": "borderWidth",
+      "$value": "0.5"
+    },
+    "md": {
+      "$type": "borderWidth",
+      "$value": "1"
+    },
+    "lg": {
+      "$type": "borderWidth",
+      "$value": "2"
+    },
+    "xl": {
+      "$type": "borderWidth",
+      "$value": "4"
+    }
   }
 }
