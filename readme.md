@@ -18,11 +18,4 @@ All scales use consistent `2xs/xs/sm/md/lg/xl/2xl/3xl`-style abbreviations (not 
 
 ## Figma sync workflow
 
-The Tokens Studio plugin's GitHub sync is configured against the **`tokens-studio`** branch, not `main`. After committing token changes to `main`, they must also be pushed to `tokens-studio` before **Pull from GitHub** in the plugin will pick them up:
-
-```
-git push origin main
-git push origin main:tokens-studio
-```
-
-`tokens-studio` is kept as a fast-forward of `main`, so this is a plain push, not a force-push. This is a manual step today — there's no CI automation to keep the branches in sync — so repeat it for every token change.
+The Tokens Studio plugin's GitHub sync is configured against **`main`**. Commit and push token changes to `main`, then use **Pull from GitHub** in the plugin to pick them up in Figma.
