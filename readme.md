@@ -18,12 +18,36 @@ All tokens live in **`tokens.json`**. Two token sets, tracked in `$metadata.toke
   - `fontSize` — scale, `xs`–`6xl`
   - `lineHeight` — `tight` / `normal` / `relaxed` (percentage values)
   - `letterSpacing` — `none` / `wide` / `wider` (percentage values)
-- **`semantic`** — alias layer that references primitives (e.g. `{slate.900}`). Currently empty — populate as components need semantic color, spacing, radius, and typography tokens.
+- **`semantic`** — role-based aliases referencing primitives (e.g. `{color.slate.900}`):
+  - `color.bg` — surface backgrounds (`default`, `subtle`, `muted`, `inverse`, `brand`, …)
+  - `color.text` — text roles (`primary`, `secondary`, `link`, `onBrand`, …)
+  - `color.border` — border roles (`default`, `focus`, `inverse`, …)
+  - `color.action` — interactive fills (`primary`, `secondary`, `destructive`, …)
+  - `color.feedback` — status colors (`success`, `warning`, `error`, `info` — each with `bg` / `text` / `border`)
+  - `typography` — composite text styles: `H1`–`H6`, `body` (`lg`/`md`/`sm`), `label` (`md`/`sm`), `caption`
+  - `radius` — `control`, `container`, `overlay`, `badge`
+  - `border` — `default`, `strong`, `focus`
+  - `space` — `inline`, `stack`, `inset`, `page`
+
+### Brand ramp mapping
+
+| Role | Primitive ramp |
+|------|----------------|
+| Neutral UI | `slate` |
+| Primary / brand | `purple` |
+| Success | `mint` |
+| Warning | `yellow` |
+| Error / destructive | `red` |
+| Info / links | `blue` |
 
 `$themes` is intentionally `[]` (single light theme only).
 
 All scales use consistent `2xs/xs/sm/md/lg/xl/2xl/3xl`-style abbreviations (not `s/m/l`) — follow the same pattern when adding new tokens.
 
+Semantic tokens use `$value` then `$type`. Typography composites use `$type: "typography"` with singular property keys (`fontFamily`, `fontSize`, …). References omit the set name: `{color.slate.900}`, not `{primitive.color.slate.900}`.
+
 ## Figma sync workflow
 
 The Tokens Studio plugin's GitHub sync is configured against **`main`**. Commit and push token changes to `main`, then use **Pull from GitHub** in the plugin to pick them up in Figma.
+
+Export color, spacing, radius, and font semantics as **Variables**. Export typography composites as **Text styles** with "Create styles with variable references".
