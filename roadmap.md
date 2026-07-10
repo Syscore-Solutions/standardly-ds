@@ -59,7 +59,7 @@ The **long-term delivery plan**, in two layers:
 
 - [ ] **[S1-T09]** Complete all 3 styleguides: direction rationale + per-component usage do/don'ts (brief).  · deps: [S1-T07], [S1-T08]
 - [ ] **[S1-T10]** Polish + a11y pass across all 3 demos: AA contrast, focus rings, keyboard nav, status-not-by-color-alone.  · deps: [S1-T07], [S1-T08]
-- [ ] **[S1-T11]** Deploy the static build to a shareable URL (Vercel/Netlify — pick at task time).  · deps: [S1-T10]
+- [ ] **[S1-T11]** Deploy the static build to a shareable URL (Vercel/Netlify/Cloudflare Pages — pick at task time; CF Pages readiness assessed 2026-07-10, caveats in `memory.md §7`).  · deps: [S1-T10]
 - [ ] **[S1-T12]** Build the combined HTML deck in `explorations/presentation/` (narrative: problem → token foundation → AI workflow → 3 directions → live demos → recommendation/next steps) + dry-run the full presentation flow.  · deps: [S1-T09], [S1-T11]
 
 ### 2026-07-14 (Tue) — team call

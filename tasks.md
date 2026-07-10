@@ -110,7 +110,7 @@ The three directions are the sprint's creative core and are currently undefined.
 **Mon 2026-07-13**
 - [ ] **[S1-T09]** Complete styleguides: rationale + brief do/don'ts for all 3  · deps: [S1-T07], [S1-T08]
 - [ ] **[S1-T10]** Polish + a11y pass across all 3 demos  · deps: [S1-T07], [S1-T08]
-- [ ] **[S1-T11]** Deploy static build to a shareable URL (Vercel/Netlify)  · deps: [S1-T10]
+- [ ] **[S1-T11]** Deploy static build to a shareable URL (Vercel/Netlify/Cloudflare Pages — CF Pages readiness assessed 2026-07-10, see `memory.md §7`)  · deps: [S1-T10]
 - [ ] **[S1-T12]** Combined HTML deck in `explorations/presentation/` + dry run  · deps: [S1-T09], [S1-T11]
 
 **Tue 2026-07-14 — team call**

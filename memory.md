@@ -2,7 +2,7 @@
 
 Durable, AI-facing memory for this repo. Read this first. It records **what is actually true right now**, the **decisions that are locked**, the **drift between docs and reality**, and the **open questions** — the things you cannot reliably infer from the files alone. When any of these change, update this file.
 
-_Last verified against the tree: 2026-07-10 (HEAD `fb2792e` + this reorg)._
+_Last verified against the tree: 2026-07-10 evening (HEAD `dcdc906`)._
 
 ---
 
@@ -20,6 +20,8 @@ It is at **Phase 1: tokens only.** There is **no code** — no `package.json`, n
 standardly-ds/
 ├── tokens.json      # THE canonical token source. W3C DTCG. Root because Tokens Studio syncs this path. Do not move.
 ├── README.md        # Token-structure summary + Figma sync quick-start. Repo entry point.
+├── index.html       # Self-contained project dashboard (own visual identity, deliberately NOT the system tokens).
+│                    # Fetches tasks/roadmap/changelog/tokens live over HTTP; embedded snapshot fallback on file://.
 ├── AGENTS.md        # Agent guide (auto-discovered). Thin — points here.
 ├── CLAUDE.md        # Claude Code pointer → AGENTS.md.
 ├── memory.md        # ← this file. Durable AI working memory.
@@ -40,7 +42,7 @@ standardly-ds/
 
 **Current focus (as of 2026-07-10): Sprint S1** — 4 days to a team call on **Tue 2026-07-14**. Three design directions on the locked tokens (per-direction styleguide + starter components from a dashboard screenshot + demo page), one combined HTML deck, deployed to a shareable URL. Full plan in `roadmap.md → Sprint S1`; the 3 active tasks are in `tasks.md`. Remaining P1 work (design.md, motion/elevation tokens) is parked until after the call.
 
-**S1 state after 2026-07-10 (autonomous session while Naman AFK):** direction **o1 — "Soft Precision"** is built end-to-end (S1-T01 ✅, T02/T03 partial, T04 o1-only, T05 ✅, T06 ✅): scaffold + token pipeline + inventory + o1 remap + 12 components + `/o1/styleguide` + `/o1` demo, all committed in 7 chunks on **`feat/project-dashboard`** (Naman's pre-AFK call — overrides the planned `feat/explorations-scaffold` branch). o2/o3 are router placeholders awaiting Naman's direction research. Next up: o2/o3 definitions → S1-T07/T08, then polish/deploy/deck (T09–T12).
+**S1 state after 2026-07-10 (autonomous session while Naman AFK):** direction **o1 — "Soft Precision"** is built end-to-end (S1-T01 ✅, T02/T03 partial, T04 o1-only, T05 ✅, T06 ✅): scaffold + token pipeline + inventory + o1 remap + 12 components + `/o1/styleguide` + `/o1` demo, all committed in 7 chunks on **`feat/project-dashboard`** (Naman's pre-AFK call — overrides the planned `feat/explorations-scaffold` branch). o2/o3 are router placeholders awaiting Naman's direction research. Same evening, the root `index.html` dashboard was rewired to o1: the SD-07 o1 card now carries DEMO/STYLEGUIDE links into the explorations app with a localhost probe (`:5173`/`:4173`), and `npm run demo` in `explorations/` is the one-command pre-call launch (build + preview + open `/o1`). The dashboard's old direction preview swatches and SYS/O1/O2/O3 rail switcher were then **removed** (Naman's call — redundant once the real demo is one click away; comparison happens in the explorations app). Next up: o2/o3 definitions → S1-T07/T08, then polish/deploy/deck (T09–T12).
 
 `graphify-out/` was **removed** and `.gitignore`d (stale auto-generated code-graph output that indexed an old file layout — see §5).
 
@@ -97,7 +99,7 @@ standardly-ds/
 - **Confidence-meter visual language** (BRIEF §7B — the continuous 0–100% AI confidence scale) has **no tokens yet** and is a signature element.
 - **White-labeling** (BRIEF §14): planned basic tier = per-tenant `--brand-logo` + `--primary` override only. Token architecture should expose that hook cleanly; not built.
 - **Package name** `@syscore-solutions/standardly-ds` is marked TBD; private registry not chosen.
-- **Sprint S1 inputs still pending from Naman (updated 2026-07-10 evening):** (a) ~~which prototype dashboard page~~ — picked (the "Welcome back" dashboard, via chat screenshot); still owed: the **screenshot files** into `explorations/reference/` (see its README) + confirmation of the 12-component inventory; (b) **o2/o3 direction definitions** from his research (o1 was defined by Claude from Naman's Link AI reference — needs his react/adjust). Deploy target (Vercel vs Netlify) still unpicked — decide at S1-T11.
+- **Sprint S1 inputs still pending from Naman (updated 2026-07-10 evening):** (a) ~~which prototype dashboard page~~ — picked (the "Welcome back" dashboard, via chat screenshot); still owed: the **screenshot files** into `explorations/reference/` (see its README) + confirmation of the 12-component inventory; (b) **o2/o3 direction definitions** from his research (o1 was defined by Claude from Naman's Link AI reference — needs his react/adjust). Deploy target still unpicked — decide at S1-T11. **Cloudflare Pages** entered the running 2026-07-10 (Naman asked about readiness): the repo-root dashboard is zero-config static (its four fetched files are all tracked), but (1) `main` has no `index.html` until `feat/project-dashboard` merges, (2) deploying the repo root makes **every tracked doc public** — memory.md/brief.md/architecture.md included — so gate with Cloudflare Access or accept knowingly, (3) the explorations app needs its own build step (`explorations/` root, output `dist/`; `public/_redirects` for SPA fallback already exists).
 - **Sprint S1 constraint decisions (locked with Naman 2026-07-10):** directions differ by **semantic remap + component styling only** (primitives fixed, purple stays primary); one shared Vite app (not 3 standalone apps); deck is an HTML page in `explorations/presentation/`; demos shown via deployed URL; styleguides include token viz + component gallery + rationale + brief do/don'ts.
 
 ## 8. Pointers
