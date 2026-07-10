@@ -15,7 +15,7 @@ The product is a mature MVP: React SPA, Python API, PostgreSQL, AWS, RAG pipelin
 ## 2\. North-star inspiration
 
 - **Primary reference: Stripe** — for both product and marketing. The reasons: information-rich screens that stay legible, precise grids, a restrained palette anchored by one confident primary, and an overall impression of "we are serious infrastructure."  
-- **Component philosophy: shadcn/ui** — we like the *philosophy* (composable, accessible, restrained primitives), **not** the brand and **not** the library itself. We are **not** using shadcn/ui in the codebase. Build bespoke components on React \+ Tailwind; borrow the composition/accessibility patterns, not the package.  
+- **Component philosophy: shadcn/ui** — we like the *philosophy* (composable, accessible, restrained primitives), **not** the brand and **not** the library itself. We are **not** using shadcn/ui in the codebase. Build bespoke components on React \+ TypeScript \+ Radix UI, styled with CSS variables (no Tailwind in the library — see `architecture.md §12.4`); borrow the composition/accessibility patterns, not the package.  
 - **Explicitly out of scope:** Apple (no photography-led, airy marketing — we are data-dense). The existing pitch deck (purple-on-charcoal) — **ignore it entirely**; it was a throwaway draft and carries no brand equity.
 
 ---
@@ -50,7 +50,7 @@ The product is a mature MVP: React SPA, Python API, PostgreSQL, AWS, RAG pipelin
 
 ## 6\. Brand direction
 
-- **Primary color: a deep, trustworthy blue or indigo.** Reads serious, institutional, technical (the Stripe / Linear / gov-tech register) rather than consumer/creative. Used sparingly: primary actions, key brand moments, selected/active states. Lock a specific shade as the `--primary` token and build a tint/shade ramp around it.  
+- **Primary color: the locked `purple` ramp.** A deep, trustworthy purple that reads serious, institutional, technical (the Stripe / Linear / gov-tech register) rather than consumer/creative. Implemented in `tokens.json` — the source of truth: `action.primary` → `purple.600`, `border.focus` → `purple.500`, `text.brand` → `purple.700`, `bg.brand` → `purple.50`. Used sparingly: primary actions, key brand moments, selected/active states. *(Updated 2026-07-10 — this brief originally recommended "deep blue or indigo"; purple was confirmed and locked with the token implementation.)*  
 - **Neutrals:** a refined, slightly cool gray scale doing most of the work — surfaces, borders, text. This is where 90% of the UI lives.  
 - **Gradients:** very sparingly, if at all. Default to flat, precise surfaces.  
 - **Texture:** warm, not cold. Some illustration and iconography are welcome (used with restraint); avoid heavy "API-doc" coldness.
@@ -72,7 +72,7 @@ Define semantic tokens for both, plus standard feedback colors (success/warning/
 ## 8\. Typography
 
 - **Readability at density is the top requirement** — large volumes of compliance text, dense tables, long reasoning blocks.  
-- Use a **highly legible neutral sans** for UI and body, paired with a **CJK companion** in the stack (e.g. Inter \+ Noto Sans CJK or equivalent) so multilingual content (Chinese evidence documents are already real in the product) renders cleanly. Multilingual is a strong nice-to-have, not a blocker.  
+- Use a **highly legible neutral sans** for UI and body, paired with a **CJK companion** in the stack so multilingual content (Chinese evidence documents are already real in the product) renders cleanly. Multilingual is a strong nice-to-have, not a blocker. *(Implemented in `tokens.json` as **Cal Sans** for headings \+ **Geist** for body — Inter \+ Noto Sans CJK was this brief's pre-token recommendation; the CJK companion is still an open question, see `memory.md §7`.)*  
 - **Tabular (monospaced) numerals** everywhere data appears — scores, percentages, counts, dates — so columns align.  
 - **Monospace accents:** allowed but minimal and warm — e.g. requirement codes (`A02.1`), IDs. Don't let monospace make the consultant-facing surfaces feel like a terminal.  
 - Define a clear type scale with deliberate hierarchy (display → headings → body → caption → data/mono).
@@ -82,7 +82,7 @@ Define semantic tokens for both, plus standard feedback colors (success/warning/
 ## 9\. Iconography & illustration
 
 - **Icons:** clean line icons, consistent weight. (Lucide-style works well with React and matches the restrained aesthetic.) Status icons should be instantly distinguishable by shape, not just color.  
-- **Illustration:** welcome but used sparingly — empty states, onboarding, marketing moments. Keep it warm and on-brand (blue/indigo family), never decorative noise.
+- **Illustration:** welcome but used sparingly — empty states, onboarding, marketing moments. Keep it warm and on-brand (the locked `purple` family), never decorative noise.
 
 ---
 
@@ -131,7 +131,7 @@ These four make or break the product. All follow the *information-rich \+ spacio
 
 No logo exists yet; the system should define one.
 
-- **Direction:** wordmark-forward, precise, geometric, confident. Should evoke *standards / measurement / structure / a benchmark or grid* without being literal. Lives naturally in the blue/indigo family.  
+- **Direction:** wordmark-forward, precise, geometric, confident. Should evoke *standards / measurement / structure / a benchmark or grid* without being literal. Lives naturally in the locked `purple` family.  
 - Must work monochrome, scale down to a favicon/app mark, and sit comfortably in both product chrome and marketing.  
 - Deliver a few distinct concepts before refining.
 
@@ -139,7 +139,7 @@ No logo exists yet; the system should define one.
 
 ## 16\. Token architecture & tech constraints
 
-- **Stack:** React \+ Tailwind. **Not** shadcn/ui — build bespoke, accessible components (Radix-style composition patterns are fine to emulate).  
+- **Stack:** React \+ TypeScript \+ Radix UI, styled with CSS variables. **No Tailwind in the library**, **not** shadcn/ui — build bespoke, accessible components (see `architecture.md §5.1, §12.4`).  
 - **Light-first** semantic token system: color (neutrals, primary ramp, status set, confidence scale, feedback), typography (scale \+ families \+ tabular numerals), spacing, radius, elevation, motion.  
 - White-label hooks: `--brand-logo`, `--primary` (and derived ramp) overridable per tenant; everything else fixed.  
 - **Accessibility baked into the tokens** (AA contrast pairs, focus-ring tokens, status with redundant non-color encoding).
@@ -164,7 +164,7 @@ No logo exists yet; the system should define one.
 | Scope | Unified product \+ marketing |
 | Primary persona | Consultants (then reviewers, cert-admins, investors) |
 | Emotional rank | Intelligent → Trustworthy → Fast |
-| Primary color | Deep trustworthy blue/indigo, used sparingly |
+| Primary color | Deep trustworthy **purple** (locked `purple` ramp in `tokens.json`), used sparingly |
 | Mode | Light default |
 | Status colors | Fixed semantic set \+ non-color signal |
 | Confidence | Separate visual language (meter, not stoplight) |
@@ -177,6 +177,6 @@ No logo exists yet; the system should define one.
 | Typography | Readability-first sans \+ CJK companion; tabular numerals |
 | White-label | Basic: logo \+ primary color only |
 | Logo | In scope; wordmark-forward, to be designed |
-| Stack | React \+ Tailwind, no shadcn/ui; WCAG 2.1 AA  |
+| Stack | React \+ TypeScript \+ Radix UI, CSS variables (no Tailwind), no shadcn/ui; WCAG 2.1 AA  |
 
 **Inspirations:**  

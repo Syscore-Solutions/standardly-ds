@@ -1,6 +1,8 @@
 # Architecture — Standardly Design System
 
-> **Scope of this document**: Technical architecture only. Every design decision (token values, color philosophy, typography rationale, visual language) lives in `DESIGN.md`. Every product-level brief lives in `BRIEF.md`. This document tells contributors and AI agents *how the system is built, how data flows through it, and how to extend it without breaking conventions.*
+> **Scope of this document**: Technical architecture only. Every design decision (token values, color philosophy, typography rationale, visual language) lives in `design.md`. Every product-level brief lives in `brief.md`. This document tells contributors and AI agents *how the system is built, how data flows through it, and how to extend it without breaking conventions.*
+
+> **⚠️ Current vs Planned.** This repo is at **Phase 1 (tokens only)**. Roughly the first third of this document describes what exists today (`tokens.json`, the Figma/Tokens Studio sync, doc conventions). **Sections 5–8 (components, CSS build pipeline, Storybook/Chromatic, npm package) describe the _planned_ Phase 2–4 architecture — none of it is built yet.** There is no `package.json` and no build step in the repo; `src/` and `.storybook/` exist only as placeholder scaffolds (READMEs, no code — see §2.1). Treat those sections as the design intent to build toward, not a description of current reality. See [§11 Phased Roadmap](#11-phased-roadmap) for what is real vs. planned.
 
 ---
 
@@ -55,12 +57,13 @@ The entire system is organized around three layers, each owning a distinct artif
 
 | File | Purpose |
 |---|---|
-| `README.md` | Quick-start guide: token structure summary, Figma sync workflow |
-| `BRIEF.md` | Product and design brief: personas, emotional goals, brand direction |
-| `DESIGN.md` | All design decisions: token value rationale, color choices, typography |
-| `ARCHITECTURE.md` | ← **This file.** Technical architecture, data flows, conventions |
+| `README.md` | Quick-start guide: token structure summary, Figma sync workflow (lives at repo root) |
+| `brief.md` | Product and design brief: personas, emotional goals, brand direction |
+| `design.md` | All design decisions: token value rationale, color choices, typography — **currently empty; not yet written** |
+| `architecture.md` | ← **This file.** Technical architecture, data flows, conventions |
+| `memory.md` | AI-only working memory: current state, locked decisions, known doc drift, open questions |
 
-**Rule**: When in doubt about where something belongs — if it is a "why we chose X value" decision, it goes in `DESIGN.md`. If it is a "how the system is structured / how to do X" decision, it goes here.
+**Rule**: When in doubt about where something belongs — if it is a "why we chose X value" decision, it goes in `design.md`. If it is a "how the system is structured / how to do X" decision, it goes here.
 
 ---
 
@@ -68,21 +71,41 @@ The entire system is organized around three layers, each owning a distinct artif
 
 ### 2.1 Current Layout (Phase 1 — tokens only)
 
+> **Flat by design.** All docs live at the repo **root** — no `ai/` or `docs/` subfolders. This is deliberate: it removes any path ambiguity for AI agents and humans alike. **Naming rule:** convention files that expect an uppercase name stay uppercase (`README.md`, `AGENTS.md`, `CLAUDE.md`); every other file is fully lowercase.
+>
+> The Phase 2+ code directories (`src/`, `.storybook/`) were **pre-scaffolded 2026-07-10** as placeholder READMEs only — no code, no `package.json`, no build. Each placeholder says what lands there and which section governs it.
+
 ```
 standardly-ds/
-├── tokens.json          # All design tokens — W3C DTCG format. THE canonical source.
-├── README.md            # Token structure summary + Figma sync quick-start
-├── BRIEF.md             # Product and design brief
-├── DESIGN.md            # Design decisions (token values, rationale)
-├── ARCHITECTURE.md      # This file
-└── .gitignore
+├── tokens.json      # All design tokens — W3C DTCG format. THE canonical source. Tokens Studio syncs this path.
+├── README.md        # Token structure summary + Figma sync quick-start. Repo entry point.
+├── AGENTS.md        # Agent guide (auto-discovered). Thin — points to memory.md.
+├── CLAUDE.md        # Claude Code pointer → AGENTS.md.
+├── memory.md        # Durable AI working memory: current state, locked decisions, known drift, open questions.
+├── brief.md         # Product and design brief.
+├── design.md        # Design decisions (token values, rationale) — scaffold only, not yet written.
+├── architecture.md  # This file.
+├── roadmap.md       # Long-term plan: phase backlogs (P1–P4) + just-in-time weekly sprints.
+├── tasks.md         # Working surface: the entire active sprint, tiered detail.
+├── changelog.md     # Daily work log — one datestamped entry per day, newest first.
+├── src/             # PLACEHOLDER SCAFFOLD — READMEs only, no code until Phase 2
+│   ├── tokens/      #   → future transform.ts + utils.ts (§6)
+│   ├── components/  #   → future React + TS + Radix components (§5)
+│   └── styles/      #   → future generated tokens.css (§6.2) — never hand-edited
+├── .storybook/      # PLACEHOLDER SCAFFOLD — future main.ts / preview.ts (§7)
+├── explorations/    # SPRINT S1 workspace (time-boxed) — 3 design-direction demos (o1/o2/o3),
+│                    #   one Vite+React app. NOT the Phase-2 library; see explorations/README.md + roadmap.md.
+├── .claude/         # Local Claude Code settings (permissions allowlist).
+└── .gitignore       # Ignores macOS cruft, node_modules/dist, regenerable graphify-out/
 ```
 
 ### 2.2 Planned Layout (Phase 2+)
 
+> The `src/` and `.storybook/` directories below already exist as **placeholder scaffolds** (READMEs only, added 2026-07-10). Everything else code-related (`package.json`, `tsconfig*`, actual `.ts`/`.tsx`/`.css` files) arrives when Phase 2 starts. All docs stay flat at root, unchanged.
+
 ```
 standardly-ds/
-├── tokens.json                    # Unchanged — still the canonical token source
+├── tokens.json                    # Unchanged — still the canonical token source, stays at root
 ├── src/
 │   ├── tokens/                    # Token transform scripts
 │   │   ├── transform.ts           # Reads tokens.json → generates CSS variables
@@ -102,10 +125,18 @@ standardly-ds/
 ├── package.json
 ├── tsconfig.json
 ├── tsconfig.build.json
-├── README.md
-├── BRIEF.md
-├── DESIGN.md
-└── ARCHITECTURE.md
+├── README.md                      # Docs unchanged — all stay flat at root
+├── AGENTS.md
+├── CLAUDE.md
+├── memory.md
+├── brief.md
+├── design.md
+├── architecture.md
+├── roadmap.md
+├── tasks.md
+├── changelog.md
+├── .claude/                       # Local Claude Code settings
+└── .gitignore
 ```
 
 > **Critical rule**: `src/styles/tokens.css` is a **generated file**. Never edit it by hand. Always regenerate it by running the token build script after modifying `tokens.json`.
@@ -501,7 +532,7 @@ The Figma ↔ GitHub sync is bidirectional. The following rules define which sid
 The Tokens Studio plugin is configured with GitHub sync against the **`main` branch**.
 
 **Export targets within Figma:**
-- **Figma Variables**: `semantic.color.*`, `semantic.radius.*`, `semantic.space.*`, `primitive.fontFamily`, `primitive.fontWeight`, `primitive.fontSize`, `primitive.lineHeight`, `primitive.letterSpacing`
+- **Figma Variables**: `semantic.color.*`, `semantic.radius.*`, `primitive.space.*`, `primitive.fontFamily`, `primitive.fontWeight`, `primitive.fontSize`, `primitive.lineHeight`, `primitive.letterSpacing` *(note: `semantic.space` is not yet defined — spacing is exported from the primitive `space` scale until semantic space roles exist)*
 - **Figma Text Styles**: `semantic.typography.*` — exported with **"Create styles with variable references"** enabled, so text styles reference Figma Variables rather than hardcoded values.
 
 **`$themes`** is `[]` — the plugin has no theme sets configured. Single light theme only.
@@ -534,7 +565,7 @@ Figma MCP (Model Context Protocol) is a first-class workflow in this system. It 
 
 | Concern | Technology | Why |
 |---|---|---|
-| Component language | React + TypeScript | Specified in BRIEF.md; type safety for design system APIs |
+| Component language | React + TypeScript | Specified in brief.md; type safety for design system APIs |
 | Accessibility layer | Radix UI Primitives | Handles all ARIA roles, keyboard navigation, focus management |
 | Styling | CSS custom properties | Consumers import one CSS file; works with any styling system |
 | Component dev environment | Storybook | Visual development, documentation, and Chromatic integration |
@@ -947,7 +978,7 @@ type(scope): short description
 | `styles` | Changes to `src/styles/tokens.css` or the build pipeline |
 | `storybook` | Changes to `.storybook/` config or story files |
 | `build` | Build tooling, `package.json`, `tsconfig` |
-| `docs` | `README.md`, `ARCHITECTURE.md`, `DESIGN.md`, `BRIEF.md` |
+| `docs` | `README.md`, `architecture.md`, `design.md`, `brief.md` |
 | `release` | Version bump commits |
 
 **Examples:**
@@ -960,7 +991,7 @@ feat(components): add Button component with primary, secondary, and destructive 
 
 chore(storybook): update Chromatic baselines after button radius fix
 
-docs(docs): update ARCHITECTURE.md token catalog with new bg tokens
+docs(docs): update architecture.md token catalog with new bg tokens
 
 feat(components): add Tooltip component
 
@@ -1006,7 +1037,7 @@ The following are **explicitly out of scope** for the current version of this de
 | **React Native / mobile** | ❌ Not planned | This system is web-only. No react-native-specific tokens or components. |
 | **Server-side rendering optimization** | ❌ Not planned for v1 | Components should be SSR-compatible but not optimized for SSR-specific patterns (e.g., no `use client` directives, no streaming-specific concerns). |
 | **Automated token contrast validation** | ❌ Manual checklist only | Until CI exists, contrast checking is manual. Do not add tokens without manual verification. |
-| **Animation / motion tokens** | ❌ Not yet in tokens.json | Motion is planned (BRIEF.md §10) but tokens haven't been defined. Do not add them without a corresponding DESIGN.md entry. |
+| **Animation / motion tokens** | ❌ Not yet in tokens.json | Motion is planned (brief.md §10) but tokens haven't been defined. Do not add them without a corresponding design.md entry. |
 | **Elevation / shadow tokens** | ❌ Not yet in tokens.json | Elevation is planned but not yet defined. Same rule as motion. |
 
 ---
@@ -1015,15 +1046,15 @@ The following are **explicitly out of scope** for the current version of this de
 
 | Phase | Status | Focus | Key deliverables |
 |---|---|---|---|
-| **Phase 1** | ✅ Current | Tokens | `tokens.json` in W3C DTCG format; Figma Variables sync via Tokens Studio; `README.md`, `BRIEF.md`, `DESIGN.md`, `ARCHITECTURE.md` |
+| **Phase 1** | ✅ Current | Tokens | `tokens.json` in W3C DTCG format; Figma Variables sync via Tokens Studio; `README.md`, `brief.md`, `design.md`, `architecture.md` |
 | **Phase 2** | 🔜 Planned | Components + Storybook | `src/components/` with Figma MCP-derived component stubs; Storybook setup; Chromatic integration; accessibility addon |
 | **Phase 3** | 🔜 Planned | npm Package | Token-to-CSS build pipeline; component build (tsup or Vite); private npm package publish; semver + changelog; install docs |
 | **Phase 4** | 🔜 Planned | Automation + Polish | GitHub Actions CI (Chromatic on PR, publish on tag); white-label token layer; motion and elevation tokens; animation tokens |
 
 **Within Phase 1, remaining work includes:**
-- Populating `DESIGN.md` with all design rationale
-- Adding motion tokens to `tokens.json` once defined in `DESIGN.md`
-- Adding elevation/shadow tokens to `tokens.json` once defined in `DESIGN.md`
+- Populating `design.md` with all design rationale
+- Adding motion tokens to `tokens.json` once defined in `design.md`
+- Adding elevation/shadow tokens to `tokens.json` once defined in `design.md`
 
 ---
 
@@ -1074,7 +1105,7 @@ A running record of key architectural decisions, when they were made, what alter
 - Headless UI (Tailwind Labs): simpler API, fewer components
 - Pure ARIA: full bespoke implementation, no external dependency
 
-**Rationale**: Radix UI has a broader component surface (dialogs, popovers, dropdown menus, tooltips, select, tabs, etc.) that covers the full component library scope defined in BRIEF.md §17. Headless UI's component set is more limited. Pure ARIA implementation is expensive to maintain correctly across browsers and assistive technologies. Radix has excellent TypeScript support and a philosophy aligned with the design system's goals (composable, unstyled, accessible primitives).
+**Rationale**: Radix UI has a broader component surface (dialogs, popovers, dropdown menus, tooltips, select, tabs, etc.) that covers the full component library scope defined in brief.md §17. Headless UI's component set is more limited. Pure ARIA implementation is expensive to maintain correctly across browsers and assistive technologies. Radix has excellent TypeScript support and a philosophy aligned with the design system's goals (composable, unstyled, accessible primitives).
 
 ---
 

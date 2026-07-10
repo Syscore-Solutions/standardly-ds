@@ -26,8 +26,8 @@ All tokens live in **`tokens.json`**. Two token sets, tracked in `$metadata.toke
   - `color.feedback` — status colors (`success`, `warning`, `error`, `info` — each with `bg` / `text` / `border`)
   - `typography` — composite text styles: `H1`–`H6`, `body` (`lg`/`md`/`sm`), `label` (`md`/`sm`), `caption`
   - `radius` — `control`, `container`, `overlay`, `badge`
-  - `border` — `default`, `strong`, `focus`
-  - `space` — `inline`, `stack`, `inset`, `page`
+
+> **Not yet defined:** `semantic.border` and `semantic.space` roles are planned but do **not** exist in `tokens.json` today. The semantic set currently contains only `color`, `typography`, and `radius`. Consuming code should reference primitive `space`/`border` directly until the semantic roles land.
 
 ### Brand ramp mapping
 

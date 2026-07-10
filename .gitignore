@@ -6,3 +6,11 @@
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+# Graphify code-graph output (regenerable via `graphify update .`)
+graphify-out/
+
+# Node / Vite (explorations sprint app + future Phase 2)
+node_modules/
+dist/
+*.local
