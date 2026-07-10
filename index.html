@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-direction="system">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -15,7 +15,7 @@
    Self-contained. Chrome aesthetic: "drawing set / site survey".
    The dashboard deliberately does NOT use the design system's
    own tokens for its chrome — token values appear faithfully
-   only inside the Tokens / Directions preview surfaces.
+   only inside the Tokens sheet and the Directions card links.
    ============================================================ */
 
 :root{
@@ -43,27 +43,7 @@
   --display:'Big Shoulders Display','Arial Narrow','Avenir Next Condensed',sans-serif;
   --bodyf:'Archivo',-apple-system,'Segoe UI',sans-serif;
   --mono:'IBM Plex Mono',ui-monospace,'SF Mono',Menlo,monospace;
-  /* direction preview surface variables (remapped by [data-direction]) */
-  --dir-accent:#693ee0;         /* semantic action.primary  → purple.600 */
-  --dir-accent-hover:#5b2cc9;   /* action.primaryHover      → purple.700 */
-  --dir-surface:#ffffff;        /* bg.default */
-  --dir-surface-subtle:#f5f7fa; /* bg.subtle  → slate.50 */
-  --dir-text:#181b25;           /* text.primary → slate.900 */
-  --dir-border:#eaecf0;         /* border.default → slate.200 */
-  --dir-radius-control:8px;     /* radius.control → radius.md */
-  --dir-radius-container:12px;  /* radius.container → radius.lg */
 }
-/* o1/o2/o3 remap hooks — mechanism is live. o1 carries its real remap
-   (mirrors explorations/src/o1/semantic.css); o2/o3 stay identical to
-   the system mapping until their definitions land (S1-T03). */
-html[data-direction="o1"]{
-  /* Soft Precision: purple stays primary; the direction is geometry —
-     pill controls, 2xl containers (radius.full / radius.2xl) */
-  --dir-radius-control:9999px;
-  --dir-radius-container:24px;
-}
-html[data-direction="o2"],
-html[data-direction="o3"]{ /* pending S1-T03 — intentionally identical */ }
 
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
@@ -133,19 +113,6 @@ button{font:inherit;cursor:pointer;background:none;border:none;color:inherit}
 .sheet-tab[aria-selected="true"] .code{color:var(--orange)}
 .sheet-tab .name{font-family:var(--display);font-weight:600;font-size:17px;letter-spacing:.06em;text-transform:uppercase;line-height:1}
 .sheet-tab .badge-n{margin-left:auto;font-family:var(--mono);font-size:9.5px;color:#7E97A8}
-
-/* direction switcher */
-.dirblock{margin:18px 22px 0;padding-top:16px;border-top:1px solid var(--bp-soft)}
-.dir-label{font-family:var(--mono);font-size:9px;letter-spacing:.24em;color:#7E97A8;text-transform:uppercase;margin-bottom:8px;display:flex;justify-content:space-between}
-.dir-label .pend{color:var(--orange)}
-.dirseg{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--bp-soft)}
-.dirseg button{
-  font-family:var(--mono);font-size:11px;padding:7px 0;color:#A7BCCB;letter-spacing:.06em;
-  border-right:1px solid var(--bp-soft);
-}
-.dirseg button:last-child{border-right:none}
-.dirseg button:hover{background:rgba(127,180,217,.10)}
-.dirseg button[aria-pressed="true"]{background:var(--bp);color:var(--ink);font-weight:600}
 
 /* countdown */
 .countdown{margin:18px 22px 0;border:1.5px solid var(--orange);padding:12px 14px;position:relative}
@@ -406,12 +373,13 @@ code{font-family:var(--mono);font-size:.9em;background:var(--hair-2);padding:1px
 .stamp.done{background:var(--st-done)}
 /* open-in-explorations links on a built direction card */
 .dc-links{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+/* token values, faithfully: purple.600/700, slate.50/200/900, radius.full */
 .dc-links a{display:inline-block;font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-decoration:none;
-  border:1px solid var(--dir-border);border-radius:var(--dir-radius-control);padding:6px 13px;
-  background:var(--dir-accent);color:#fff;transition:background .12s}
-.dc-links a:hover{background:var(--dir-accent-hover)}
-.dc-links a.ghost{background:var(--dir-surface);color:var(--dir-text)}
-.dc-links a.ghost:hover{background:var(--dir-surface-subtle)}
+  border:1px solid #eaecf0;border-radius:9999px;padding:6px 13px;
+  background:#693ee0;color:#fff;transition:background .12s}
+.dc-links a:hover{background:#5b2cc9}
+.dc-links a.ghost{background:#fff;color:#181b25}
+.dc-links a.ghost:hover{background:#f5f7fa}
 .dc-live{display:flex;align-items:center;gap:7px;margin-top:9px;font-family:var(--mono);font-size:10px;letter-spacing:.06em;color:var(--sub)}
 .dc-live .dot{width:7px;height:7px;border-radius:50%;background:var(--st-todo);flex-shrink:0}
 .dc-live.up .dot{background:var(--st-done)}
@@ -419,16 +387,6 @@ code{font-family:var(--mono);font-size:.9em;background:var(--hair-2);padding:1px
 .dc-body{padding:14px 18px;font-size:12.5px;color:var(--sub)}
 .dc-body h4{font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--sub);margin:12px 0 6px}
 .dc-body h4:first-child{margin-top:0}
-/* the live preview surface — styled ONLY by --dir-* variables */
-.preview{border:1px solid var(--dir-border);background:var(--dir-surface);border-radius:var(--dir-radius-container);padding:14px;font-family:'Geist',var(--bodyf)}
-.preview .p-btn{display:inline-block;background:var(--dir-accent);color:#fff;border-radius:var(--dir-radius-control);
-  padding:7px 14px;font-size:12.5px;font-weight:500;transition:background .12s}
-.preview .p-btn:hover{background:var(--dir-accent-hover)}
-.preview .p-pill{display:inline-block;margin-left:8px;background:var(--dir-surface-subtle);border:1px solid var(--dir-border);
-  color:var(--dir-text);border-radius:999px;padding:4px 11px;font-size:11px}
-.preview .p-bar{margin-top:12px;height:6px;background:var(--dir-surface-subtle);border-radius:3px;overflow:hidden}
-.preview .p-bar span{display:block;height:100%;width:64%;background:var(--dir-accent)}
-.preview .p-cap{margin-top:6px;font-size:10.5px;color:var(--dir-text);opacity:.65}
 .axes{margin-top:18px}
 .axes-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
 .axes .card{padding:16px 18px}
@@ -471,7 +429,6 @@ code{font-family:var(--mono);font-size:.9em;background:var(--hair-2);padding:1px
   .missing ul{columns:1}
   .semrow .tname{min-width:0}
   .stats{grid-template-columns:repeat(2,1fr)}
-  .dir-label{flex-wrap:wrap;gap:4px}
 }
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation:none!important;transition:none!important}
@@ -535,16 +492,6 @@ code{font-family:var(--mono);font-size:.9em;background:var(--hair-2);padding:1px
           <span class="code">SD-07</span><span class="name">Directions</span>
         </button>
       </nav>
-
-      <div class="dirblock">
-        <div class="dir-label"><span>Direction set</span><span class="pend" id="dir-pend">pending S1-T03</span></div>
-        <div class="dirseg" role="group" aria-label="Design direction preview switcher" id="dirseg">
-          <button aria-pressed="true" data-dir="system" title="System defaults (current tokens.json semantic mapping)">SYS</button>
-          <button aria-pressed="false" data-dir="o1" title="Direction o1 — Soft Precision (pill controls, 2xl containers)">O1</button>
-          <button aria-pressed="false" data-dir="o2" title="Direction o2 — remap pending S1-T03">O2</button>
-          <button aria-pressed="false" data-dir="o3" title="Direction o3 — remap pending S1-T03">O3</button>
-        </div>
-      </div>
 
       <div class="countdown" id="countdown" aria-live="off">
         <div class="cd-num" id="cd-num">T-—</div>
@@ -883,7 +830,7 @@ code{font-family:var(--mono);font-size:.9em;background:var(--hair-2);padding:1px
           </div>
         </header>
 
-        <p class="sec-note" style="margin-top:16px;max-width:80ch">Each direction is a <strong>semantic remap + component styling treatment</strong> over the same fixed primitives — proving the token architecture can carry three distinct visual personalities without touching a single raw value. The switcher in the rail drives the preview surfaces below. <strong>o1 "Soft Precision" is built</strong> (2026-07-10) — its real demo + styleguide live in the <code>explorations/</code> Vite app; the o1 card links there (start it with <code>npm run demo</code> in <code>explorations/</code>). o2/o3 still map identically until Naman's research (S1-T03) lands.</p>
+        <p class="sec-note" style="margin-top:16px;max-width:80ch">Each direction is a <strong>semantic remap + component styling treatment</strong> over the same fixed primitives — proving the token architecture can carry three distinct visual personalities without touching a single raw value. <strong>o1 "Soft Precision" is built</strong> (2026-07-10) — its real demo + styleguide live in the <code>explorations/</code> Vite app; the o1 card links there (start it with <code>npm run demo</code> in <code>explorations/</code>). o2/o3 get the same links when they're built; definitions pending Naman's research (S1-T03).</p>
 
         <div class="dir-grid" id="dir-cards"></div>
 
@@ -1781,21 +1728,13 @@ window.DS = (function(){
       '<a data-x-link class="ghost" href="' + explorationsBase + '/o1/styleguide" target="_blank" rel="noopener">STYLEGUIDE ↗</a>' +
       '</div>' +
       '<div class="dc-live" id="x-live"><span class="dot"></span><span class="msg">checking for a running app… links need <code>cd explorations && npm run dev</code></span></div>' +
-      '<h4>Live preview surface — o1 remap</h4>' +
-      '<div class="preview"><span class="p-btn">Approve review</span><span class="p-pill">✓ Pass</span>' +
-      '<div class="p-bar" role="img" aria-label="Confidence meter placeholder at 64%"><span></span></div>' +
-      '<p class="p-cap">AI confidence 64% — advisory, human decides</p></div>' +
       '</div></div>';
     const pending = ['o2', 'o3'].map(function(o){
       return '<div class="card dir-card"><span class="stamp">Pending S1-T03</span>' +
         '<div class="dc-head"><span class="o">' + o.toUpperCase() + '</span><span class="nm">name · references · principles — TBD</span></div>' +
         '<div class="dc-body">' +
         '<h4>Delivers for the call</h4><p>Styleguide route <code>/' + o + '/styleguide</code> · demo dashboard <code>/' + o + '</code> · its own <code>semantic.css</code> remap.</p>' +
-        '<h4>Live preview surface — remap hook</h4>' +
-        '<div class="preview"><span class="p-btn">Approve review</span><span class="p-pill">✓ Pass</span>' +
-        '<div class="p-bar" role="img" aria-label="Confidence meter placeholder at 64%"><span></span></div>' +
-        '<p class="p-cap">AI confidence 64% — advisory, human decides</p></div>' +
-        '<h4>Status</h4><p>Wired to the rail switcher via <code>--dir-*</code> variables; currently identical to the system mapping. Swaps live once Naman’s definitions land.</p>' +
+        '<h4>Status</h4><p>Awaiting definition (S1-T03: name, references, principles). Once built in <code>explorations/</code>, this card gets DEMO / STYLEGUIDE links like o1’s.</p>' +
         '</div></div>';
     }).join('');
     $('dir-cards').innerHTML = o1 + pending;
@@ -1857,19 +1796,6 @@ window.DS = (function(){
     selectTab(location.hash.slice(1) || 'tasks');
   }
 
-  /* ---------- direction switcher ---------- */
-  function wireDirections(){
-    $('dirseg').addEventListener('click', function(e){
-      const btn = e.target.closest('[data-dir]');
-      if (!btn) return;
-      document.querySelectorAll('#dirseg button').forEach(b => b.setAttribute('aria-pressed', b === btn ? 'true' : 'false'));
-      document.documentElement.dataset.direction = btn.dataset.dir;
-      toast(btn.dataset.dir === 'system'
-        ? 'Preview: system mapping (tokens.json semantics)'
-        : 'Preview: ' + btn.dataset.dir.toUpperCase() + ' — remap pending S1-T03, currently identical');
-    });
-  }
-
   /* ---------- copy-to-clipboard ---------- */
   function wireCopy(){
     document.addEventListener('click', function(e){
@@ -1915,7 +1841,7 @@ window.DS = (function(){
   function safely(label, fn){
     try { fn(); } catch(e){ console.error('[dashboard] ' + label + ' failed:', e); }
   }
-  wireTabs(); wireDirections(); wireCopy();
+  wireTabs(); wireCopy();
   renderCountdown();
   safely('inventory', renderInventory);
   safely('directions', renderDirections);
