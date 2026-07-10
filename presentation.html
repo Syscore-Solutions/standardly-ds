@@ -10,114 +10,16 @@
   <style>
     .reveal { font-family: system-ui, sans-serif; }
     .reveal h1, .reveal h2, .reveal h3 { font-family: system-ui, sans-serif; font-weight: 600; text-transform: none; }
-    .reveal h1 { font-size: 2.5em; }
-    .reveal h2 { color: #8b76ff; margin-bottom: 40px; }
-    .accent { color: #8b76ff; }
-    .subtext { color: #99a0ae; font-size: 0.6em !important; line-height: 1.4 !important; }
-    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; text-align: left; }
-    .card { background: #181b25; padding: 30px; border-radius: 16px; border: 1px solid #2b303b; }
-    .feature-list li { margin-bottom: 20px; font-size: 0.8em; }
-    ul { list-style-type: disc; }
+    .placeholder { text-align: center; color: #99a0ae; font-size: 1.2rem; }
   </style>
 </head>
 <body>
   <div class="reveal">
     <div class="slides">
-
-      <!-- Slide 1: Title -->
       <section>
-        <svg viewBox="0 0 28 28" width="80" height="80" style="margin: 0 auto 20px;">
-          <rect width="28" height="28" rx="8" fill="#5c42f5"/>
-          <path d="M7 17l7-7 7 7" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-          <path d="M7 22l7-7 7 7" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.45" fill="none"/>
-        </svg>
-        <h1>Standardly</h1>
-        <p>Design System & Pipeline Proof</p>
-        <p class="subtext" style="margin-top: 40px;">Sprint S1 Review · July 2026</p>
+        <h1>Presentation TBD</h1>
+        <p class="placeholder">Content will be added once directions are finalized.</p>
       </section>
-
-      <!-- Slide 2: The Problem -->
-      <section>
-        <h2>The Core Challenge</h2>
-        <p style="font-size: 1.2em; text-align: left;">We need to deliver a premium, accessible UI for complex certification workflows — <span class="accent">but we don't have a frontend engineering team.</span></p>
-        <br/>
-        <p class="subtext" style="text-align: left;">If design and code are disconnected, everything we design will break in implementation, or take months to build.</p>
-      </section>
-
-      <!-- Slide 3: The Solution Pipeline -->
-      <section>
-        <h2>The Token Pipeline</h2>
-        <div class="grid">
-          <div class="card">
-            <h3 style="font-size: 1.2em; color: white;">1. tokens.json</h3>
-            <p class="subtext">The single source of truth. W3C DTCG format. Synced automatically to Figma via Tokens Studio.</p>
-          </div>
-          <div class="card">
-            <h3 style="font-size: 1.2em; color: white;">2. Automated Build</h3>
-            <p class="subtext">A 112-line script generates CSS custom properties instantly. No manual handoff.</p>
-          </div>
-          <div class="card">
-            <h3 style="font-size: 1.2em; color: white;">3. Semantic Mapping</h3>
-            <p class="subtext">Primitives are remapped to semantic roles (e.g. `color.bg.brand` = `purple.50`).</p>
-          </div>
-          <div class="card">
-            <h3 style="font-size: 1.2em; color: white;">4. Components</h3>
-            <p class="subtext">React components consume variables. Proven today in Storybook.</p>
-          </div>
-        </div>
-      </section>
-
-      <!-- Slide 4: 3 Directions -->
-      <section>
-        <h2>Three Design Directions</h2>
-        <p class="subtext" style="margin-bottom: 40px;">Proving the pipeline: same code, different tokens = entirely different UI.</p>
-        
-        <ul class="feature-list">
-          <li><strong>o1 — Soft Precision (Implemented)</strong>: Pill geometries, soft canvas, brand tints over solids. <a href="directions/o1.html" target="_blank" class="accent">View demo →</a></li>
-          <li><strong>o2 — [Direction Name]</strong>: [To be defined] <a href="directions/o2.html" target="_blank" class="accent">View demo →</a></li>
-          <li><strong>o3 — [Direction Name]</strong>: [To be defined] <a href="directions/o3.html" target="_blank" class="accent">View demo →</a></li>
-        </ul>
-      </section>
-
-      <!-- Slide 5: The Storybook Proof -->
-      <section>
-        <h2>The Storybook Proof</h2>
-        <p style="text-align: left; font-size: 0.9em;">We successfully generated 12 production-grade React components directly from the tokens.</p>
-        <ul class="feature-list">
-          <li>Fully typed (TypeScript)</li>
-          <li>Isolated and documented (Storybook)</li>
-          <li>Zero frontend engineers required</li>
-        </ul>
-        <p style="text-align: left; margin-top: 40px;">
-          <code style="background: #2b303b; padding: 10px 20px; border-radius: 8px;">npm run storybook</code>
-        </p>
-      </section>
-
-      <!-- Slide 6: Locked Decisions -->
-      <section>
-        <h2>Locked Decisions</h2>
-        <div class="card" style="text-align: left;">
-          <ul class="feature-list">
-            <li><strong>Brand Primary:</strong> Purple (locked across all apps)</li>
-            <li><strong>Tech Stack:</strong> React + TypeScript + Radix UI (Phase 2)</li>
-            <li><strong>Styling:</strong> CSS Variables + Vanilla CSS (No Tailwind)</li>
-            <li><strong>Accessibility:</strong> WCAG 2.1 AA minimum built into tokens</li>
-          </ul>
-        </div>
-      </section>
-
-      <!-- Slide 7: Next Steps -->
-      <section>
-        <h2>Next Steps</h2>
-        <ul class="feature-list" style="text-align: left;">
-          <li>Review and select a winning design direction (o1, o2, or o3).</li>
-          <li>Begin Phase 2: Expand the component library in Storybook.</li>
-          <li>Set up npm package publishing for consuming apps.</li>
-        </ul>
-        <br/><br/>
-        <h3 style="font-size: 1.5em;" class="accent">Questions?</h3>
-      </section>
-
     </div>
   </div>
 
