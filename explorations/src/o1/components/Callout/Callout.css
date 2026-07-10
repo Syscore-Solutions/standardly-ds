@@ -47,3 +47,18 @@
 .o1-callout__action {
   margin-top: var(--space-sm);
 }
+
+/* Brand-tinted elements on the brand-tinted panel would vanish (purple.50
+   on purple.50) — inside a Callout they sit on a white surface instead. */
+.o1-callout > .o1-icontile--brand {
+  background: var(--color-bg-default);
+}
+
+.o1-callout .o1-btn--tonal {
+  background: var(--color-bg-default);
+  box-shadow: var(--shadow-ambient);
+}
+
+.o1-callout .o1-btn--tonal:hover {
+  background: var(--color-action-tonal-hover);
+}
