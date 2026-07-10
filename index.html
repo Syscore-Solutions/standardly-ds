@@ -393,7 +393,7 @@ code{font-family:var(--mono);font-size:.9em;background:var(--hair-2);padding:1px
 /* ---------- directions tab ---------- */
 .dir-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-top:18px}
 .dir-card{position:relative;overflow:hidden}
-.dir-card .dc-head{padding:14px 18px;border-bottom:1px solid var(--hair-2);display:flex;align-items:baseline;gap:10px}
+.dir-card .dc-head{padding:14px 74px 14px 18px;border-bottom:1px solid var(--hair-2);display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
 .dir-card .dc-head .o{font-family:var(--display);font-weight:700;font-size:34px;color:var(--ink);line-height:1}
 .dir-card .dc-head .nm{font-family:var(--mono);font-size:11px;color:var(--sub);letter-spacing:.06em}
 .stamp{position:absolute;top:22px;right:-34px;transform:rotate(32deg);background:var(--orange);color:#fff;
@@ -437,7 +437,7 @@ code{font-family:var(--mono);font-size:.9em;background:var(--hair-2);padding:1px
   .rail-inner{padding:18px 0 14px}
   .sheetnav{display:flex;overflow-x:auto;gap:0;margin-top:14px;flex:none}
   .sheetnav-label{display:none}
-  .sheet-tab{flex:none;border-left:none;border-bottom:3px solid transparent;padding:10px 14px}
+  .sheet-tab{flex:none;width:auto;border-left:none;border-bottom:3px solid transparent;padding:10px 14px}
   .sheet-tab[aria-selected="true"]{border-left-color:transparent;border-bottom-color:var(--orange);background:none}
   .sheet-tab .code{width:auto;margin-right:2px}
   .countdown{margin-top:14px}
@@ -452,6 +452,8 @@ code{font-family:var(--mono);font-size:.9em;background:var(--hair-2);padding:1px
   .ramp-row{grid-template-columns:repeat(6,minmax(0,1fr))}
   .missing ul{columns:1}
   .semrow .tname{min-width:0}
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .dir-label{flex-wrap:wrap;gap:4px}
 }
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation:none!important;transition:none!important}
@@ -1240,7 +1242,7 @@ window.DS = (function(){
     let s = esc(md == null ? '' : md);
     s = s.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '$1');
     s = s.replace(/`([^`]+)`/g, '<code>$1</code>');
-    s = s.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+    s = s.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
     if (opts.ids !== false)
       s = s.replace(/\[((?:S|P)\d+-[TM]\d+)\]/g, '<span class="chip id">$1</span>');
     return s;
