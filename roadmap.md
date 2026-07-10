@@ -40,18 +40,18 @@ The **long-term delivery plan**, in two layers:
 
 ### 2026-07-10 (Fri)
 
-- [ ] **[S1-T01]** Scaffold `explorations/` workspace — Vite + React app, router (`/o1 /o2 /o3` + styleguide routes), `scripts/build-tokens.mjs` (tokens.json → `primitives.css`, strips Figma `$extensions`), shared page chrome, deployable static build.  · deps: —
-- [ ] **[S1-T02]** **(you)** Pick the prototype dashboard page + drop screenshots → derive the starter-component inventory (~8–12 components) from it.  · deps: —
-- [ ] **[S1-T03]** **(you, AI-assisted)** Direction research → define o1/o2/o3: name, 2–3 references, 3–5 principles each. Feeds each styleguide's rationale section.  · deps: —
+- [x] **[S1-T01]** Scaffold `explorations/` workspace — Vite + React app, router (`/o1 /o2 /o3` + styleguide routes), `scripts/build-tokens.mjs` (tokens.json → `primitives.css`, strips Figma `$extensions`), shared page chrome, deployable static build.  · deps: — · done 2026-07-10 (on `feat/project-dashboard` per Naman, not the planned scaffold branch)
+- [~] **[S1-T02]** **(you)** Pick the prototype dashboard page + drop screenshots → derive the starter-component inventory (~8–12 components) from it.  · deps: — · inventory (12) committed 2026-07-10; screenshot files + Naman's confirmation pending
+- [~] **[S1-T03]** **(you, AI-assisted)** Direction research → define o1/o2/o3: name, 2–3 references, 3–5 principles each. Feeds each styleguide's rationale section.  · deps: — · **o1 "Soft Precision"** defined 2026-07-10 (from Naman's Link AI reference, design language only); o2/o3 pending
 
 ### 2026-07-11 (Sat)
 
-- [ ] **[S1-T04]** Author the three per-direction `semantic.css` remaps from the S1-T03 definitions (primitive refs only; AA contrast checked).  · deps: [S1-T03]
-- [ ] **[S1-T05]** Build the full starter component set + styleguide route for **o1** (token viz + component gallery live; rationale/do-don'ts stubbed).  · deps: [S1-T02], [S1-T04]
+- [~] **[S1-T04]** Author the three per-direction `semantic.css` remaps from the S1-T03 definitions (primitive refs only; AA contrast checked).  · deps: [S1-T03] · o1 done 2026-07-10; o2/o3 blocked on definitions
+- [x] **[S1-T05]** Build the full starter component set + styleguide route for **o1** (token viz + component gallery live; rationale/do-don'ts stubbed).  · deps: [S1-T02], [S1-T04] · done 2026-07-10 — rationale + do/don'ts fully written, not stubbed
 
 ### 2026-07-12 (Sun)
 
-- [ ] **[S1-T06]** Re-create the dashboard screenshot as the **o1** demo page (`/o1`).  · deps: [S1-T05]
+- [x] **[S1-T06]** Re-create the dashboard screenshot as the **o1** demo page (`/o1`).  · deps: [S1-T05] · done 2026-07-10 ahead of schedule
 - [ ] **[S1-T07]** **o2** — components + styleguide + demo, adapted from o1 under the o2 remap + styling treatment.  · deps: [S1-T06]
 - [ ] **[S1-T08]** **o3** — components + styleguide + demo, adapted from o1 under the o3 remap + styling treatment.  · deps: [S1-T06]
 

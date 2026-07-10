@@ -40,6 +40,8 @@ standardly-ds/
 
 **Current focus (as of 2026-07-10): Sprint S1** — 4 days to a team call on **Tue 2026-07-14**. Three design directions on the locked tokens (per-direction styleguide + starter components from a dashboard screenshot + demo page), one combined HTML deck, deployed to a shareable URL. Full plan in `roadmap.md → Sprint S1`; the 3 active tasks are in `tasks.md`. Remaining P1 work (design.md, motion/elevation tokens) is parked until after the call.
 
+**S1 state after 2026-07-10 (autonomous session while Naman AFK):** direction **o1 — "Soft Precision"** is built end-to-end (S1-T01 ✅, T02/T03 partial, T04 o1-only, T05 ✅, T06 ✅): scaffold + token pipeline + inventory + o1 remap + 12 components + `/o1/styleguide` + `/o1` demo, all committed in 7 chunks on **`feat/project-dashboard`** (Naman's pre-AFK call — overrides the planned `feat/explorations-scaffold` branch). o2/o3 are router placeholders awaiting Naman's direction research. Next up: o2/o3 definitions → S1-T07/T08, then polish/deploy/deck (T09–T12).
+
 `graphify-out/` was **removed** and `.gitignore`d (stale auto-generated code-graph output that indexed an old file layout — see §5).
 
 ## 3. Token architecture (the real, current state)
@@ -71,6 +73,13 @@ standardly-ds/
 - **`design.md` was a 0-byte file** despite being the routed home for all design rationale. Replaced with a scaffold + "not yet written" status. The actual rationale still needs authoring.
 - **`graphify-out/` was stale and misleading** — its `manifest.json` indexed `tokens/primitive.json` + `tokens/semantic.json` (a split layout consolidated into a single `tokens.json`) and centered on the retired `tokens-studio` branch. Removed from the tree and `.gitignore`d. Regenerate on demand with `graphify update .` if ever wanted; don't commit it.
 - **Phase 2 dirs pre-scaffolded (2026-07-10):** `src/tokens/`, `src/components/`, `src/styles/`, `.storybook/` each contain a single placeholder `README.md` and nothing else. If a doc says "no `src/` exists," it predates this scaffold. Still true: no `package.json`, no tsconfig, no build, no components. Also fixed the same day: `.claude/settings.local.json` had a stale permission for `tokens/primitive.json` (old split layout) — removed; `brief.md` blue/indigo + "React + Tailwind" + Inter language rewritten in place to match the locked purple/Radix/Cal Sans+Geist decisions (dated notes kept inline).
+- **`explorations/` app facts (2026-07-10, bite if ignored):**
+  - `src/shared/primitives.css` is **generated and `.gitignore`d** — regenerated automatically by `predev`/`prebuild` (`scripts/build-tokens.mjs`). A fresh clone must `npm install` then any `npm run dev/build`; never hand-edit or commit it.
+  - Direction remaps are **scoped to a wrapper class** (`.dir-o1` in `src/o1/semantic.css`), not `:root`, so all three directions can coexist in one SPA. o2/o3 must follow the same pattern.
+  - `@fontsource/geist-sans` registers the family as **"Geist Sans"**, not "Geist" (the token value). The build script appends documented fallback stacks to `fontFamily` tokens — that's the one place non-token values enter the generated CSS. Cal Sans comes from the `cal-sans` npm package (`import 'cal-sans/index.css'`).
+  - o1's AA reality check: canonical `feedback.*.text` → `*.700` pairs **fail 4.5:1 for small chip text** (mint.700/mint.50 = 3.83, blue.700/blue.50 = 3.02, yellow.800/yellow.50 = 3.50). o1 uses mint.800 / red.800 / blue.900 / yellow.900 on the 50 bgs (ratios in the `semantic.css` header). Also `slate.500` on white = 4.49 — large-text/icons only; `slate.400` = 2.63, never text. **Worth folding into `design.md`/tokens later — the canonical semantic feedback pairs have the same problem.**
+  - Icons: `lucide-react`. Status icons are shape-distinct (CircleCheck / CircleMinus / CircleX / CircleDashed) per the never-color-alone rule.
+  - The `/o1` demo has a **demo-only "New user / Active project" toggle** (not product UI) to flip empty vs populated states on the team call.
 - **Filename convention:** as of 2026-07-10 all docs live at repo **root** (no `ai/`/`docs/` folders). Convention files are **uppercase** (`README.md`, `AGENTS.md`, `CLAUDE.md`); everything else is **lowercase** (`architecture.md`, `brief.md`, `design.md`, `memory.md`, `roadmap.md`, `tasks.md`, `tokens.json`). The readme was flipped from `readme.md` → `README.md`. Keep new files consistent with this rule.
 
 ## 6. Conventions that bite if ignored
@@ -88,7 +97,7 @@ standardly-ds/
 - **Confidence-meter visual language** (BRIEF §7B — the continuous 0–100% AI confidence scale) has **no tokens yet** and is a signature element.
 - **White-labeling** (BRIEF §14): planned basic tier = per-tenant `--brand-logo` + `--primary` override only. Token architecture should expose that hook cleanly; not built.
 - **Package name** `@syscore-solutions/standardly-ds` is marked TBD; private registry not chosen.
-- **Sprint S1 inputs still pending from Naman (as of 2026-07-10):** (a) which prototype dashboard page + its screenshots (S1-T02 — blocks the component inventory), (b) the three direction definitions from his research (S1-T03 — blocks the semantic remaps). Deploy target (Vercel vs Netlify) also unpicked — decide at S1-T11.
+- **Sprint S1 inputs still pending from Naman (updated 2026-07-10 evening):** (a) ~~which prototype dashboard page~~ — picked (the "Welcome back" dashboard, via chat screenshot); still owed: the **screenshot files** into `explorations/reference/` (see its README) + confirmation of the 12-component inventory; (b) **o2/o3 direction definitions** from his research (o1 was defined by Claude from Naman's Link AI reference — needs his react/adjust). Deploy target (Vercel vs Netlify) still unpicked — decide at S1-T11.
 - **Sprint S1 constraint decisions (locked with Naman 2026-07-10):** directions differ by **semantic remap + component styling only** (primitives fixed, purple stays primary); one shared Vite app (not 3 standalone apps); deck is an HTML page in `explorations/presentation/`; demos shown via deployed URL; styleguides include token viz + component gallery + rationale + brief do/don'ts.
 
 ## 8. Pointers

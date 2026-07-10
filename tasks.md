@@ -17,7 +17,7 @@ The working surface for the **entire active sprint**, pulled from [`roadmap.md`]
 
 ### [S1-T01] Scaffold the `explorations/` sprint workspace
 
-- **Status:** todo
+- **Status:** done · 2026-07-10
 - **Roadmap:** S1 · 2026-07-10 (Fri)
 - **Links:** [`explorations/README.md`](explorations/README.md) (agreed structure), [`tokens.json`](tokens.json), [`architecture.md §5.3`](architecture.md) (component dir shape), [`architecture.md §6.2`](architecture.md) (CSS variable shape)
 - **Depends on:** —
@@ -26,27 +26,28 @@ The working surface for the **entire active sprint**, pulled from [`roadmap.md`]
 Sprint S1 needs a running workspace before any direction work can land. One Vite + React app hosts all three directions (o1/o2/o3) so the token pipeline is built once and the demo provably runs off `tokens.json` — the whole point of the sprint is demonstrating that AI-driven token→component workflow. Direction folders mirror the Phase-2 component shape so the winner promotes to root `src/` cheaply.
 
 **Sub-tasks**
-- [ ] `npm create vite` (React + TS) inside `explorations/`; add react-router
-- [ ] Write `scripts/build-tokens.mjs`: parse `../tokens.json` → emit `src/shared/primitives.css` (custom properties; strip `com.figma.*` `$extensions`; resolve set-name-less refs)
-  - [ ] Wire as `npm run build:tokens`, run automatically before `dev`/`build`
-- [ ] Create `src/o1|o2|o3/` skeletons: `semantic.css` (empty remap stub), `components/`, `styleguide/`, `demo/`
-- [ ] Router: `/` (sprint index linking all directions), `/oN` (demo), `/oN/styleguide`
-- [ ] Shared page chrome (direction switcher nav) styled from primitives only
-- [ ] Confirm `npm run build` emits a static, deployable bundle
-- [ ] Update `.gitignore` (`node_modules/`, `dist/`) — done 2026-07-10 pre-emptively
+- [x] Vite app (React + TS) inside `explorations/` (manual scaffold — create-vite balked at the non-empty dir); react-router added
+- [x] Write `scripts/build-tokens.mjs`: parse `../tokens.json` → emit `src/shared/primitives.css` (151 custom properties; strips `com.figma.*` `$extensions`; documented transforms for %, px, font fallbacks)
+  - [x] Wired as `npm run build:tokens`, runs automatically before `dev`/`build`; output is `.gitignore`d (generated)
+- [x] `src/o1/` full skeleton; o2/o3 as router placeholders (folders come with S1-T07/T08)
+- [x] Router: `/` (sprint index), `/oN` (demo), `/oN/styleguide`
+- [x] Shared page chrome (dark top rail + direction switcher) styled from primitives only
+- [x] `npm run build` emits a static bundle (verified; `public/_redirects` included for SPA fallback)
+- [x] Update `.gitignore` (`node_modules/`, `dist/`) — done 2026-07-10 pre-emptively
 
 **Done when** (acceptance criteria)
-- [ ] `npm run dev` serves all six routes with the direction switcher working
-- [ ] `primitives.css` is regenerated from `tokens.json` by the script — no hand-written values, no Figma extension residue
-- [ ] Static `npm run build` output works when served standalone
-- [ ] Committed on a `feat/explorations-scaffold` branch (not directly to `main`)
+- [x] `npm run dev` serves all six routes with the direction switcher working
+- [x] `primitives.css` is regenerated from `tokens.json` by the script — no hand-written values, no Figma extension residue (fonts get documented rendering-fallback stacks appended)
+- [x] Static `npm run build` output works when served standalone (verified via `vite preview` + headless Chrome)
+- [x] ~~Committed on a `feat/explorations-scaffold` branch~~ **Deviation:** Naman chose (2026-07-10, pre-AFK) to continue on `feat/project-dashboard` instead
 
 **Notes / decisions**
 - 2026-07-10 — Structure agreed with Naman: one app, 3 direction folders, shared pipeline (over 3 standalone apps or building in root `src/`).
+- 2026-07-10 — Fonts installed via npm (`cal-sans`, `@fontsource/geist-sans`, `@fontsource/geist-mono`); `@fontsource/geist-sans` registers family **"Geist Sans"**, so the build script appends it as fallback after the token's literal "Geist". Icons: `lucide-react` (brief §9).
 
 ### [S1-T02] Pick the prototype dashboard + derive the component inventory
 
-- **Status:** todo · **(you)** own the pick; Claude derives the inventory
+- **Status:** in progress (inventory done; screenshot files + your confirmation pending) · **(you)** own the pick; Claude derives the inventory
 - **Roadmap:** S1 · 2026-07-10 (Fri)
 - **Links:** screenshots (to be provided — drop into the chat or `explorations/reference/`), [`brief.md §12`](brief.md) (signature screens)
 - **Depends on:** —
@@ -55,22 +56,22 @@ Sprint S1 needs a running workspace before any direction work can land. One Vite
 The starter component set for all three directions is defined by one real prototype dashboard page, re-created in each direction. Everything downstream (S1-T05 onward) is blocked on knowing which page and which components. Naman picks the page and provides screenshots; from them we extract a fixed inventory so all three directions build the *same* set and stay comparable.
 
 **Sub-tasks**
-- [ ] **(you)** Choose the dashboard page from the current prototype
-- [ ] **(you)** Provide screenshot(s) — full page plus any hover/expanded states that matter
-- [ ] Derive the component inventory (~8–12: expect buttons, cards, table, badges/status pills, nav/sidebar, tabs, inputs, progress/confidence meter, empty state)
-- [ ] Record the inventory list in `explorations/README.md` as the binding scope for all 3 directions
+- [x] **(you)** Choose the dashboard page from the current prototype — the "Welcome back" analysis dashboard, provided in chat 2026-07-10
+- [ ] **(you)** Drop the screenshot files into `explorations/reference/` (chat images can't be written to disk — see `explorations/reference/README.md` for expected filenames)
+- [x] Derive the component inventory (12 components incl. StatusPill + ConfidenceMeter, the latter flagged as added-beyond-screenshot per brief §7B)
+- [x] Record the inventory list in `explorations/README.md` as the binding scope for all 3 directions
 
 **Done when** (acceptance criteria)
-- [ ] Screenshots stored in `explorations/reference/`
-- [ ] A written inventory (component name + where it appears on the page + states needed) is committed, and Naman has confirmed it
-- [ ] Anything visible-but-out-of-scope is explicitly listed as excluded (scope guard for a 4-day sprint)
+- [ ] Screenshots stored in `explorations/reference/` (pending — Naman)
+- [~] A written inventory (component name + where it appears on the page + states needed) is committed — **Naman's confirmation pending**
+- [x] Anything visible-but-out-of-scope is explicitly listed as excluded (scope guard for a 4-day sprint)
 
 **Notes / decisions**
 - 2026-07-10 — Source is screenshots only (no Figma file, no product-repo access), per Naman.
 
 ### [S1-T03] Define the three design directions (o1 / o2 / o3)
 
-- **Status:** todo · **(you)**-led research, AI-assisted
+- **Status:** in progress — **o1 "Soft Precision" defined & built** (Claude, per your Link AI reference; react/adjust when back); o2/o3 await your research · **(you)**-led research, AI-assisted
 - **Roadmap:** S1 · 2026-07-10 (Fri)
 - **Links:** [`brief.md`](brief.md) (governing principles §3, emotional jobs §5, brand direction §6), [`memory.md §4`](memory.md) (locked: purple primary, light-only, AA)
 - **Depends on:** —
@@ -98,11 +99,11 @@ The three directions are the sprint's creative core and are currently undefined.
 ## Rest of sprint (one-liners — promote into focus when their day arrives)
 
 **Sat 2026-07-11**
-- [ ] **[S1-T04]** Author the three per-direction `semantic.css` remaps (primitive refs only; AA checked)  · deps: [S1-T03]
-- [ ] **[S1-T05]** Full starter component set + styleguide route for **o1**  · deps: [S1-T02], [S1-T04]
+- [~] **[S1-T04]** Author the three per-direction `semantic.css` remaps (primitive refs only; AA checked)  · deps: [S1-T03] — **o1 done 2026-07-10** (`src/o1/semantic.css`, `.dir-o1`-scoped, ratios recorded in header); o2/o3 blocked on their definitions
+- [x] **[S1-T05]** Full starter component set + styleguide route for **o1**  · deps: [S1-T02], [S1-T04] — done 2026-07-10, rationale + do/don'ts included (not stubbed)
 
 **Sun 2026-07-12**
-- [ ] **[S1-T06]** Re-create the dashboard as the **o1** demo page  · deps: [S1-T05]
+- [x] **[S1-T06]** Re-create the dashboard as the **o1** demo page  · deps: [S1-T05] — done 2026-07-10 ahead of schedule; incl. demo-only New-user/Active-project state toggle
 - [ ] **[S1-T07]** **o2** — components + styleguide + demo, adapted from o1  · deps: [S1-T06]
 - [ ] **[S1-T08]** **o3** — components + styleguide + demo, adapted from o1  · deps: [S1-T06]
 
