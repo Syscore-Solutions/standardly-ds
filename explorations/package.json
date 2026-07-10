@@ -10,7 +10,9 @@
     "dev": "vite",
     "prebuild": "npm run build:tokens",
     "build": "tsc -b && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "predemo": "npm run build",
+    "demo": "vite preview --open /o1"
   },
   "dependencies": {
     "@fontsource/geist-mono": "^5.2.8",

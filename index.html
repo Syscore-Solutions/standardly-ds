@@ -53,10 +53,15 @@
   --dir-radius-control:8px;     /* radius.control → radius.md */
   --dir-radius-container:12px;  /* radius.container → radius.lg */
 }
-/* o1/o2/o3 remap hooks — mechanism is live, values are identical
-   until the direction definitions land (S1-T03). Swap values per
-   direction here when Naman's research locks them. */
-html[data-direction="o1"],
+/* o1/o2/o3 remap hooks — mechanism is live. o1 carries its real remap
+   (mirrors explorations/src/o1/semantic.css); o2/o3 stay identical to
+   the system mapping until their definitions land (S1-T03). */
+html[data-direction="o1"]{
+  /* Soft Precision: purple stays primary; the direction is geometry —
+     pill controls, 2xl containers (radius.full / radius.2xl) */
+  --dir-radius-control:9999px;
+  --dir-radius-container:24px;
+}
 html[data-direction="o2"],
 html[data-direction="o3"]{ /* pending S1-T03 — intentionally identical */ }
 
@@ -398,6 +403,19 @@ code{font-family:var(--mono);font-size:.9em;background:var(--hair-2);padding:1px
 .dir-card .dc-head .nm{font-family:var(--mono);font-size:11px;color:var(--sub);letter-spacing:.06em}
 .stamp{position:absolute;top:22px;right:-34px;transform:rotate(32deg);background:var(--orange);color:#fff;
   font-family:var(--mono);font-size:9px;letter-spacing:.2em;padding:4px 40px;text-transform:uppercase}
+.stamp.done{background:var(--st-done)}
+/* open-in-explorations links on a built direction card */
+.dc-links{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+.dc-links a{display:inline-block;font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-decoration:none;
+  border:1px solid var(--dir-border);border-radius:var(--dir-radius-control);padding:6px 13px;
+  background:var(--dir-accent);color:#fff;transition:background .12s}
+.dc-links a:hover{background:var(--dir-accent-hover)}
+.dc-links a.ghost{background:var(--dir-surface);color:var(--dir-text)}
+.dc-links a.ghost:hover{background:var(--dir-surface-subtle)}
+.dc-live{display:flex;align-items:center;gap:7px;margin-top:9px;font-family:var(--mono);font-size:10px;letter-spacing:.06em;color:var(--sub)}
+.dc-live .dot{width:7px;height:7px;border-radius:50%;background:var(--st-todo);flex-shrink:0}
+.dc-live.up .dot{background:var(--st-done)}
+.dc-live code{font-size:10px}
 .dc-body{padding:14px 18px;font-size:12.5px;color:var(--sub)}
 .dc-body h4{font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--sub);margin:12px 0 6px}
 .dc-body h4:first-child{margin-top:0}
@@ -522,7 +540,7 @@ code{font-family:var(--mono);font-size:.9em;background:var(--hair-2);padding:1px
         <div class="dir-label"><span>Direction set</span><span class="pend" id="dir-pend">pending S1-T03</span></div>
         <div class="dirseg" role="group" aria-label="Design direction preview switcher" id="dirseg">
           <button aria-pressed="true" data-dir="system" title="System defaults (current tokens.json semantic mapping)">SYS</button>
-          <button aria-pressed="false" data-dir="o1" title="Direction o1 — remap pending S1-T03">O1</button>
+          <button aria-pressed="false" data-dir="o1" title="Direction o1 — Soft Precision (pill controls, 2xl containers)">O1</button>
           <button aria-pressed="false" data-dir="o2" title="Direction o2 — remap pending S1-T03">O2</button>
           <button aria-pressed="false" data-dir="o3" title="Direction o3 — remap pending S1-T03">O3</button>
         </div>
@@ -860,12 +878,12 @@ code{font-family:var(--mono);font-size:.9em;background:var(--hair-2);padding:1px
           <span class="sheet-code">SD-07</span>
           <div style="flex:1;min-width:0">
             <h1>Directions</h1>
-            <p class="sheet-sub">Sprint S1 creative core · three directions <span class="hot">o1 / o2 / o3</span> for the Tue 2026-07-14 team call · definitions pending S1-T03</p>
+            <p class="sheet-sub">Sprint S1 creative core · three directions <span class="hot">o1 / o2 / o3</span> for the Tue 2026-07-14 team call · <span class="hot">o1 "Soft Precision" built</span> · o2/o3 pending S1-T03</p>
             <div class="ruler" aria-hidden="true"></div>
           </div>
         </header>
 
-        <p class="sec-note" style="margin-top:16px;max-width:80ch">Each direction is a <strong>semantic remap + component styling treatment</strong> over the same fixed primitives — proving the token architecture can carry three distinct visual personalities without touching a single raw value. The switcher in the rail drives the preview surfaces below; the mechanism is wired, but all three map identically until Naman's direction research (S1-T03) lands.</p>
+        <p class="sec-note" style="margin-top:16px;max-width:80ch">Each direction is a <strong>semantic remap + component styling treatment</strong> over the same fixed primitives — proving the token architecture can carry three distinct visual personalities without touching a single raw value. The switcher in the rail drives the preview surfaces below. <strong>o1 "Soft Precision" is built</strong> (2026-07-10) — its real demo + styleguide live in the <code>explorations/</code> Vite app; the o1 card links there (start it with <code>npm run demo</code> in <code>explorations/</code>). o2/o3 still map identically until Naman's research (S1-T03) lands.</p>
 
         <div class="dir-grid" id="dir-cards"></div>
 
@@ -1745,8 +1763,30 @@ window.DS = (function(){
   }
 
   /* ---------- SD-07 directions ---------- */
+  /* The explorations Vite app hosts the real direction demos. It is a
+     separate server — links below assume `cd explorations && npm run dev`
+     (:5173) or `npm run preview` (:4173). probeExplorations() pings both
+     and rewrites hrefs + the status line to whichever answers. */
+  const EXPLORATIONS_PORTS = [5173, 4173];
+  let explorationsBase = 'http://localhost:' + EXPLORATIONS_PORTS[0];
   function renderDirections(){
-    $('dir-cards').innerHTML = ['o1', 'o2', 'o3'].map(function(o){
+    const o1 =
+      '<div class="card dir-card"><span class="stamp done">Built 2026-07-10</span>' +
+      '<div class="dc-head"><span class="o">O1</span><span class="nm">SOFT PRECISION — built, review pending</span></div>' +
+      '<div class="dc-body">' +
+      '<h4>Feel</h4><p>Serious compliance infrastructure that feels like a well-lit studio, not a server room. Pill controls, 2xl containers, quiet slate canvas — purple only where a decision happens.</p>' +
+      '<h4>Open in the explorations app</h4>' +
+      '<div class="dc-links">' +
+      '<a data-x-link href="' + explorationsBase + '/o1" target="_blank" rel="noopener">DEMO ↗</a>' +
+      '<a data-x-link class="ghost" href="' + explorationsBase + '/o1/styleguide" target="_blank" rel="noopener">STYLEGUIDE ↗</a>' +
+      '</div>' +
+      '<div class="dc-live" id="x-live"><span class="dot"></span><span class="msg">checking for a running app… links need <code>cd explorations && npm run dev</code></span></div>' +
+      '<h4>Live preview surface — o1 remap</h4>' +
+      '<div class="preview"><span class="p-btn">Approve review</span><span class="p-pill">✓ Pass</span>' +
+      '<div class="p-bar" role="img" aria-label="Confidence meter placeholder at 64%"><span></span></div>' +
+      '<p class="p-cap">AI confidence 64% — advisory, human decides</p></div>' +
+      '</div></div>';
+    const pending = ['o2', 'o3'].map(function(o){
       return '<div class="card dir-card"><span class="stamp">Pending S1-T03</span>' +
         '<div class="dc-head"><span class="o">' + o.toUpperCase() + '</span><span class="nm">name · references · principles — TBD</span></div>' +
         '<div class="dc-body">' +
@@ -1758,6 +1798,29 @@ window.DS = (function(){
         '<h4>Status</h4><p>Wired to the rail switcher via <code>--dir-*</code> variables; currently identical to the system mapping. Swaps live once Naman’s definitions land.</p>' +
         '</div></div>';
     }).join('');
+    $('dir-cards').innerHTML = o1 + pending;
+    probeExplorations();
+  }
+  function probeExplorations(){
+    // no-cors: resolves (opaque) when a server answers, rejects when nothing listens.
+    Promise.allSettled(EXPLORATIONS_PORTS.map(function(p){
+      return fetch('http://localhost:' + p + '/', { mode: 'no-cors', cache: 'no-store' })
+        .then(function(){ return p; });
+    })).then(function(results){
+      const up = results.filter(function(r){ return r.status === 'fulfilled'; }).map(function(r){ return r.value; });
+      const live = $('x-live');
+      if (!live) return;
+      if (up.length){
+        explorationsBase = 'http://localhost:' + up[0];
+        document.querySelectorAll('a[data-x-link]').forEach(function(a){
+          a.href = explorationsBase + new URL(a.href).pathname;
+        });
+        live.classList.add('up');
+        live.querySelector('.msg').innerHTML = 'explorations app running on <code>:' + up[0] + '</code>';
+      } else {
+        live.querySelector('.msg').innerHTML = 'app not detected — run <code>cd explorations && npm run dev</code>, then reload';
+      }
+    });
   }
 
   /* ---------- tabs ---------- */
