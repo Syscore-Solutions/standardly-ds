@@ -1,53 +1,48 @@
 # Standardly Design System
 
-Design tokens for Standardly, authored in [W3C DTCG](https://www.designtokens.org/tr/drafts/format/) format for use with the [Tokens Studio](https://tokens.studio/) plugin for Figma.
+This repository contains the design system for **Standardly**, an agentic compliance-intelligence platform (automated building-certification review via a RAG pipeline). 
 
-## Structure
+The goal of this repository is to prove our UI pipeline: **we can go from design tokens to production-grade Storybook components without a frontend engineering team.**
 
-All tokens live in **`tokens.json`**. Two token sets, tracked in `$metadata.tokenSetOrder`:
+## The Pipeline
 
-- **`primitive`** — raw values only, no references:
-  - `color` — ramps: `neutral` (`white`/`black` only), `slate`, `purple`, `mint`, `red`, `yellow`, `teal`, `blue`, `pink` (each `50`–`950`)
-  - `size` — sizing scale, `2xs`–`3xl`
-  - `space` — spacing scale, `3xs`–`6xl`
-  - `radius` — border-radius scale, `none` / `sm` / `md` / `lg` / `xl` / `2xl` / `full`
-  - `border` — border-width scale, `none` / `sm` / `md` / `lg` / `xl`
-  - `opacity` — opacity scale, `0` / `10` / `20` / `40` / `60` / `80` / `100`
-  - `fontFamily` — `heading` (Cal Sans), `body` (Geist)
-  - `fontWeight` — `regular` (400), `medium` (500), `semibold` (600), `bold` (700)
-  - `fontSize` — scale, `xs`–`6xl`
-  - `lineHeight` — `tight` / `normal` / `relaxed` (percentage values)
-  - `letterSpacing` — `none` / `wide` / `wider` (percentage values)
-- **`semantic`** — role-based aliases referencing primitives (e.g. `{color.slate.900}`):
-  - `color.bg` — surface backgrounds (`default`, `subtle`, `muted`, `inverse`, `brand`, …)
-  - `color.text` — text roles (`primary`, `secondary`, `link`, `onBrand`, …)
-  - `color.border` — border roles (`default`, `focus`, `inverse`, …)
-  - `color.action` — interactive fills (`primary`, `secondary`, `destructive`, …)
-  - `color.feedback` — status colors (`success`, `warning`, `error`, `info` — each with `bg` / `text` / `border`)
-  - `typography` — composite text styles: `H1`–`H6`, `body` (`lg`/`md`/`sm`), `label` (`md`/`sm`), `caption`
-  - `radius` — `control`, `container`, `overlay`, `badge`
+See **[pipeline.md](pipeline.md)** for a detailed walkthrough of the technical pipeline (Figma → tokens.json → primitive CSS → semantic mapping → React components).
 
-> **Not yet defined:** `semantic.border` and `semantic.space` roles are planned but do **not** exist in `tokens.json` today. The semantic set currently contains only `color`, `typography`, and `radius`. Consuming code should reference primitive `space`/`border` directly until the semantic roles land.
+## The Deliverables
 
-### Brand ramp mapping
+This repo contains 6 core deliverables for the Sprint S1 Review:
 
-| Role | Primitive ramp |
-|------|----------------|
-| Neutral UI | `slate` |
-| Primary / brand | `purple` |
-| Success | `mint` |
-| Warning | `yellow` |
-| Error / destructive | `red` |
-| Info / links | `blue` |
+1. **`tokens.json`**: The canonical W3C DTCG source of truth.
+2. **`pipeline.md`**: The end-to-end pipeline architecture.
+3. **`directions/`**: 3 distinct design directions (o1, o2, o3) expressed as standalone HTML files consuming the exact same token primitives.
+4. **`presentation.html`**: A slide deck summarizing the approach.
+5. **`README.md`** (this file): Context and locked decisions.
+6. **`storybook/`**: The proof. A functional Storybook instance rendering 12 production-grade components powered by the token pipeline.
 
-`$themes` is intentionally `[]` (single light theme only).
+## How to View
 
-All scales use consistent `2xs/xs/sm/md/lg/xl/2xl/3xl`-style abbreviations (not `s/m/l`) — follow the same pattern when adding new tokens.
+### 1. View the Design Directions
+Open the files in `directions/` in your browser. 
+- [Direction o1 — Soft Precision (Implemented)](directions/o1.html)
+- `o2.html` and `o3.html` are scaffolds awaiting creative definition.
 
-Semantic tokens use `$value` then `$type`. Typography composites use `$type: "typography"` with singular property keys (`fontFamily`, `fontSize`, …). References omit the set name: `{color.slate.900}`, not `{primitive.color.slate.900}`.
+### 2. View the Storybook Proof
+To see the components in isolation:
+```bash
+cd storybook
+npm install
+npm run storybook
+```
 
-## Figma sync workflow
+### 3. View the Presentation
+Open `presentation.html` in your browser.
 
-The Tokens Studio plugin's GitHub sync is configured against **`main`**. Commit and push token changes to `main`, then use **Pull from GitHub** in the plugin to pick them up in Figma.
+## Locked Decisions & Brand Context
 
-Export color, spacing, radius, and font semantics as **Variables**. Export typography composites as **Text styles** with "Create styles with variable references".
+*From the original brief:*
+
+- **Brand Primary:** Purple (locked). 
+- **The Vibe:** Premium, agentic, confident. The AI should feel like a highly competent compliance reviewer, not a chat bot.
+- **Tech Stack (Phase 2):** React + TypeScript + Radix UI.
+- **Styling:** CSS variables built from tokens. No Tailwind.
+- **Accessibility:** WCAG 2.1 AA minimum built into the tokens.

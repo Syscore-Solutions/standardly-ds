@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Standardly DS — o1: Soft Precision</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    /* ── PRIMITIVE TOKENS (generated from tokens.json) ──────────────────── */
+    :root {
+      /* neutrals */
+      --color-neutral-white: #ffffff;
+      --color-neutral-black: #000000;
+      /* slate */
+      --color-slate-50: #f5f7fa; --color-slate-100: #f2f5f8;
+      --color-slate-200: #eaecf0; --color-slate-300: #cacfd8;
+      --color-slate-400: #99a0ae; --color-slate-500: #717784;
+      --color-slate-600: #525866; --color-slate-700: #2b303b;
+      --color-slate-800: #222530; --color-slate-900: #181b25;
+      --color-slate-950: #0e121b;
+      /* purple */
+      --color-purple-50: #f0eeff; --color-purple-100: #e3dfff;
+      --color-purple-200: #c8c0ff; --color-purple-300: #a99bff;
+      --color-purple-400: #8b76ff; --color-purple-500: #6e56ff;
+      --color-purple-600: #5c42f5; --color-purple-700: #4a32d4;
+      --color-purple-800: #3b27ab; --color-purple-900: #2c1d82;
+      --color-purple-950: #1c1159;
+      /* mint */
+      --color-mint-50: #f0fdf6; --color-mint-200: #a7f3cf;
+      --color-mint-700: #15803d; --color-mint-800: #166534;
+      /* yellow */
+      --color-yellow-50: #fefce8; --color-yellow-200: #fde68a;
+      --color-yellow-800: #92400e; --color-yellow-900: #78350f;
+      /* red */
+      --color-red-50: #fff1f2; --color-red-200: #fecdd3;
+      --color-red-700: #b91c1c; --color-red-800: #991b1b;
+      /* blue */
+      --color-blue-50: #eff6ff; --color-blue-200: #bfdbfe;
+      --color-blue-700: #1d4ed8; --color-blue-900: #1e3a8a;
+      /* space */
+      --space-3xs: 2px; --space-2xs: 4px; --space-xs: 8px;
+      --space-sm: 12px; --space-md: 16px; --space-lg: 20px;
+      --space-xl: 24px; --space-2xl: 32px; --space-3xl: 40px;
+      /* size */
+      --size-xs: 12px; --size-sm: 16px; --size-md: 20px;
+      --size-lg: 24px; --size-xl: 24px; --size-2xl: 32px; --size-3xl: 48px;
+      /* radius */
+      --radius-sm: 4px; --radius-md: 8px; --radius-lg: 12px;
+      --radius-xl: 16px; --radius-2xl: 24px; --radius-full: 9999px;
+      /* font */
+      --font-size-xs: 12px; --font-size-sm: 14px; --font-size-md: 16px;
+      --font-size-lg: 18px; --font-size-xl: 20px; --font-size-2xl: 24px;
+      --font-size-3xl: 32px;
+      --font-weight-regular: 400; --font-weight-medium: 500;
+      --font-weight-semibold: 600; --font-weight-bold: 700;
+      --line-height-normal: 1.25; --line-height-relaxed: 1.5;
+      --letter-spacing-none: 0; --letter-spacing-wide: 0.05em;
+    }
+
+    /* ── SEMANTIC REMAP — o1 Soft Precision ─────────────────────────────── */
+    :root {
+      --color-bg-canvas: var(--color-slate-50);
+      --color-bg-default: var(--color-neutral-white);
+      --color-bg-subtle: var(--color-slate-50);
+      --color-bg-muted: var(--color-slate-100);
+      --color-bg-brand: var(--color-purple-50);
+      --color-text-primary: var(--color-slate-900);
+      --color-text-secondary: var(--color-slate-600);
+      --color-text-tertiary: var(--color-slate-500);
+      --color-text-brand: var(--color-purple-700);
+      --color-text-on-brand: var(--color-neutral-white);
+      --color-action-primary: var(--color-purple-600);
+      --color-action-primary-hover: var(--color-purple-700);
+      --color-action-tonal: var(--color-purple-50);
+      --color-action-tonal-hover: var(--color-purple-100);
+      --color-action-tonal-text: var(--color-purple-700);
+      --color-border-subtle: var(--color-slate-100);
+      --color-border-default: var(--color-slate-200);
+      --color-border-focus: var(--color-purple-500);
+      --color-status-pass-bg: var(--color-mint-50); --color-status-pass-text: var(--color-mint-800);
+      --color-status-partial-bg: var(--color-yellow-50); --color-status-partial-text: var(--color-yellow-900);
+      --color-status-fail-bg: var(--color-red-50); --color-status-fail-text: var(--color-red-800);
+      --color-status-needs-bg: var(--color-slate-100); --color-status-needs-text: var(--color-slate-700);
+      --color-confidence-fill: var(--color-purple-500);
+      --color-confidence-track: var(--color-slate-200);
+      /* o1 geometry: pill controls, 2xl containers */
+      --radius-control: var(--radius-full);
+      --radius-container: var(--radius-2xl);
+      --radius-tile: var(--radius-lg);
+      --shadow-ambient: 0 1px 2px rgba(14,18,27,0.05);
+      --shadow-raised: 0 4px 16px rgba(14,18,27,0.07);
+      --motion-fast: 120ms cubic-bezier(0.2,0,0,1);
+    }
+
+    /* ── RESET + BASE ──────────────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; }
+    body { margin: 0; background: var(--color-bg-canvas); color: var(--color-text-primary);
+           font-family: 'Inter', system-ui, sans-serif; font-size: var(--font-size-md);
+           line-height: var(--line-height-relaxed); }
+    h1,h2,h3,h4 { margin: 0; font-weight: var(--font-weight-semibold); line-height: var(--line-height-normal); }
+    p, ul, ol { margin: 0; }
+    button { font-family: inherit; cursor: pointer; }
+    :focus-visible { outline: 2px solid var(--color-border-focus); outline-offset: 2px; border-radius: var(--radius-sm); }
+
+    /* ── LAYOUT ──────────────────────────────────────────────────────────── */
+    .topnav {
+      display: flex; align-items: center; gap: var(--space-2xl);
+      background: var(--color-bg-default); border-bottom: 1px solid var(--color-border-subtle);
+      padding: var(--space-sm) var(--space-2xl);
+    }
+    .topnav__wordmark {
+      display: inline-flex; align-items: center; gap: var(--space-xs);
+      font-size: var(--font-size-lg); font-weight: var(--font-weight-semibold);
+      color: var(--color-text-primary); text-decoration: none;
+    }
+    .topnav__wordmark svg { width: 28px; height: 28px; }
+    .topnav__nav { display: flex; gap: var(--space-2xs); }
+    .topnav__link {
+      display: inline-flex; align-items: center; gap: 4px;
+      background: transparent; border: none; border-radius: var(--radius-control);
+      padding: var(--space-2xs) var(--space-sm);
+      font-size: var(--font-size-sm); font-weight: var(--font-weight-medium);
+      color: var(--color-text-secondary);
+      transition: background var(--motion-fast), color var(--motion-fast);
+    }
+    .topnav__link:hover { background: var(--color-bg-subtle); color: var(--color-text-primary); }
+    .topnav__link.active { background: var(--color-bg-brand); color: var(--color-text-brand); }
+    .topnav__right { display: flex; align-items: center; gap: var(--space-md); margin-left: auto; }
+    .topnav__model {
+      display: inline-flex; align-items: center; gap: var(--space-xs);
+      background: var(--color-bg-subtle); border: 1px solid var(--color-border-default);
+      border-radius: var(--radius-control); padding: var(--space-2xs) var(--space-sm);
+      font-size: var(--font-size-xs); color: var(--color-text-secondary);
+    }
+    .topnav__model strong { color: var(--color-text-primary); font-weight: var(--font-weight-medium); }
+    .topnav__avatar {
+      width: 32px; height: 32px; border-radius: var(--radius-full);
+      background: var(--color-bg-brand); color: var(--color-text-brand);
+      font-size: var(--font-size-xs); font-weight: var(--font-weight-semibold);
+      display: inline-flex; align-items: center; justify-content: center;
+    }
+
+    .main { max-width: 1200px; margin: 0 auto; padding: var(--space-2xl); display: flex; flex-direction: column; gap: var(--space-xl); }
+    .welcome { display: flex; justify-content: space-between; align-items: flex-end; }
+    .welcome h1 { font-size: var(--font-size-2xl); font-weight: var(--font-weight-bold); }
+    .welcome p { font-size: var(--font-size-sm); color: var(--color-text-secondary); margin-top: var(--space-2xs); }
+
+    .btn {
+      display: inline-flex; align-items: center; gap: var(--space-xs);
+      border: 1px solid transparent; border-radius: var(--radius-control);
+      font-size: var(--font-size-sm); font-weight: var(--font-weight-medium);
+      padding: var(--space-xs) var(--space-lg);
+      transition: background var(--motion-fast);
+    }
+    .btn--primary { background: var(--color-action-primary); color: var(--color-text-on-brand); }
+    .btn--primary:hover { background: var(--color-action-primary-hover); }
+    .btn--tonal { background: var(--color-action-tonal); color: var(--color-action-tonal-text); }
+    .btn--tonal:hover { background: var(--color-action-tonal-hover); }
+
+    .stat-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-md); }
+    .statcard {
+      background: var(--color-bg-default); border: 1px solid var(--color-border-subtle);
+      border-radius: var(--radius-container); box-shadow: var(--shadow-ambient);
+      padding: var(--space-lg) var(--space-xl); display: flex; align-items: flex-start; gap: var(--space-md);
+    }
+    .icontile {
+      width: 40px; height: 40px; border-radius: var(--radius-tile);
+      display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .icontile--brand { background: var(--color-bg-brand); color: var(--color-text-brand); }
+    .icontile--success { background: var(--color-mint-50); color: var(--color-mint-700); }
+    .icontile--info { background: var(--color-blue-50); color: var(--color-blue-700); }
+    .icontile--neutral { background: var(--color-bg-muted); color: var(--color-text-secondary); }
+    .statcard__label { font-size: var(--font-size-xs); color: var(--color-text-secondary); margin-bottom: var(--space-3xs); }
+    .statcard__value { font-size: var(--font-size-xl); font-weight: var(--font-weight-semibold); font-variant-numeric: tabular-nums; }
+    .statcard__hint { font-size: var(--font-size-xs); color: var(--color-text-tertiary); margin-top: var(--space-3xs); }
+
+    .cards-row { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md); }
+    .card {
+      background: var(--color-bg-default); border: 1px solid var(--color-border-subtle);
+      border-radius: var(--radius-container); box-shadow: var(--shadow-ambient);
+      display: flex; flex-direction: column;
+    }
+    .card__header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: var(--space-lg) var(--space-xl) 0;
+    }
+    .card__title { font-size: var(--font-size-md); font-weight: var(--font-weight-semibold); }
+    .card__body { padding: var(--space-sm) var(--space-xs) var(--space-xs); flex: 1; }
+
+    .actionitem {
+      display: flex; align-items: center; gap: var(--space-md);
+      width: 100%; text-align: left; background: transparent;
+      border: 1px solid transparent; border-radius: var(--radius-xl);
+      padding: var(--space-sm) var(--space-md);
+      transition: background var(--motion-fast);
+    }
+    .actionitem:hover { background: var(--color-bg-subtle); }
+    .actionitem__title { font-size: var(--font-size-sm); font-weight: var(--font-weight-medium); display: block; }
+    .actionitem__desc { font-size: var(--font-size-sm); color: var(--color-text-secondary); display: block; }
+    .actionitem__chevron { margin-left: auto; color: var(--color-text-tertiary); opacity: 0; transition: opacity var(--motion-fast); }
+    .actionitem:hover .actionitem__chevron { opacity: 1; }
+
+    .activity { display: flex; justify-content: space-between; align-items: flex-start; gap: var(--space-md); padding: var(--space-sm) var(--space-md); border-radius: var(--radius-xl); list-style: none; }
+    .activity:hover { background: var(--color-bg-subtle); }
+    .activity__title { font-size: var(--font-size-sm); font-weight: var(--font-weight-medium); }
+    .activity__meta { font-size: var(--font-size-xs); color: var(--color-text-secondary); }
+    .activity__confidence { display: flex; align-items: center; gap: var(--space-xs); margin-top: var(--space-3xs); }
+    .activity__confidence-label { font-size: var(--font-size-xs); color: var(--color-text-secondary); }
+    .activity__time { font-size: var(--font-size-xs); color: var(--color-text-secondary); font-variant-numeric: tabular-nums; }
+    .activity__side { display: flex; flex-direction: column; align-items: flex-end; gap: var(--space-2xs); flex-shrink: 0; }
+
+    .pill {
+      display: inline-flex; align-items: center; gap: var(--space-2xs);
+      border-radius: var(--radius-full); padding: var(--space-3xs) var(--space-xs);
+      font-size: var(--font-size-xs); font-weight: var(--font-weight-medium); white-space: nowrap;
+    }
+    .pill--pass { background: var(--color-status-pass-bg); color: var(--color-status-pass-text); }
+    .pill--partial { background: var(--color-status-partial-bg); color: var(--color-status-partial-text); }
+    .pill--fail { background: var(--color-status-fail-bg); color: var(--color-status-fail-text); }
+    .pill--needs { background: var(--color-status-needs-bg); color: var(--color-status-needs-text); }
+
+    .meter { display: inline-flex; align-items: center; gap: var(--space-xs); }
+    .meter__track { display: inline-block; background: var(--color-confidence-track); border-radius: var(--radius-full); overflow: hidden; width: 64px; height: 4px; }
+    .meter__fill { display: block; height: 100%; background: var(--color-confidence-fill); border-radius: var(--radius-full); }
+    .meter__value { font-size: var(--font-size-xs); font-weight: var(--font-weight-medium); color: var(--color-text-secondary); font-variant-numeric: tabular-nums; min-width: 4ch; }
+
+    .callout {
+      background: var(--color-bg-brand); border-radius: var(--radius-container);
+      padding: var(--space-xl); display: flex; gap: var(--space-lg);
+    }
+    .callout__icon { width: 48px; height: 48px; border-radius: var(--radius-tile); background: var(--color-bg-default); color: var(--color-text-brand); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .callout__title { font-size: var(--font-size-md); font-weight: var(--font-weight-semibold); margin-bottom: var(--space-2xs); }
+    .callout__body { font-size: var(--font-size-sm); color: var(--color-text-secondary); line-height: var(--line-height-relaxed); }
+    .callout__body ol { padding-left: var(--space-lg); display: flex; flex-direction: column; gap: var(--space-2xs); margin-top: var(--space-xs); }
+    .callout__action { margin-top: var(--space-sm); }
+
+    .direction-tag {
+      position: fixed; bottom: 1rem; right: 1rem;
+      background: var(--color-slate-900); color: var(--color-neutral-white);
+      font-size: 11px; font-weight: 500; padding: 4px 10px; border-radius: 99px;
+      font-family: monospace; opacity: 0.7;
+    }
+    svg { display: block; }
+  </style>
+</head>
+<body>
+
+<!-- TOP NAV -->
+<header class="topnav">
+  <a class="topnav__wordmark" href="#">
+    <svg viewBox="0 0 28 28" fill="none">
+      <rect width="28" height="28" rx="8" fill="#5c42f5"/>
+      <path d="M7 17l7-7 7 7" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M7 22l7-7 7 7" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.45"/>
+    </svg>
+    standardly
+  </a>
+  <nav class="topnav__nav" aria-label="Primary">
+    <button class="topnav__link active" aria-current="page">Dashboard</button>
+    <button class="topnav__link">Projects</button>
+    <button class="topnav__link">My Usage</button>
+    <button class="topnav__link">Admin ↓</button>
+  </nav>
+  <div class="topnav__right">
+    <span class="topnav__model">✦ AI model &nbsp;<strong>Claude Sonnet 4.5</strong> ↓</span>
+    <span class="topnav__avatar">N</span>
+  </div>
+</header>
+
+<main class="main">
+
+  <!-- WELCOME -->
+  <div class="welcome">
+    <div>
+      <h1>Welcome back, Naman 👋</h1>
+      <p>Here's what's happening across your projects today.</p>
+    </div>
+    <button class="btn btn--primary">Try Interactive Demo</button>
+  </div>
+
+  <!-- STATS ROW -->
+  <div class="stat-row">
+    <div class="statcard">
+      <span class="icontile icontile--brand">📁</span>
+      <div><div class="statcard__label">Project Documents</div><div class="statcard__value">24</div><div class="statcard__hint">across 2 projects</div></div>
+    </div>
+    <div class="statcard">
+      <span class="icontile icontile--success">✓</span>
+      <div><div class="statcard__label">Analyses Completed</div><div class="statcard__value">8</div></div>
+    </div>
+    <div class="statcard">
+      <span class="icontile icontile--info">↻</span>
+      <div><div class="statcard__label">In Progress</div><div class="statcard__value">3</div></div>
+    </div>
+    <div class="statcard">
+      <span class="icontile icontile--neutral">≈</span>
+      <div><div class="statcard__label">Average Score</div><div class="statcard__value">74%</div></div>
+    </div>
+  </div>
+
+  <!-- CARDS ROW -->
+  <div class="cards-row">
+    <!-- Quick Actions -->
+    <div class="card">
+      <div class="card__header"><span class="card__title">Quick Actions</span></div>
+      <div class="card__body">
+        <button class="actionitem"><span class="icontile icontile--brand" style="width:36px;height:36px;">+</span><span><span class="actionitem__title">Create Project</span><span class="actionitem__desc">Start a new certification project</span></span><span class="actionitem__chevron">›</span></button>
+        <button class="actionitem"><span class="icontile icontile--neutral" style="width:36px;height:36px;">⊟</span><span><span class="actionitem__title">View Projects</span><span class="actionitem__desc">Browse existing projects</span></span><span class="actionitem__chevron">›</span></button>
+        <button class="actionitem"><span class="icontile icontile--info" style="width:36px;height:36px;">☰</span><span><span class="actionitem__title">Browse Standards</span><span class="actionitem__desc">Explore WELL, LEED, BREEAM</span></span><span class="actionitem__chevron">›</span></button>
+        <button class="actionitem"><span class="icontile icontile--success" style="width:36px;height:36px;">≡</span><span><span class="actionitem__title">My Usage</span><span class="actionitem__desc">View credits and history</span></span><span class="actionitem__chevron">›</span></button>
+      </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="card">
+      <div class="card__header"><span class="card__title">Recent Activity</span><button class="btn btn--tonal" style="font-size:12px;padding:4px 12px;">View all</button></div>
+      <div class="card__body">
+        <ul style="margin:0;padding:0;">
+          <li class="activity">
+            <div><div class="activity__title">WELL v2 · Air quality analysis</div><div class="activity__meta">Riverside Tower · 12 documents</div><div class="activity__confidence"><span class="activity__confidence-label">AI confidence</span><span class="meter"><span class="meter__track"><span class="meter__fill" style="width:87%"></span></span><span class="meter__value">87%</span></span></div></div>
+            <div class="activity__side"><time class="activity__time">2h ago</time><span class="pill pill--pass">✓ Pass</span></div>
+          </li>
+          <li class="activity">
+            <div><div class="activity__title">LEED v4 · Energy efficiency review</div><div class="activity__meta">City Hall Retrofit · 8 documents</div><div class="activity__confidence"><span class="activity__confidence-label">AI confidence</span><span class="meter"><span class="meter__track"><span class="meter__fill" style="width:54%"></span></span><span class="meter__value">54%</span></span></div></div>
+            <div class="activity__side"><time class="activity__time">5h ago</time><span class="pill pill--partial">⊟ Partial</span></div>
+          </li>
+          <li class="activity">
+            <div><div class="activity__title">BREEAM · Acoustic comfort analysis</div><div class="activity__meta">The Meridian · 4 documents</div></div>
+            <div class="activity__side"><time class="activity__time">Yesterday</time><span class="pill pill--needs">◌ Needs evidence</span></div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- CALLOUT -->
+  <div class="callout">
+    <div class="callout__icon">💡</div>
+    <div>
+      <div class="callout__title">Getting Started with Project-Based Analysis</div>
+      <div class="callout__body">
+        <ol>
+          <li>Create a project for your building certification</li>
+          <li>Upload evidence documents for each requirement</li>
+          <li>Run an AI analysis to get compliance scores and recommendations</li>
+        </ol>
+      </div>
+      <div class="callout__action"><button class="btn btn--tonal">Create Your First Project</button></div>
+    </div>
+  </div>
+
+</main>
+
+<div class="direction-tag">o1 · Soft Precision</div>
+</body>
+</html>

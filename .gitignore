@@ -10,10 +10,14 @@ Thumbs.db
 # Graphify code-graph output (regenerable via `graphify update .`)
 graphify-out/
 
-# Node / Vite (explorations sprint app + future Phase 2)
+# Node
 node_modules/
 dist/
 *.local
 
-# Generated from tokens.json — regenerate: npm run build:tokens (explorations/)
-explorations/src/shared/primitives.css
+# Storybook
+storybook-static/
+storybook/node_modules/
+
+# Generated from tokens.json — regenerate: node build-tokens.mjs
+storybook/src/tokens/primitives.css
