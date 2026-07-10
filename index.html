@@ -1465,7 +1465,404 @@ window.DS = (function(){
            resolveRef, chainOf, countLeaves };
 })();
 </script>
-<!-- ::CHUNK:: -->
+
+<script id="app-ui">
+/* ============ ui: renderers, tabs, direction switcher ============ */
+(function(){
+  'use strict';
+  const $ = id => document.getElementById(id);
+  const esc = DS.esc, inline = DS.inline;
+
+  /* ---------- shared bits ---------- */
+  function pill(key, label){
+    return '<span class="pill ' + key + '">' + esc(label || DS.KEY_LABEL[key]) + '</span>';
+  }
+  function checklistHtml(items){
+    if (!items.length) return '<p class="sec-note" style="margin:0">—</p>';
+    return '<ul class="cl">' + items.map(function(it){
+      const cls = [it.mark === 'x' ? 'x' : '', it.mark === '~' ? 'tilde' : '', it.mark === '!' ? 'bang' : '', it.indent ? 'indent' : '']
+        .filter(Boolean).join(' ');
+      return '<li class="' + cls + '"><span class="bx" aria-hidden="true"></span><span>' + inline(it.text) + '</span></li>';
+    }).join('') + '</ul>';
+  }
+  function depChips(deps){
+    return (deps || []).map(d => '<span class="chip dep">↳ ' + esc(d) + '</span>').join('');
+  }
+  const toastEl = $('toast');
+  let toastT;
+  function toast(msg){
+    toastEl.textContent = msg;
+    toastEl.classList.add('show');
+    clearTimeout(toastT);
+    toastT = setTimeout(() => toastEl.classList.remove('show'), 1800);
+  }
+
+  /* ---------- countdown ---------- */
+  const CALL_DATE = '2026-07-14';
+  function daysToCall(){
+    const today = new Date(); today.setHours(0, 0, 0, 0);
+    return Math.round((new Date(CALL_DATE + 'T00:00:00') - today) / 864e5);
+  }
+  function renderCountdown(){
+    const d = daysToCall();
+    if (d > 0){ $('cd-num').textContent = 'T-' + String(d).padStart(2, '0'); }
+    else if (d === 0){ $('cd-num').textContent = 'T-00'; $('cd-lbl').innerHTML = 'Team call is <strong>today</strong><br>Tue 2026-07-14'; }
+    else { $('cd-num').textContent = 'HELD'; $('cd-lbl').innerHTML = 'Team call held<br>Tue 2026-07-14 · define Sprint S2'; }
+    return d;
+  }
+
+  /* ---------- SD-01 tasks ---------- */
+  function renderTasks(t){
+    const all = [];
+    t.focus.forEach(x => all.push(x.statusKey));
+    t.days.forEach(d => d.items.forEach(i => all.push(i.key)));
+    const n = k => all.filter(x => x === k).length;
+    const total = all.length, done = n('done');
+    const d = daysToCall();
+
+    $('task-stats').innerHTML =
+      '<div class="stat"><div class="v">' + done + '<span class="dim">/' + total + '</span></div><div class="k">tasks done</div></div>' +
+      '<div class="stat"><div class="v' + (n('prog') ? ' hot' : '') + '">' + n('prog') + '</div><div class="k">in progress</div></div>' +
+      '<div class="stat"><div class="v">' + n('block') + '</div><div class="k">blocked</div></div>' +
+      '<div class="stat"><div class="v hot">' + (d > 0 ? d : (d === 0 ? 'DAY' : '✓')) + '</div><div class="k">' + (d >= 0 ? 'days to team call' : 'call held — S2 next') + '</div></div>';
+    $('nav-n-tasks').textContent = done + '/' + total;
+
+    $('focus-tasks').innerHTML = t.focus.map(function(task){
+      return '<article class="card task-card">' +
+        '<div class="task-head"><span class="tid">' + esc(task.id) + '</span>' +
+        '<h3>' + inline(task.title) + '</h3>' +
+        pill(task.statusKey, task.statusKey === 'todo' ? 'todo' : null) +
+        '<span class="chip owner">' + (task.owner === 'Naman' ? 'OWNER · NAMAN' : 'CLAUDE · REVIEWED BY NAMAN') + '</span></div>' +
+        '<div class="task-body"><div class="task-col">' +
+        '<h4>Context — why this exists</h4><p class="task-context">' + inline(task.context) + '</p>' +
+        '<div class="task-meta">' +
+          (task.deps.length ? depChips(task.deps) : '<span class="chip dep">no dependencies</span>') +
+          (task.roadmap ? '<span class="chip">' + inline(task.roadmap, { ids: false }) + '</span>' : '') +
+        '</div></div>' +
+        '<div class="task-col"><h4>Sub-tasks · ' + task.subs.filter(s => s.mark === 'x').length + '/' + task.subs.length + '</h4>' +
+        checklistHtml(task.subs) +
+        '<h4>Done when</h4>' + checklistHtml(task.done) + '</div></div>' +
+        (task.notes.length ? '<div class="task-notes"><strong>Notes:</strong> ' + task.notes.map(x => inline(x)).join(' · ') + '</div>' : '') +
+        '</article>';
+    }).join('');
+
+    $('rest-days').innerHTML = t.days.map(function(day){
+      const isCall = /call/i.test(day.label) || day.label.indexOf(CALL_DATE) > -1;
+      return '<div class="daycol' + (isCall ? ' call' : '') + '"><div class="day-head"><span>' + esc(day.label) + '</span>' +
+        (isCall ? '<span>★</span>' : '') + '</div>' +
+        day.items.map(function(it){
+          return '<div class="mini"><div class="row1"><span class="chip id">' + esc(it.id) + '</span>' + pill(it.key) +
+            (/\*\*\(you\)\*\*/.test(it.text) ? '<span class="chip owner">NAMAN</span>' : '') + '</div>' +
+            '<div>' + inline(it.text.replace(/\*\*\(you\)\*\*\s*/, '')) + '</div>' +
+            (it.deps.length ? '<div class="deps">' + depChips(it.deps) + '</div>' : '') + '</div>';
+        }).join('') + '</div>';
+    }).join('');
+  }
+
+  /* ---------- SD-02 roadmap ---------- */
+  function renderRoadmap(rm){
+    $('sprints').innerHTML = rm.sprints.map(function(sp){
+      const active = sp.badges.some(b => /active/i.test(b));
+      return '<div class="sprint-band"' + (active ? '' : ' style="border-color:var(--hair)"') + '>' +
+        '<div class="sprint-band-head"><h3>' + inline(sp.name, { ids: false }) + '</h3>' +
+        sp.badges.map(b => '<span class="chip' + (/active/i.test(b) ? ' id' : '') + '">' + inline(b, { ids: false }) + '</span>').join('') + '</div>' +
+        (sp.desc ? '<div class="sprint-desc">' + inline(sp.desc) + '</div>' : '') +
+        (sp.days.length ? '<div style="padding:14px 18px"><div class="daygrid" style="margin-top:0">' +
+          sp.days.map(function(day){
+            const isCall = /call/i.test(day.label) || day.label.indexOf(CALL_DATE) > -1;
+            return '<div class="daycol' + (isCall ? ' call' : '') + '"><div class="day-head"><span>' + esc(day.label) + '</span>' + (isCall ? '<span>★</span>' : '') + '</div>' +
+              day.items.map(it => '<div class="mini"><div class="row1"><span class="chip id">' + esc(it.id) + '</span>' + pill(it.key) + '</div><div>' +
+                inline(it.text.replace(/\*\*\(you\)\*\*[ ,-]*/g, '')) + '</div>' +
+                (it.deps.length ? '<div class="deps">' + depChips(it.deps) + '</div>' : '') + '</div>').join('') +
+              '</div>';
+          }).join('') + '</div></div>' : '') +
+        '</div>';
+    }).join('');
+
+    $('phases').innerHTML = rm.phases.map(function(ph){
+      const active = /active/i.test(ph.status);
+      return '<div class="phase' + (active ? ' active' : '') + '">' +
+        '<div class="phase-side"><span class="pno">P' + esc(ph.n) + '</span><span class="pst">' + esc(ph.status) + '</span></div>' +
+        '<div class="phase-main"><h3>' + inline(ph.title, { ids: false }) + '</h3>' +
+        (ph.desc ? '<p class="pdesc">' + inline(ph.desc) + '</p>' : '') +
+        ph.items.map(it => '<div class="ph-task"><span class="chip id">' + esc(it.id) + '</span>' + pill(it.key) + '<span>' +
+          inline(it.text) + '</span></div>').join('') +
+        '</div></div>';
+    }).join('');
+  }
+
+  /* ---------- SD-04 changelog ---------- */
+  const ERA_DATE = '2026-07-03';
+  function renderChangelog(entries){
+    let html = '';
+    entries.forEach(function(e, i){
+      html += '<div class="log-entry' + (i === 0 ? ' latest' : '') + '">' +
+        '<div class="log-date">' + esc(e.date) + (e.dow ? '<span class="dw">' + esc(e.dow) + '</span>' : '') +
+        (i === 0 ? '<span class="dw" style="color:var(--orange-deep)">latest</span>' : '') + '</div>' +
+        '<div class="card log-body"><ul>' + e.bullets.map(b => '<li><span>' + inline(b) + '</span></li>').join('') + '</ul></div></div>';
+      if (e.date === ERA_DATE)
+        html += '<div class="era"><span>Repo reset — prototype era below this line</span></div>';
+    });
+    $('timeline').innerHTML = html;
+  }
+
+  /* ---------- SD-05 tokens ---------- */
+  const RAMP_USE = {
+    neutral: 'surface & text extremes', slate: 'neutral UI — ~90% of the interface',
+    purple: 'brand / primary — locked', mint: 'success', red: 'error / destructive',
+    yellow: 'warning', teal: 'reserved — unused', blue: 'info / links', pink: 'reserved — unused'
+  };
+  function hexLum(hex){
+    const h = hex.replace('#', '');
+    const f = i => { let c = parseInt(h.substr(i, 2), 16) / 255; return c <= .03928 ? c / 12.92 : Math.pow((c + .055) / 1.055, 2.4); };
+    return .2126 * f(0) + .7152 * f(2) + .0722 * f(4);
+  }
+  function swatch(step, hex){
+    const light = hexLum(hex) > .45;
+    return '<button class="sw" style="background:' + hex + ';color:' + (light ? '#181b25' : '#fff') + '" data-copy="' + hex +
+      '" aria-label="Copy ' + hex + ' (' + esc(step) + ')"><span class="stp">' + esc(step) + '</span><span class="hex">' + hex + '</span></button>';
+  }
+  function renderTokens(tokens){
+    const prim = tokens.primitive, sem = tokens.semantic;
+    $('nav-n-tokens').textContent = DS.countLeaves(prim) + DS.countLeaves(sem);
+
+    /* ramps */
+    $('ramps').innerHTML = Object.keys(prim.color).map(function(name){
+      const ramp = prim.color[name];
+      const steps = Object.keys(ramp);
+      return '<div class="ramp"><div class="ramp-head"><h3>color.' + esc(name) + '</h3><span class="use">' + esc(RAMP_USE[name] || '') + '</span></div>' +
+        '<div class="ramp-row' + (steps.length <= 2 ? ' n2' : '') + '">' +
+        steps.map(s => swatch(s, ramp[s].$value)).join('') + '</div></div>';
+    }).join('');
+
+    /* semantic roles */
+    function semRows(groupName, node, prefix){
+      let html = '';
+      Object.keys(node).forEach(function(k){
+        const v = node[k];
+        if (v && v.$value !== undefined){
+          const ref = v.$value, hex = DS.resolveRef(tokens, ref);
+          html += '<div class="semrow"><button class="swx sw" style="background:' + hex + ';padding:0" data-copy="' + hex + '" aria-label="Copy ' + hex + '"></button>' +
+            '<span class="tname">color.' + esc(prefix + k) + '</span>' +
+            '<span class="chain">→ <b>' + esc(ref) + '</b> → ' + esc(hex) + '</span></div>';
+        } else if (v && typeof v === 'object'){
+          html += semRows(groupName, v, prefix + k + '.');
+        }
+      });
+      return html;
+    }
+    $('semantics').innerHTML = Object.keys(sem.color).map(function(g){
+      return '<div class="semgroup"><div class="ramp-head"><h3>' + esc(g) + '</h3><span class="use">' +
+        ({ bg: 'surface backgrounds', text: 'text roles', border: 'border roles', action: 'interactive fills', feedback: 'status / system feedback — bg · text · border triplets' }[g] || '') +
+        '</span></div>' + semRows(g, sem.color[g], g + '.') + '</div>';
+    }).join('');
+
+    /* typography composites */
+    const SAMPLES = function(name){
+      if (/^H\d/.test(name)) return 'Requirement A02.1 — Air Quality';
+      if (/^body/.test(name)) return 'The AI pipeline scored 14 requirements against WELL v2; the human reviewer makes the final call.';
+      if (/^label/.test(name)) return 'CONFIDENCE · 84%';
+      return 'Updated 2026-07-10 · evidence p.12 · reviewer: pending';
+    };
+    function famStack(f){ return f === 'Cal Sans' ? "'Cal Sans','Geist',system-ui,sans-serif" : "'Geist',system-ui,sans-serif"; }
+    function typoLeaves(node, prefix, out){
+      Object.keys(node).forEach(function(k){
+        const v = node[k];
+        if (v && v.$type === 'typography') out.push({ name: prefix + k, val: v.$value });
+        else if (v && typeof v === 'object') typoLeaves(v, prefix + k + '.', out);
+      });
+      return out;
+    }
+    const R = ref => DS.resolveRef(tokens, ref);
+    $('typography').innerHTML = typoLeaves(sem.typography, '', []).map(function(tk){
+      const v = tk.val;
+      const fam = R(v.fontFamily), size = parseFloat(R(v.fontSize)), wt = R(v.fontWeight),
+            lh = R(v.lineHeight), ls = parseFloat(R(v.letterSpacing) || '0') / 100;
+      const dispSize = Math.min(size, 40);
+      return '<div class="card spec"><div class="render" style="font-family:' + famStack(fam) + ';font-size:' + dispSize + 'px;font-weight:' + wt +
+        ';line-height:' + lh + ';letter-spacing:' + ls + 'em">' + esc(SAMPLES(tk.name)) + '</div>' +
+        '<div class="meta">semantic.typography.<b style="color:var(--ink)">' + esc(tk.name) + '</b><br>' +
+        esc(fam) + ' · ' + size + 'px · ' + wt + ' · lh ' + esc(lh) + (ls ? ' · ls ' + ls + 'em' : '') +
+        (dispSize < size ? '<br>shown at ' + dispSize + 'px' : '') + '</div></div>';
+    }).join('');
+
+    /* scales */
+    function bars(title, use, obj, unit, fmt){
+      return '<div class="scalebars" style="margin-top:14px"><div class="ramp-head"><h3>' + title + '</h3><span class="use">' + use + '</span></div>' +
+        Object.keys(obj).map(function(k){
+          const val = parseFloat(obj[k].$value);
+          return '<div class="sbar"><span class="nm">' + esc(k) + '</span><span><span class="bar" style="width:' + fmt(val) + 'px;display:block"></span></span><span class="vv">' + val + unit + '</span></div>';
+        }).join('') + '</div>';
+    }
+    let scalesHtml = '';
+    if (prim.space) scalesHtml += bars('primitive.space', 'spacing scale — 3xs → 6xl', prim.space, 'px', v => Math.min(v * 4, 460));
+    if (prim.size) scalesHtml += bars('primitive.size', 'sizing scale — control heights, icons', prim.size, 'px', v => Math.min(v * 4, 460));
+    if (prim.border) scalesHtml += '<div class="scalebars" style="margin-top:14px"><div class="ramp-head"><h3>primitive.border</h3><span class="use">border widths</span></div>' +
+      Object.keys(prim.border).map(function(k){
+        const v = parseFloat(prim.border[k].$value);
+        return '<div class="sbar"><span class="nm">' + esc(k) + '</span><span><span style="display:block;height:' + Math.max(v, .5) + 'px;background:var(--ink);width:200px"></span></span><span class="vv">' + v + 'px</span></div>';
+      }).join('') + '</div>';
+    if (prim.opacity) scalesHtml += '<div class="scalebars" style="margin-top:14px"><div class="ramp-head"><h3>primitive.opacity</h3><span class="use">opacity steps</span></div>' +
+      '<div style="display:flex;gap:10px;flex-wrap:wrap;padding:6px 0">' +
+      Object.keys(prim.opacity).map(function(k){
+        return '<div style="text-align:center"><div style="width:44px;height:34px;background:var(--ink);opacity:' + parseFloat(prim.opacity[k].$value) / 100 +
+          ';border:1px solid var(--hair)"></div><div style="font-family:var(--mono);font-size:10px;color:var(--sub);margin-top:4px">' + esc(k) + '</div></div>';
+      }).join('') + '</div></div>';
+    $('scales').innerHTML = scalesHtml;
+
+    /* semantic radius roles */
+    $('radii').innerHTML = Object.keys(sem.radius).map(function(k){
+      const ref = sem.radius[k].$value, px = parseFloat(DS.resolveRef(tokens, ref));
+      return '<div class="radbox"><div class="box" style="border-radius:' + Math.min(px, 38) + 'px"></div>' +
+        '<div class="lbl"><b>' + esc(k) + '</b><br>' + esc(ref) + ' · ' + (px > 999 ? 'full' : px + 'px') + '</div></div>';
+    }).join('');
+  }
+
+  /* ---------- SD-06 components inventory ---------- */
+  const INVENTORY = [
+    { n: 'Button', r: 'Primary actions used sparingly — purple earns its place.', v: 'primary · secondary · destructive', s: 'default · hover · focus · active · disabled · loading', b: 'bespoke + asChild' },
+    { n: 'Input', r: 'Evidence metadata, search, forms. Label + help + error slots.', v: 'text · with-icon · textarea', s: 'default · focus · error · disabled', b: 'bespoke' },
+    { n: 'Select', r: 'Standards, requirement filters, reviewer assignment.', v: 'single · with-groups', s: 'default · open · focus · disabled', b: 'Radix Select' },
+    { n: 'Table', r: 'The dense, beautiful kind — a signature element. Tabular numerals, scannable status columns.', v: 'dense · comfortable', s: 'row hover · selected · sorted · empty', b: 'bespoke' },
+    { n: 'Card', r: 'Requirement summaries, dashboard rollups, evidence groups.', v: 'default · interactive', s: 'default · hover · focus', b: 'bespoke' },
+    { n: 'Status pill', r: 'Discrete compliance states: Pass / Partial / Fail / Needs evidence. Icon shape always pairs with color.', v: 'pass · partial · fail · needs-evidence', s: 'static', b: 'bespoke · radius.badge' },
+    { n: 'Confidence meter', r: 'Continuous 0–100% AI confidence — its own visual language, never a stoplight, never confusable with status.', v: 'inline · block', s: 'static · streaming', b: 'bespoke · tokens pending P1-T05', sig: true },
+    { n: 'Navigation', r: 'App sidebar + top bar. Project switcher, section links.', v: 'sidebar · topbar', s: 'default · active · collapsed', b: 'bespoke' },
+    { n: 'Tabs', r: 'Analysis view panels: reasoning · citations · evidence.', v: 'underline · contained', s: 'default · active · focus · disabled', b: 'Radix Tabs' },
+    { n: 'Modal', r: 'Approve/reject confirmations, evidence detail.', v: 'dialog · drawer', s: 'open · closing', b: 'Radix Dialog · radius.overlay' },
+    { n: 'Toast', r: 'System feedback: saved, analysis complete, sync errors.', v: 'success · warning · error · info', s: 'enter · auto-dismiss', b: 'Radix Toast' },
+    { n: 'File upload', r: 'The consultant’s core moment — evidence drop-zone with per-file progress.', v: 'dropzone · compact', s: 'idle · drag-over · uploading · error', b: 'bespoke' },
+    { n: 'Empty state', r: 'Guided, warm invitations to act — strong empties are a brief requirement.', v: 'no-data · no-results · onboarding', s: 'static', b: 'bespoke' }
+  ];
+  function renderInventory(){
+    $('inventory').innerHTML = INVENTORY.map(function(c){
+      return '<div class="card inv">' + (c.sig ? '<span class="chip hot sig" style="border-color:var(--orange);color:var(--orange-deep);background:var(--orange-bg)">signature</span>' : '') +
+        '<h3>' + esc(c.n) + '</h3><p class="role">' + esc(c.r) + '</p>' +
+        '<div class="kv">VARIANTS · <b>' + esc(c.v) + '</b><br>STATES &nbsp;· <b>' + esc(c.s) + '</b><br>BASE &nbsp;&nbsp;&nbsp;· <b>' + esc(c.b) + '</b></div></div>';
+    }).join('');
+  }
+
+  /* ---------- SD-07 directions ---------- */
+  function renderDirections(){
+    $('dir-cards').innerHTML = ['o1', 'o2', 'o3'].map(function(o){
+      return '<div class="card dir-card"><span class="stamp">Pending S1-T03</span>' +
+        '<div class="dc-head"><span class="o">' + o.toUpperCase() + '</span><span class="nm">name · references · principles — TBD</span></div>' +
+        '<div class="dc-body">' +
+        '<h4>Delivers for the call</h4><p>Styleguide route <code>/' + o + '/styleguide</code> · demo dashboard <code>/' + o + '</code> · its own <code>semantic.css</code> remap.</p>' +
+        '<h4>Live preview surface — remap hook</h4>' +
+        '<div class="preview"><span class="p-btn">Approve review</span><span class="p-pill">✓ Pass</span>' +
+        '<div class="p-bar" role="img" aria-label="Confidence meter placeholder at 64%"><span></span></div>' +
+        '<p class="p-cap">AI confidence 64% — advisory, human decides</p></div>' +
+        '<h4>Status</h4><p>Wired to the rail switcher via <code>--dir-*</code> variables; currently identical to the system mapping. Swaps live once Naman’s definitions land.</p>' +
+        '</div></div>';
+    }).join('');
+  }
+
+  /* ---------- tabs ---------- */
+  const TABS = ['tasks', 'roadmap', 'architecture', 'changelog', 'tokens', 'components', 'directions'];
+  function selectTab(name, focusBtn){
+    if (TABS.indexOf(name) < 0) name = 'tasks';
+    TABS.forEach(function(t){
+      const btn = $('tab-btn-' + t), panel = $('tab-' + t), on = t === name;
+      btn.setAttribute('aria-selected', on ? 'true' : 'false');
+      btn.tabIndex = on ? 0 : -1;
+      panel.classList.toggle('active', on);
+    });
+    if (focusBtn) $('tab-btn-' + name).focus();
+    if (('#' + name) !== location.hash) history.replaceState(null, '', '#' + name);
+    document.querySelector('.content').scrollTop = 0;
+  }
+  function wireTabs(){
+    const nav = $('sheetnav');
+    nav.addEventListener('click', function(e){
+      const btn = e.target.closest('[data-tab]');
+      if (btn) selectTab(btn.dataset.tab);
+    });
+    nav.addEventListener('keydown', function(e){
+      const idx = TABS.indexOf((document.activeElement.dataset || {}).tab);
+      if (idx < 0) return;
+      let to = null;
+      if (e.key === 'ArrowDown' || e.key === 'ArrowRight') to = TABS[(idx + 1) % TABS.length];
+      if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') to = TABS[(idx + TABS.length - 1) % TABS.length];
+      if (e.key === 'Home') to = TABS[0];
+      if (e.key === 'End') to = TABS[TABS.length - 1];
+      if (to){ e.preventDefault(); selectTab(to, true); }
+    });
+    window.addEventListener('hashchange', function(){ selectTab(location.hash.slice(1)); });
+    selectTab(location.hash.slice(1) || 'tasks');
+  }
+
+  /* ---------- direction switcher ---------- */
+  function wireDirections(){
+    $('dirseg').addEventListener('click', function(e){
+      const btn = e.target.closest('[data-dir]');
+      if (!btn) return;
+      document.querySelectorAll('#dirseg button').forEach(b => b.setAttribute('aria-pressed', b === btn ? 'true' : 'false'));
+      document.documentElement.dataset.direction = btn.dataset.dir;
+      toast(btn.dataset.dir === 'system'
+        ? 'Preview: system mapping (tokens.json semantics)'
+        : 'Preview: ' + btn.dataset.dir.toUpperCase() + ' — remap pending S1-T03, currently identical');
+    });
+  }
+
+  /* ---------- copy-to-clipboard ---------- */
+  function wireCopy(){
+    document.addEventListener('click', function(e){
+      const el = e.target.closest('[data-copy]');
+      if (!el) return;
+      const v = el.dataset.copy;
+      function ok(){ toast(v + ' copied'); }
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(v).then(ok, ok);
+      else {
+        const ta = document.createElement('textarea');
+        ta.value = v; document.body.appendChild(ta); ta.select();
+        try { document.execCommand('copy'); } catch(err){}
+        document.body.removeChild(ta); ok();
+      }
+    });
+  }
+
+  /* ---------- data mode badge / banner ---------- */
+  function setDataMode(mode, snapshotDate){
+    const keys = Object.keys(mode);
+    const snaps = keys.filter(k => mode[k] === 'snapshot');
+    const badge = $('data-mode');
+    const today = new Date().toISOString().slice(0, 10);
+    if (!snaps.length){
+      badge.textContent = 'LIVE'; badge.dataset.mode = 'live';
+      $('rev-date').textContent = today;
+    } else if (snaps.length === keys.length){
+      badge.textContent = 'SNAPSHOT'; badge.dataset.mode = 'snapshot';
+      $('rev-date').textContent = snapshotDate;
+      $('databar').textContent = 'OFFLINE COPY — live repo files are unreachable (opened via file://?). Showing the embedded snapshot of ' +
+        snapshotDate + '. Serve the repo root over HTTP (e.g. npx serve) for live data.';
+      $('databar').classList.add('show');
+    } else {
+      badge.textContent = 'MIXED'; badge.dataset.mode = 'mixed';
+      $('rev-date').textContent = snapshotDate;
+      $('databar').textContent = 'PARTIAL SNAPSHOT — could not read live ' + snaps.join(', ') + '; those sections show the ' +
+        snapshotDate + ' snapshot. Everything else is live.';
+      $('databar').classList.add('show');
+    }
+  }
+
+  /* ---------- init ---------- */
+  function safely(label, fn){
+    try { fn(); } catch(e){ console.error('[dashboard] ' + label + ' failed:', e); }
+  }
+  wireTabs(); wireDirections(); wireCopy();
+  renderCountdown();
+  safely('inventory', renderInventory);
+  safely('directions', renderDirections);
+  DS.load().then(function(res){
+    setDataMode(res.mode, res.snapshotDate);
+    safely('tasks', () => renderTasks(res.data.tasks));
+    safely('roadmap', () => renderRoadmap(res.data.roadmap));
+    safely('changelog', () => renderChangelog(res.data.changelog));
+    safely('tokens', () => renderTokens(res.data.tokens));
+  });
+})();
+</script>
     </div>
   </main>
 </div>
