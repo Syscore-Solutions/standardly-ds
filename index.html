@@ -893,6 +893,338 @@ code{font-family:var(--mono);font-size:.9em;background:var(--hair-2);padding:1px
           </div>
         </div>
       </section>
+
+<!-- ============================================================
+     EMBEDDED DATA SNAPSHOT — fallback used when the live files
+     can't be fetched (e.g. opened via file://).
+     REGENERATE by asking Claude to "re-sync the dashboard snapshot
+     from tasks.md / roadmap.md / changelog.md / tokens.json".
+     The markdown blocks are verbatim copies of the source files;
+     the tokens block is tokens.json with $extensions stripped.
+     ============================================================ -->
+<script type="application/json" id="snap-meta">{"generated":"2026-07-10"}</script>
+<script type="text/markdown" id="snap-tasks"># Active Sprint — Sprint S1: Design-Direction Explorations
+
+The working surface for the **entire active sprint**, pulled from [`roadmap.md`](roadmap.md) when the sprint starts. Sprint S1 runs **Fri 2026-07-10 → Tue 2026-07-14** (team call Tuesday). Workspace: [`explorations/`](explorations/README.md).
+
+> **The rules**
+> - **This file holds the whole active sprint** — every task, with **tiered detail**: tasks in focus (in progress / next up) carry the full template; the rest stay one-liners until promoted into focus.
+> - **IDs come from the roadmap** (`S1-T{nn}` / `P{n}-T{nn}`). Don't invent IDs here.
+> - **Completion is recorded twice**: check `[x]` here *and* in `roadmap.md`; log the change in [`changelog.md`](changelog.md) under today's entry.
+> - **Between sprints** this file is emptied and refilled from the next sprint's roadmap section.
+
+### Status legend
+`[ ]` todo · `[~]` in progress · `[x]` done · `[!]` blocked (append `· blocked by: …`)
+
+---
+
+## In focus (full detail)
+
+### [S1-T01] Scaffold the `explorations/` sprint workspace
+
+- **Status:** todo
+- **Roadmap:** S1 · 2026-07-10 (Fri)
+- **Links:** [`explorations/README.md`](explorations/README.md) (agreed structure), [`tokens.json`](tokens.json), [`architecture.md §5.3`](architecture.md) (component dir shape), [`architecture.md §6.2`](architecture.md) (CSS variable shape)
+- **Depends on:** —
+
+**Context**
+Sprint S1 needs a running workspace before any direction work can land. One Vite + React app hosts all three directions (o1/o2/o3) so the token pipeline is built once and the demo provably runs off `tokens.json` — the whole point of the sprint is demonstrating that AI-driven token→component workflow. Direction folders mirror the Phase-2 component shape so the winner promotes to root `src/` cheaply.
+
+**Sub-tasks**
+- [ ] `npm create vite` (React + TS) inside `explorations/`; add react-router
+- [ ] Write `scripts/build-tokens.mjs`: parse `../tokens.json` → emit `src/shared/primitives.css` (custom properties; strip `com.figma.*` `$extensions`; resolve set-name-less refs)
+  - [ ] Wire as `npm run build:tokens`, run automatically before `dev`/`build`
+- [ ] Create `src/o1|o2|o3/` skeletons: `semantic.css` (empty remap stub), `components/`, `styleguide/`, `demo/`
+- [ ] Router: `/` (sprint index linking all directions), `/oN` (demo), `/oN/styleguide`
+- [ ] Shared page chrome (direction switcher nav) styled from primitives only
+- [ ] Confirm `npm run build` emits a static, deployable bundle
+- [ ] Update `.gitignore` (`node_modules/`, `dist/`) — done 2026-07-10 pre-emptively
+
+**Done when** (acceptance criteria)
+- [ ] `npm run dev` serves all six routes with the direction switcher working
+- [ ] `primitives.css` is regenerated from `tokens.json` by the script — no hand-written values, no Figma extension residue
+- [ ] Static `npm run build` output works when served standalone
+- [ ] Committed on a `feat/explorations-scaffold` branch (not directly to `main`)
+
+**Notes / decisions**
+- 2026-07-10 — Structure agreed with Naman: one app, 3 direction folders, shared pipeline (over 3 standalone apps or building in root `src/`).
+
+### [S1-T02] Pick the prototype dashboard + derive the component inventory
+
+- **Status:** todo · **(you)** own the pick; Claude derives the inventory
+- **Roadmap:** S1 · 2026-07-10 (Fri)
+- **Links:** screenshots (to be provided — drop into the chat or `explorations/reference/`), [`brief.md §12`](brief.md) (signature screens)
+- **Depends on:** —
+
+**Context**
+The starter component set for all three directions is defined by one real prototype dashboard page, re-created in each direction. Everything downstream (S1-T05 onward) is blocked on knowing which page and which components. Naman picks the page and provides screenshots; from them we extract a fixed inventory so all three directions build the *same* set and stay comparable.
+
+**Sub-tasks**
+- [ ] **(you)** Choose the dashboard page from the current prototype
+- [ ] **(you)** Provide screenshot(s) — full page plus any hover/expanded states that matter
+- [ ] Derive the component inventory (~8–12: expect buttons, cards, table, badges/status pills, nav/sidebar, tabs, inputs, progress/confidence meter, empty state)
+- [ ] Record the inventory list in `explorations/README.md` as the binding scope for all 3 directions
+
+**Done when** (acceptance criteria)
+- [ ] Screenshots stored in `explorations/reference/`
+- [ ] A written inventory (component name + where it appears on the page + states needed) is committed, and Naman has confirmed it
+- [ ] Anything visible-but-out-of-scope is explicitly listed as excluded (scope guard for a 4-day sprint)
+
+**Notes / decisions**
+- 2026-07-10 — Source is screenshots only (no Figma file, no product-repo access), per Naman.
+
+### [S1-T03] Define the three design directions (o1 / o2 / o3)
+
+- **Status:** todo · **(you)**-led research, AI-assisted
+- **Roadmap:** S1 · 2026-07-10 (Fri)
+- **Links:** [`brief.md`](brief.md) (governing principles §3, emotional jobs §5, brand direction §6), [`memory.md §4`](memory.md) (locked: purple primary, light-only, AA)
+- **Depends on:** —
+
+**Context**
+The three directions are the sprint's creative core and are currently undefined. Naman is researching them; each needs to be sharp enough that a `semantic.css` remap + component styling treatment can be authored from it (S1-T04). All three must respect the locked constraints: purple stays the brand primary, primitives are fixed, light theme only, WCAG AA — differentiation comes from semantic mapping, density, radius, shadow, motion, and composition.
+
+**Sub-tasks**
+- [ ] **(you)** Research references (products, sites, systems) — collect 2–3 per candidate direction
+- [ ] (AI, on request) Propose candidate directions grounded in `brief.md` (e.g., variations along the Stripe-register ↔ warm-approachable ↔ data-dense axes) to react against
+- [ ] Name each direction and write 3–5 principles + a one-line "feel" statement per direction
+- [ ] Sanity-check each against the locked constraints (purple primary, fixed primitives, AA) — flag anything a direction wants that tokens can't express yet
+- [ ] Write the definitions into `explorations/README.md` (and later each styleguide's rationale section)
+
+**Done when** (acceptance criteria)
+- [ ] Three named directions, each with references + principles, committed
+- [ ] Each is distinct enough that a reviewer could match an unlabeled screenshot to its direction
+- [ ] None requires violating a locked decision (or the exception is explicitly recorded in `memory.md` with Naman's sign-off)
+
+**Notes / decisions**
+- 2026-07-10 — Directions intentionally undefined at sprint start; research is Naman's, target completion Fri evening so S1-T04 (semantic remaps) can start Saturday.
+
+---
+
+## Rest of sprint (one-liners — promote into focus when their day arrives)
+
+**Sat 2026-07-11**
+- [ ] **[S1-T04]** Author the three per-direction `semantic.css` remaps (primitive refs only; AA checked)  · deps: [S1-T03]
+- [ ] **[S1-T05]** Full starter component set + styleguide route for **o1**  · deps: [S1-T02], [S1-T04]
+
+**Sun 2026-07-12**
+- [ ] **[S1-T06]** Re-create the dashboard as the **o1** demo page  · deps: [S1-T05]
+- [ ] **[S1-T07]** **o2** — components + styleguide + demo, adapted from o1  · deps: [S1-T06]
+- [ ] **[S1-T08]** **o3** — components + styleguide + demo, adapted from o1  · deps: [S1-T06]
+
+**Mon 2026-07-13**
+- [ ] **[S1-T09]** Complete styleguides: rationale + brief do/don'ts for all 3  · deps: [S1-T07], [S1-T08]
+- [ ] **[S1-T10]** Polish + a11y pass across all 3 demos  · deps: [S1-T07], [S1-T08]
+- [ ] **[S1-T11]** Deploy static build to a shareable URL (Vercel/Netlify)  · deps: [S1-T10]
+- [ ] **[S1-T12]** Combined HTML deck in `explorations/presentation/` + dry run  · deps: [S1-T09], [S1-T11]
+
+**Tue 2026-07-14 — team call**
+- [ ] **[S1-T13]** **(you)** Present; record chosen direction + feedback in `memory.md`; define Sprint S2  · deps: [S1-T12]
+
+---
+
+## Task template
+
+Use this block when promoting a one-liner into focus. Keep every field — a task must carry enough context to be picked up cold.
+
+```markdown
+### [S?-T??] Task title
+
+- **Status:** todo
+- **Roadmap:** S? · <date it maps to in roadmap.md>
+- **Links:** <files / doc sections / Figma / external refs this touches>
+- **Depends on:** <task IDs that must finish first, or "—">
+
+**Context**
+<2–4 sentences: why this task exists, what it unblocks.>
+
+**Sub-tasks**
+- [ ] <granular, checkable step>
+
+**Done when** (acceptance criteria)
+- [ ] <objective, verifiable condition>
+
+**Notes / decisions**
+- <running log, dated>
+```
+</script>
+<script type="text/markdown" id="snap-roadmap"># Roadmap — Standardly Design System
+
+The **long-term delivery plan**, in two layers:
+
+1. **Phase backlogs** (bottom of this file) — the long-term record of everything that must eventually exist, grouped by the phases from [`architecture.md §11`](architecture.md#11-phased-roadmap): **P1 Tokens → P2 Components → P3 npm Package → P4 Automation**. Backlogs are *unscheduled* — goals, tasks, and milestones, not dates.
+2. **Sprints** (top of this file) — the delivery unit: **weekly, carved just-in-time** (defined only 1–2 weeks ahead, because plans further out churn). Each sprint pulls tasks from the phase backlogs and/or adds sprint-specific tasks toward a concrete outcome.
+
+> **Relationship to [`tasks.md`](tasks.md):** when a sprint becomes **active**, its entire task list is copied into `tasks.md` (the working surface, with tiered detail). Completion is recorded in **both**: check the task `[x]` here (historical record) and in `tasks.md` (working state). Daily changes are logged in [`changelog.md`](changelog.md).
+
+---
+
+## How to read this file
+
+- **Sprints** are dated day-by-day (`### 2026-07-10 (Fri)`); only days that carry work are listed.
+- **Phase backlogs** are flat task lists + milestone blocks — no dates until a task is pulled into a sprint.
+- A backlog task pulled into a sprint **keeps its `P` ID** (it's listed in the sprint by ID); tasks invented for a sprint get `S` IDs.
+
+### Status legend
+
+| Marker | Meaning |
+|---|---|
+| `[ ]` | todo |
+| `[~]` | in progress |
+| `[x]` | done |
+| `[!]` | blocked — append `· blocked by: <what>` |
+
+### ID scheme
+
+- **Backlog tasks:** `P{phase}-T{nn}` → `P1-T01`. **Sprint tasks:** `S{sprint}-T{nn}` → `S1-T01`. IDs are **stable and never reused**, even after completion or re-scheduling.
+- **Milestones:** `P{phase}-M{nn}` → `P2-M01`.
+- IDs are assigned in creation order, not schedule order (so reordering never renumbers anything).
+
+---
+
+# Sprints
+
+## Sprint S1 — Design-Direction Explorations  · _active_  · Fri 2026-07-10 → Tue 2026-07-14  · **team call Tue 2026-07-14**
+
+> 4-day sprint producing **3 design directions (o1/o2/o3)** on the locked token foundation. Each direction: styleguide + starter components (rebuilt from a prototype dashboard screenshot) + demo webpage; plus one combined HTML deck. Lives in [`explorations/`](explorations/README.md) — one Vite+React app, shared token pipeline, primitives fixed, per-direction `semantic.css` remap. Deployed to a shareable URL for the call. Owner tags: **(you)** = Naman, unmarked = Claude-driven with your review. Full task detail: [`tasks.md`](tasks.md).
+
+### 2026-07-10 (Fri)
+
+- [ ] **[S1-T01]** Scaffold `explorations/` workspace — Vite + React app, router (`/o1 /o2 /o3` + styleguide routes), `scripts/build-tokens.mjs` (tokens.json → `primitives.css`, strips Figma `$extensions`), shared page chrome, deployable static build.  · deps: —
+- [ ] **[S1-T02]** **(you)** Pick the prototype dashboard page + drop screenshots → derive the starter-component inventory (~8–12 components) from it.  · deps: —
+- [ ] **[S1-T03]** **(you, AI-assisted)** Direction research → define o1/o2/o3: name, 2–3 references, 3–5 principles each. Feeds each styleguide's rationale section.  · deps: —
+
+### 2026-07-11 (Sat)
+
+- [ ] **[S1-T04]** Author the three per-direction `semantic.css` remaps from the S1-T03 definitions (primitive refs only; AA contrast checked).  · deps: [S1-T03]
+- [ ] **[S1-T05]** Build the full starter component set + styleguide route for **o1** (token viz + component gallery live; rationale/do-don'ts stubbed).  · deps: [S1-T02], [S1-T04]
+
+### 2026-07-12 (Sun)
+
+- [ ] **[S1-T06]** Re-create the dashboard screenshot as the **o1** demo page (`/o1`).  · deps: [S1-T05]
+- [ ] **[S1-T07]** **o2** — components + styleguide + demo, adapted from o1 under the o2 remap + styling treatment.  · deps: [S1-T06]
+- [ ] **[S1-T08]** **o3** — components + styleguide + demo, adapted from o1 under the o3 remap + styling treatment.  · deps: [S1-T06]
+
+### 2026-07-13 (Mon)
+
+- [ ] **[S1-T09]** Complete all 3 styleguides: direction rationale + per-component usage do/don'ts (brief).  · deps: [S1-T07], [S1-T08]
+- [ ] **[S1-T10]** Polish + a11y pass across all 3 demos: AA contrast, focus rings, keyboard nav, status-not-by-color-alone.  · deps: [S1-T07], [S1-T08]
+- [ ] **[S1-T11]** Deploy the static build to a shareable URL (Vercel/Netlify — pick at task time).  · deps: [S1-T10]
+- [ ] **[S1-T12]** Build the combined HTML deck in `explorations/presentation/` (narrative: problem → token foundation → AI workflow → 3 directions → live demos → recommendation/next steps) + dry-run the full presentation flow.  · deps: [S1-T09], [S1-T11]
+
+### 2026-07-14 (Tue) — team call
+
+- [ ] **[S1-T13]** **(you)** Present deck + live demos on the team call; afterwards record the chosen direction + feedback in `memory.md`, check off this sprint, and define Sprint S2.  · deps: [S1-T12]
+
+## Sprint S2 — (draft)  · week of 2026-07-15
+
+> **To be defined after the S1 team call** — shaped by the chosen direction and feedback. Likely candidates to pull: hardening the winning direction, authoring `design.md` [P1-T01], starting the real Phase-2 component library in root `src/`.
+
+---
+
+# Phase backlogs (long-term)
+
+## Phase 1 — Tokens & Docs  · _active phase_
+
+> Focus: `tokens.json` (W3C DTCG), Figma/Tokens Studio sync, and the documentation set. Parked behind Sprint S1; pull into sprints from S2 onward.
+
+- [ ] **[P1-T01]** Author `design.md` — the full design rationale (color philosophy, typography, spacing/radius logic, status-vs-confidence language, a11y reasoning). Highest-value doc gap; S1's direction rationale feeds it.
+- [ ] **[P1-T02]** Define **motion/animation tokens** (durations, easings) — restrained per `brief.md §10`; AI-streaming is the one expressive moment.
+- [ ] **[P1-T03]** Define **elevation/shadow tokens**.
+- [ ] **[P1-T04]** Add **`semantic.border` and `semantic.space` roles** to `tokens.json` (currently semantic has only `color`/`typography`/`radius`); update README + Figma export mapping.
+- [ ] **[P1-T05]** Define the **confidence-meter visual language + tokens** (continuous 0–100%, distinct from discrete status — `brief.md §7B`); signature element, no tokens yet.
+
+## Phase 2 — Components & Storybook  · _planned_
+
+> Focus: `src/components/` (React + TS + Radix), Storybook, Chromatic, a11y addon. The winning S1 direction seeds this phase.
+
+- [ ] **[P2-M01]** Milestone: token→CSS pipeline chosen (Style Dictionary vs custom — `architecture.md §6.3`) and generating `src/styles/tokens.css` in the real `src/`.
+- [ ] **[P2-M02]** Milestone: Storybook running with the a11y + designs addons; first components (from the S1 winner) promoted with stories.
+- [ ] **[P2-M03]** Milestone: core component set complete (buttons, inputs, selects, dense tables, cards, badges/status pills, confidence meter, navigation, tabs, modals, toasts, file-upload, empty states — `brief.md §17`).
+
+## Phase 3 — npm Package  · _planned_
+
+> Focus: component build (tsup/Vite — `architecture.md §8.3`), private npm publish, semver + changelog discipline.
+
+- [ ] **[P3-M01]** Milestone: `@syscore-solutions/standardly-ds` (name TBD) installable from a private registry with install docs.
+
+## Phase 4 — Automation & Polish  · _planned_
+
+> Focus: GitHub Actions CI (Chromatic on PR, publish on tag), white-label token layer (`--brand-logo` + `--primary` per-tenant hooks — `brief.md §14`), motion/elevation rollout across components.
+
+- [ ] **[P4-M01]** Milestone: CI green — Chromatic on every PR, publish on tag.
+- [ ] **[P4-M02]** Milestone: basic white-label tier working end-to-end on a demo tenant.
+</script>
+<script type="text/markdown" id="snap-changelog"># Changelog — Standardly Design System
+
+Daily work log. **One entry per day** (only days with changes), **newest first**, bullet points inside each entry. Reference [`roadmap.md`](roadmap.md)/[`tasks.md`](tasks.md) IDs (`S1-T01`, `P1-T02`, …) where a bullet maps to a planned task; generic bullets are fine otherwise. When making changes on a day that already has an entry, **append to that entry** — don't create a second one.
+
+Entries before 2026-07-10 are backfilled from git history.
+
+---
+
+## 2026-07-10 (Fri)
+
+- Added `brief.md` — full product + design-system brief for the Standardly platform and marketing site.
+- Doc reorg: `readme.md` → `README.md`; `ARCHITECTURE.md`/`BRIEF.md`/`DESIGN.md` → lowercase (naming rule: convention files uppercase, everything else lowercase). Removed stale `graphify-out/` and `.gitignore`d it.
+- Added the AI-guidance + planning doc suite: `AGENTS.md`, `CLAUDE.md`, `memory.md`, `roadmap.md`, `tasks.md`. `design.md` rebuilt as an explicit "not yet written" scaffold.
+- Pre-scaffolded the Phase 2+ layout: `src/tokens/`, `src/components/`, `src/styles/`, `.storybook/` — placeholder READMEs only, no code.
+- Drift fixes: `brief.md` rewritten to the locked **purple** primary (was "blue/indigo"), stack corrected to React + TS + Radix + CSS variables (was "React + Tailwind"), implemented fonts noted (Cal Sans + Geist); stale `tokens/primitive.json` permission removed from `.claude/settings.local.json`; `architecture.md §2.2` planned layout completed with all current files.
+- Planned **Sprint S1 — Design-Direction Explorations** (S1-T01 … S1-T13, Fri 07-10 → Tue 07-14 team call): 3 directions (o1/o2/o3) on the locked tokens, each with styleguide + starter components + demo page, plus a combined HTML deck, deployed to a shareable URL. Defined the `explorations/` workspace (one Vite + React app, shared token pipeline, per-direction `semantic.css` remap).
+- Planning model updated: roadmap = long-term phase backlogs + just-in-time weekly sprints; `tasks.md` = the entire active sprint with tiered detail (max-3 rule retired); introduced this `changelog.md` (backfilled).
+
+## 2026-07-07 (Mon)
+
+- Added `fontSize` primitive tokens (`xs`–`6xl`).
+- Implemented the **semantic token layer**: `semantic.color` (bg/text/border/action/feedback), `semantic.typography` composites (H1–H6, body, label, caption), `semantic.radius` roles; README updated to match.
+- Consolidated token structure and enhanced typography definitions in README + `tokens.json`; assorted token value updates.
+- Tokens Studio plugin sync re-pointed at **`main`** (retiring the `tokens-studio` branch flow).
+
+## 2026-07-06 (Sun)
+
+- **Consolidated the split `tokens/*.json` files into a single root `tokens.json`** (PR #1 merged).
+- Added primitive tokens: border-width, opacity, `fontFamily` (Cal Sans / Geist) + `fontWeight`, `lineHeight` (tight/normal/relaxed), `letterSpacing` (none/wide/wider).
+- Normalized property order (`$value` before `$type`) and renamed sets for consistency.
+- Added `.gitignore` (macOS cruft); regenerated graphify knowledge-graph output (later removed on 07-10).
+
+## 2026-07-03 (Thu)
+
+- **Reset: cleared the repo to restart the design system from scratch** (the June prototype era ends here).
+- Added the new design tokens in **Tokens Studio / W3C DTCG** format; added border-radius primitives.
+- README documenting token structure + Figma sync workflow.
+
+## 2026-06-24 (Wed)
+
+- Graphify knowledge-graph update.
+
+## 2026-06-22 (Mon)
+
+- Added a library build for GitHub-based package installation (prototype-era packaging).
+
+## 2026-06-21 (Sat)
+
+- Updated graph structure; populated semantic + AST cache files.
+
+## 2026-06-19 (Fri)
+
+- Added graphify output artifacts and a Graphify knowledge-retrieval protocol to `agents.md`.
+
+## 2026-06-17 (Wed)
+
+- Repo audit: depersonalized configurations, standardized filenames to lowercase; added the first doc suite (`agents.md`, `architecture.md`, `changelog.md`, `claude.md`, `design.md`, `memory.md`, `plan.md`, `setup.md`, `tasks.md`).
+
+## 2026-06-16 (Tue)
+
+- Added a comprehensive README.
+
+## 2026-06-15 (Mon)
+
+- First prototype build: Storybook, Style Dictionary token pipeline (`sd.config.js`), split multi-set `tokens/` (light + dark), `Accordion` + `Button` components, Vite/TS tooling.
+
+## 2026-06-08 (Mon)
+
+- Initial commit: `.gitattributes`, `poc-plan.md`.
+</script>
+<script type="application/json" id="snap-tokens">{"primitive":{"color":{"neutral":{"white":{"$type":"color","$value":"#ffffff"},"black":{"$type":"color","$value":"#000000"}},"slate":{"50":{"$type":"color","$value":"#f5f7fa"},"100":{"$type":"color","$value":"#f2f5f8"},"200":{"$type":"color","$value":"#eaecf0"},"300":{"$type":"color","$value":"#cacfd8"},"400":{"$type":"color","$value":"#99a0ae"},"500":{"$type":"color","$value":"#717784"},"600":{"$type":"color","$value":"#525866"},"700":{"$type":"color","$value":"#2b303b"},"800":{"$type":"color","$value":"#222530"},"900":{"$type":"color","$value":"#181b25"},"950":{"$type":"color","$value":"#0e121b"}},"purple":{"50":{"$type":"color","$value":"#efebff"},"100":{"$type":"color","$value":"#dcd5ff"},"200":{"$type":"color","$value":"#cac0ff"},"300":{"$type":"color","$value":"#a897ff"},"400":{"$type":"color","$value":"#8c71f6"},"500":{"$type":"color","$value":"#7d52f4"},"600":{"$type":"color","$value":"#693ee0"},"700":{"$type":"color","$value":"#5b2cc9"},"800":{"$type":"color","$value":"#4c25a7"},"900":{"$type":"color","$value":"#3d1d86"},"950":{"$type":"color","$value":"#351a75"}},"mint":{"50":{"$type":"color","$value":"#e3f7ec"},"100":{"$type":"color","$value":"#d6f5e8"},"200":{"$type":"color","$value":"#c2f5da"},"300":{"$type":"color","$value":"#84ebb4"},"400":{"$type":"color","$value":"#3ee089"},"500":{"$type":"color","$value":"#1fc16b"},"600":{"$type":"color","$value":"#1daf61"},"700":{"$type":"color","$value":"#178c4e"},"800":{"$type":"color","$value":"#1a7544"},"900":{"$type":"color","$value":"#16643b"},"950":{"$type":"color","$value":"#0b4627"}},"red":{"50":{"$type":"color","$value":"#ffebec"},"100":{"$type":"color","$value":"#ffd5d8"},"200":{"$type":"color","$value":"#ffc0c5"},"300":{"$type":"color","$value":"#ff97a0"},"400":{"$type":"color","$value":"#ff6875"},"500":{"$type":"color","$value":"#fb3748"},"600":{"$type":"color","$value":"#e93544"},"700":{"$type":"color","$value":"#d02533"},"800":{"$type":"color","$value":"#ad1f2b"},"900":{"$type":"color","$value":"#8b1822"},"950":{"$type":"color","$value":"#681219"}},"yellow":{"50":{"$type":"color","$value":"#fffaeb"},"100":{"$type":"color","$value":"#ffefcc"},"200":{"$type":"color","$value":"#ffecc0"},"300":{"$type":"color","$value":"#ffe097"},"400":{"$type":"color","$value":"#ffd268"},"500":{"$type":"color","$value":"#f6b51e"},"600":{"$type":"color","$value":"#e6a819"},"700":{"$type":"color","$value":"#c99a2c"},"800":{"$type":"color","$value":"#a78025"},"900":{"$type":"color","$value":"#86661d"},"950":{"$type":"color","$value":"#624c18"}},"teal":{"50":{"$type":"color","$value":"#e4fbf8"},"100":{"$type":"color","$value":"#d0fbf5"},"200":{"$type":"color","$value":"#c2f5ee"},"300":{"$type":"color","$value":"#84ebdd"},"400":{"$type":"color","$value":"#3fdec9"},"500":{"$type":"color","$value":"#22d3bb"},"600":{"$type":"color","$value":"#1daf9c"},"700":{"$type":"color","$value":"#178c7d"},"800":{"$type":"color","$value":"#1a7569"},"900":{"$type":"color","$value":"#16645a"},"950":{"$type":"color","$value":"#0b463e"}},"blue":{"50":{"$type":"color","$value":"#ebf8ff"},"100":{"$type":"color","$value":"#d5f1ff"},"200":{"$type":"color","$value":"#c0eaff"},"300":{"$type":"color","$value":"#97dcff"},"400":{"$type":"color","$value":"#68cdff"},"500":{"$type":"color","$value":"#47c2ff"},"600":{"$type":"color","$value":"#35ade9"},"700":{"$type":"color","$value":"#2597d0"},"800":{"$type":"color","$value":"#1f7ead"},"900":{"$type":"color","$value":"#18658b"},"950":{"$type":"color","$value":"#124b68"}},"pink":{"50":{"$type":"color","$value":"#ffebf4"},"100":{"$type":"color","$value":"#ffd5ea"},"200":{"$type":"color","$value":"#ffc0df"},"300":{"$type":"color","$value":"#ff97cb"},"400":{"$type":"color","$value":"#ff68b3"},"500":{"$type":"color","$value":"#fb4ba3"},"600":{"$type":"color","$value":"#e9358f"},"700":{"$type":"color","$value":"#d0257a"},"800":{"$type":"color","$value":"#ad1f66"},"900":{"$type":"color","$value":"#8b1852"},"950":{"$type":"color","$value":"#68123d"}}},"size":{"2xs":{"$type":"sizing","$value":"12"},"xs":{"$type":"sizing","$value":"16"},"sm":{"$type":"sizing","$value":"20"},"md":{"$type":"sizing","$value":"24"},"lg":{"$type":"sizing","$value":"32"},"xl":{"$type":"sizing","$value":"40"},"2xl":{"$type":"sizing","$value":"48"},"3xl":{"$type":"sizing","$value":"64"}},"space":{"3xs":{"$type":"spacing","$value":"2"},"2xs":{"$type":"spacing","$value":"4"},"xs":{"$type":"spacing","$value":"8"},"sm":{"$type":"spacing","$value":"12"},"md":{"$type":"spacing","$value":"16"},"lg":{"$type":"spacing","$value":"20"},"xl":{"$type":"spacing","$value":"24"},"2xl":{"$type":"spacing","$value":"32"},"3xl":{"$type":"spacing","$value":"40"},"4xl":{"$type":"spacing","$value":"48"},"5xl":{"$type":"spacing","$value":"64"},"6xl":{"$type":"spacing","$value":"80"}},"radius":{"none":{"$type":"borderRadius","$value":"0"},"sm":{"$type":"borderRadius","$value":"4"},"md":{"$type":"borderRadius","$value":"8"},"lg":{"$type":"borderRadius","$value":"12"},"xl":{"$type":"borderRadius","$value":"16"},"2xl":{"$type":"borderRadius","$value":"24"},"full":{"$type":"borderRadius","$value":"9999"}},"border":{"none":{"$type":"borderWidth","$value":"0"},"sm":{"$type":"borderWidth","$value":"0.5"},"md":{"$type":"borderWidth","$value":"1"},"lg":{"$type":"borderWidth","$value":"2"},"xl":{"$type":"borderWidth","$value":"4"}},"opacity":{"0":{"$type":"opacity","$value":"0%"},"10":{"$type":"opacity","$value":"10%"},"20":{"$type":"opacity","$value":"20%"},"40":{"$type":"opacity","$value":"40%"},"60":{"$type":"opacity","$value":"60%"},"80":{"$type":"opacity","$value":"80%"},"100":{"$type":"opacity","$value":"100%"}},"fontFamily":{"heading":{"$type":"fontFamilies","$value":"Cal Sans"},"body":{"$type":"fontFamilies","$value":"Geist"}},"fontWeight":{"regular":{"$type":"fontWeights","$value":"400"},"medium":{"$type":"fontWeights","$value":"500"},"semibold":{"$type":"fontWeights","$value":"600"},"bold":{"$type":"fontWeights","$value":"700"}},"lineHeight":{"tight":{"$type":"lineHeights","$value":"100%"},"normal":{"$type":"lineHeights","$value":"125%"},"relaxed":{"$type":"lineHeights","$value":"150%"}},"letterSpacing":{"none":{"$type":"letterSpacing","$value":"0%"},"wide":{"$type":"letterSpacing","$value":"5%"},"wider":{"$type":"letterSpacing","$value":"10%"}},"fontSize":{"xs":{"$type":"fontSizes","$value":"12"},"sm":{"$type":"fontSizes","$value":"14"},"md":{"$type":"fontSizes","$value":"16"},"lg":{"$type":"fontSizes","$value":"18"},"xl":{"$type":"fontSizes","$value":"20"},"2xl":{"$type":"fontSizes","$value":"24"},"3xl":{"$type":"fontSizes","$value":"32"},"4xl":{"$type":"fontSizes","$value":"40"},"5xl":{"$type":"fontSizes","$value":"48"},"6xl":{"$type":"fontSizes","$value":"56"}}},"semantic":{"color":{"bg":{"default":{"$type":"color","$value":"{color.neutral.white}"},"subtle":{"$type":"color","$value":"{color.slate.50}"},"muted":{"$type":"color","$value":"{color.slate.100}"},"emphasis":{"$type":"color","$value":"{color.slate.200}"},"inverse":{"$type":"color","$value":"{color.slate.900}"},"disabled":{"$type":"color","$value":"{color.slate.100}"},"brand":{"$type":"color","$value":"{color.purple.50}"},"brandEmphasis":{"$type":"color","$value":"{color.purple.100}"}},"text":{"primary":{"$type":"color","$value":"{color.slate.900}"},"secondary":{"$type":"color","$value":"{color.slate.600}"},"tertiary":{"$type":"color","$value":"{color.slate.400}"},"disabled":{"$type":"color","$value":"{color.slate.300}"},"inverse":{"$type":"color","$value":"{color.neutral.white}"},"link":{"$type":"color","$value":"{color.blue.600}"},"linkHover":{"$type":"color","$value":"{color.blue.700}"},"brand":{"$type":"color","$value":"{color.purple.700}"},"onBrand":{"$type":"color","$value":"{color.neutral.white}"}},"border":{"default":{"$type":"color","$value":"{color.slate.200}"},"subtle":{"$type":"color","$value":"{color.slate.100}"},"strong":{"$type":"color","$value":"{color.slate.300}"},"focus":{"$type":"color","$value":"{color.purple.500}"},"disabled":{"$type":"color","$value":"{color.slate.200}"},"inverse":{"$type":"color","$value":"{color.slate.700}"}},"action":{"primary":{"$type":"color","$value":"{color.purple.600}"},"primaryHover":{"$type":"color","$value":"{color.purple.700}"},"primaryActive":{"$type":"color","$value":"{color.purple.800}"},"primaryDisabled":{"$type":"color","$value":"{color.slate.200}"},"secondary":{"$type":"color","$value":"{color.neutral.white}"},"secondaryHover":{"$type":"color","$value":"{color.slate.50}"},"secondaryBorder":{"$type":"color","$value":"{color.slate.200}"},"destructive":{"$type":"color","$value":"{color.red.600}"},"destructiveHover":{"$type":"color","$value":"{color.red.700}"}},"feedback":{"success":{"bg":{"$type":"color","$value":"{color.mint.50}"},"text":{"$type":"color","$value":"{color.mint.700}"},"border":{"$type":"color","$value":"{color.mint.200}"}},"warning":{"bg":{"$type":"color","$value":"{color.yellow.50}"},"text":{"$type":"color","$value":"{color.yellow.800}"},"border":{"$type":"color","$value":"{color.yellow.200}"}},"error":{"bg":{"$type":"color","$value":"{color.red.50}"},"text":{"$type":"color","$value":"{color.red.700}"},"border":{"$type":"color","$value":"{color.red.200}"}},"info":{"bg":{"$type":"color","$value":"{color.blue.50}"},"text":{"$type":"color","$value":"{color.blue.700}"},"border":{"$type":"color","$value":"{color.blue.200}"}}}},"typography":{"H1":{"$type":"typography","$value":{"fontFamily":"{fontFamily.heading}","fontSize":"{fontSize.5xl}","fontWeight":"{fontWeight.bold}","lineHeight":"{lineHeight.normal}","letterSpacing":"{letterSpacing.none}","paragraphSpacing":"0","paragraphIndent":"0","textCase":"none","textDecoration":"none"}},"H2":{"$type":"typography","$value":{"fontFamily":"{fontFamily.heading}","fontSize":"{fontSize.4xl}","fontWeight":"{fontWeight.bold}","lineHeight":"{lineHeight.normal}","letterSpacing":"{letterSpacing.none}","paragraphSpacing":"0","paragraphIndent":"0","textCase":"none","textDecoration":"none"}},"H3":{"$type":"typography","$value":{"fontFamily":"{fontFamily.heading}","fontSize":"{fontSize.3xl}","fontWeight":"{fontWeight.semibold}","lineHeight":"{lineHeight.normal}","letterSpacing":"{letterSpacing.none}","paragraphSpacing":"0","paragraphIndent":"0","textCase":"none","textDecoration":"none"}},"H4":{"$type":"typography","$value":{"fontFamily":"{fontFamily.heading}","fontSize":"{fontSize.2xl}","fontWeight":"{fontWeight.semibold}","lineHeight":"{lineHeight.normal}","letterSpacing":"{letterSpacing.none}","paragraphSpacing":"0","paragraphIndent":"0","textCase":"none","textDecoration":"none"}},"H5":{"$type":"typography","$value":{"fontFamily":"{fontFamily.heading}","fontSize":"{fontSize.xl}","fontWeight":"{fontWeight.semibold}","lineHeight":"{lineHeight.normal}","letterSpacing":"{letterSpacing.none}","paragraphSpacing":"0","paragraphIndent":"0","textCase":"none","textDecoration":"none"}},"H6":{"$type":"typography","$value":{"fontFamily":"{fontFamily.heading}","fontSize":"{fontSize.lg}","fontWeight":"{fontWeight.semibold}","lineHeight":"{lineHeight.normal}","letterSpacing":"{letterSpacing.none}","paragraphSpacing":"0","paragraphIndent":"0","textCase":"none","textDecoration":"none"}},"body":{"lg":{"$type":"typography","$value":{"fontFamily":"{fontFamily.body}","fontSize":"{fontSize.lg}","fontWeight":"{fontWeight.regular}","lineHeight":"{lineHeight.relaxed}","letterSpacing":"{letterSpacing.none}","paragraphSpacing":"0","paragraphIndent":"0","textCase":"none","textDecoration":"none"}},"md":{"$type":"typography","$value":{"fontFamily":"{fontFamily.body}","fontSize":"{fontSize.md}","fontWeight":"{fontWeight.regular}","lineHeight":"{lineHeight.relaxed}","letterSpacing":"{letterSpacing.none}","paragraphSpacing":"0","paragraphIndent":"0","textCase":"none","textDecoration":"none"}},"sm":{"$type":"typography","$value":{"fontFamily":"{fontFamily.body}","fontSize":"{fontSize.sm}","fontWeight":"{fontWeight.regular}","lineHeight":"{lineHeight.normal}","letterSpacing":"{letterSpacing.none}","paragraphSpacing":"0","paragraphIndent":"0","textCase":"none","textDecoration":"none"}}},"label":{"md":{"$type":"typography","$value":{"fontFamily":"{fontFamily.body}","fontSize":"{fontSize.sm}","fontWeight":"{fontWeight.medium}","lineHeight":"{lineHeight.normal}","letterSpacing":"{letterSpacing.none}","paragraphSpacing":"0","paragraphIndent":"0","textCase":"none","textDecoration":"none"}},"sm":{"$type":"typography","$value":{"fontFamily":"{fontFamily.body}","fontSize":"{fontSize.xs}","fontWeight":"{fontWeight.medium}","lineHeight":"{lineHeight.normal}","letterSpacing":"{letterSpacing.wide}","paragraphSpacing":"0","paragraphIndent":"0","textCase":"none","textDecoration":"none"}}},"caption":{"$type":"typography","$value":{"fontFamily":"{fontFamily.body}","fontSize":"{fontSize.xs}","fontWeight":"{fontWeight.regular}","lineHeight":"{lineHeight.normal}","letterSpacing":"{letterSpacing.none}","paragraphSpacing":"0","paragraphIndent":"0","textCase":"none","textDecoration":"none"}}},"radius":{"control":{"$type":"borderRadius","$value":"{radius.md}"},"container":{"$type":"borderRadius","$value":"{radius.lg}"},"overlay":{"$type":"borderRadius","$value":"{radius.xl}"},"badge":{"$type":"borderRadius","$value":"{radius.full}"}}},"$themes":[],"$metadata":{"tokenSetOrder":["primitive","semantic"]}}</script>
 <!-- ::CHUNK:: -->
     </div>
   </main>
