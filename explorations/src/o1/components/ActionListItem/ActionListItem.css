@@ -1,0 +1,64 @@
+/* o1 ActionListItem — whole-row target; hover is a quiet surface change,
+   the chevron slides in as the affordance (restrained motion, brief §10) */
+
+.o1-actionitem {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-xl);
+  padding: var(--space-sm) var(--space-md);
+  cursor: pointer;
+  font-family: var(--font-family-body);
+  transition: background var(--motion-fast), border-color var(--motion-fast);
+}
+
+.o1-actionitem:hover {
+  background: var(--color-bg-subtle);
+  border-color: var(--color-border-subtle);
+}
+
+.o1-actionitem__text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3xs);
+  min-width: 0;
+  flex: 1;
+}
+
+.o1-actionitem__title {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+}
+
+.o1-actionitem__desc {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+.o1-actionitem__chevron {
+  width: var(--size-sm);
+  height: var(--size-sm);
+  color: var(--color-text-tertiary);
+  flex-shrink: 0;
+  opacity: 0;
+  transform: translateX(calc(-1 * var(--space-2xs)));
+  transition: opacity var(--motion-fast), transform var(--motion-fast);
+}
+
+.o1-actionitem:hover .o1-actionitem__chevron,
+.o1-actionitem:focus-visible .o1-actionitem__chevron {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .o1-actionitem__chevron {
+    transition: none;
+    transform: none;
+  }
+}

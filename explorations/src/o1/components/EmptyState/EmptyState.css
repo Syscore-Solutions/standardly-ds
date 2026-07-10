@@ -1,0 +1,44 @@
+.o1-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: var(--space-2xs);
+  padding: var(--space-3xl) var(--space-xl);
+}
+
+.o1-empty__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--size-3xl);
+  height: var(--size-3xl);
+  border-radius: var(--radius-full);
+  background: var(--color-bg-muted);
+  color: var(--color-text-tertiary); /* icon use — AA n/a for non-text */
+  margin-bottom: var(--space-xs);
+}
+
+.o1-empty__icon > svg {
+  width: var(--size-md);
+  height: var(--size-md);
+}
+
+.o1-empty__title {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.o1-empty__desc {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  margin: 0;
+  max-width: 36ch;
+}
+
+.o1-empty__action {
+  margin-top: var(--space-md);
+}

@@ -1,0 +1,50 @@
+/* o1 IconTile — tinted, not solid (the prototype used saturated solid
+   squares; o1's "purple is a decision" principle demotes them to tints) */
+
+.o1-icontile {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-tile);
+  flex-shrink: 0;
+}
+
+.o1-icontile--md {
+  width: var(--size-2xl);
+  height: var(--size-2xl);
+}
+
+.o1-icontile--md > svg {
+  width: var(--size-md);
+  height: var(--size-md);
+}
+
+.o1-icontile--lg {
+  width: var(--size-3xl);
+  height: var(--size-3xl);
+}
+
+.o1-icontile--lg > svg {
+  width: var(--size-lg);
+  height: var(--size-lg);
+}
+
+.o1-icontile--brand {
+  background: var(--color-bg-brand);
+  color: var(--color-text-brand);
+}
+
+.o1-icontile--success {
+  background: var(--color-feedback-success-bg);
+  color: var(--color-feedback-success-icon);
+}
+
+.o1-icontile--info {
+  background: var(--color-feedback-info-bg);
+  color: var(--color-feedback-info-icon);
+}
+
+.o1-icontile--neutral {
+  background: var(--color-bg-muted);
+  color: var(--color-text-secondary);
+}

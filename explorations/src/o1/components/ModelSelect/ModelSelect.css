@@ -1,0 +1,39 @@
+.o1-modelselect {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  background: var(--color-bg-subtle);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-control);
+  padding: var(--space-2xs) var(--space-sm);
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-xs);
+  cursor: pointer;
+  transition: background var(--motion-fast), border-color var(--motion-fast);
+}
+
+.o1-modelselect:hover {
+  background: var(--color-bg-muted);
+  border-color: var(--color-border-strong);
+}
+
+.o1-modelselect__spark {
+  width: var(--size-xs);
+  height: var(--size-xs);
+  color: var(--color-text-brand);
+}
+
+.o1-modelselect__label {
+  color: var(--color-text-secondary);
+}
+
+.o1-modelselect__model {
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+}
+
+.o1-modelselect__chevron {
+  width: var(--size-xs);
+  height: var(--size-xs);
+  color: var(--color-text-tertiary);
+}

@@ -1,0 +1,56 @@
+/* o1 StatusPill — soft tinted chips ("status speaks softly, twice"):
+   *.50 bg + AA-checked dark text + a shape-distinct icon per status */
+
+.o1-statuspill {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2xs);
+  border-radius: var(--radius-badge);
+  padding: var(--space-3xs) var(--space-xs);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-normal);
+  white-space: nowrap;
+}
+
+.o1-statuspill > svg {
+  width: var(--size-xs);
+  height: var(--size-xs);
+  flex-shrink: 0;
+}
+
+.o1-statuspill--pass {
+  background: var(--color-status-pass-bg);
+  color: var(--color-status-pass-text);
+}
+
+.o1-statuspill--pass > svg {
+  color: var(--color-status-pass-icon);
+}
+
+.o1-statuspill--partial {
+  background: var(--color-status-partial-bg);
+  color: var(--color-status-partial-text);
+}
+
+.o1-statuspill--partial > svg {
+  color: var(--color-status-partial-icon);
+}
+
+.o1-statuspill--fail {
+  background: var(--color-status-fail-bg);
+  color: var(--color-status-fail-text);
+}
+
+.o1-statuspill--fail > svg {
+  color: var(--color-status-fail-icon);
+}
+
+.o1-statuspill--needsEvidence {
+  background: var(--color-status-needs-evidence-bg);
+  color: var(--color-status-needs-evidence-text);
+}
+
+.o1-statuspill--needsEvidence > svg {
+  color: var(--color-status-needs-evidence-icon);
+}

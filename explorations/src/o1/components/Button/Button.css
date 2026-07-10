@@ -1,0 +1,84 @@
+/* o1 Button — pill geometry is the direction signature (radius-control = full) */
+
+.o1-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  border: 1px solid transparent;
+  border-radius: var(--radius-control);
+  font-family: var(--font-family-body);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  transition:
+    background var(--motion-fast),
+    border-color var(--motion-fast),
+    box-shadow var(--motion-fast);
+}
+
+.o1-btn--md {
+  font-size: var(--font-size-sm);
+  padding: var(--space-xs) var(--space-lg);
+  min-height: var(--size-2xl);
+}
+
+.o1-btn--sm {
+  font-size: var(--font-size-xs);
+  padding: var(--space-2xs) var(--space-md);
+  min-height: var(--size-xl);
+}
+
+.o1-btn__icon {
+  display: inline-flex;
+}
+
+.o1-btn__icon > svg {
+  width: var(--size-sm);
+  height: var(--size-sm);
+}
+
+.o1-btn--primary {
+  background: var(--color-action-primary);
+  color: var(--color-text-on-brand);
+}
+
+.o1-btn--primary:hover {
+  background: var(--color-action-primary-hover);
+}
+
+.o1-btn--primary:active {
+  background: var(--color-action-primary-active);
+}
+
+.o1-btn--tonal {
+  background: var(--color-action-tonal);
+  color: var(--color-action-tonal-text);
+}
+
+.o1-btn--tonal:hover {
+  background: var(--color-action-tonal-hover);
+}
+
+.o1-btn--secondary {
+  background: var(--color-action-secondary);
+  color: var(--color-text-primary);
+  border-color: var(--color-action-secondary-border);
+  box-shadow: var(--shadow-ambient);
+}
+
+.o1-btn--secondary:hover {
+  background: var(--color-action-secondary-hover);
+}
+
+.o1-btn:disabled {
+  background: var(--color-action-primary-disabled);
+  color: var(--color-text-disabled);
+  border-color: transparent;
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+.o1-btn:focus-visible {
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: 2px;
+  border-radius: var(--radius-control);
+}

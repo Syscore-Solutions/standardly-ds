@@ -1,0 +1,37 @@
+.o1-confidence {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.o1-confidence__track {
+  display: inline-block;
+  background: var(--color-confidence-track);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.o1-confidence--md .o1-confidence__track {
+  width: 96px;
+  height: 6px;
+}
+
+.o1-confidence--sm .o1-confidence__track {
+  width: 64px;
+  height: 4px;
+}
+
+.o1-confidence__fill {
+  display: block;
+  height: 100%;
+  background: var(--color-confidence-fill);
+  border-radius: var(--radius-full);
+  transition: width var(--motion-standard);
+}
+
+.o1-confidence__value {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+  min-width: 4ch;
+}
