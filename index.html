@@ -1,0 +1,902 @@
+<!doctype html>
+<html lang="en" data-direction="system">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>standardly-ds — Drawing Set</title>
+<meta name="description" content="Project dashboard for the Standardly design system: sprint tasks, roadmap, architecture, changelog, tokens, components, design directions.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230A1D30'/%3E%3Cpath d='M6 22 L16 8 L26 22 Z' fill='none' stroke='%23E8622C' stroke-width='2.5'/%3E%3Cline x1='6' y1='26' x2='26' y2='26' stroke='%237FB4D9' stroke-width='2'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@500;600;700&family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Cal+Sans&family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   standardly-ds — Drawing Set dashboard
+   Self-contained. Chrome aesthetic: "drawing set / site survey".
+   The dashboard deliberately does NOT use the design system's
+   own tokens for its chrome — token values appear faithfully
+   only inside the Tokens / Directions preview surfaces.
+   ============================================================ */
+
+:root{
+  /* chrome palette */
+  --ink:#0A1D30;            /* blueprint ink (rail) */
+  --panel:#0F2A43;          /* raised panel on ink */
+  --bp:#7FB4D9;             /* blueprint line */
+  --bp-soft:rgba(127,180,217,.30);
+  --bp-faint:rgba(127,180,217,.10);
+  --paper:#F6F7F4;          /* drafting paper */
+  --card:#FFFFFF;
+  --text:#1B2733;
+  --sub:#5A6873;
+  --hair:#D9DFE1;
+  --hair-2:#E9ECEC;
+  --orange:#E8622C;         /* safety orange — "you are here" */
+  --orange-deep:#B5451A;    /* AA-safe orange for small text */
+  --orange-bg:#FCEDE4;
+  /* task-status hues (AA on paper) */
+  --st-done:#1E7A46;   --st-done-bg:#E7F3EB;
+  --st-prog:#B5451A;   --st-prog-bg:#FCEDE4;
+  --st-todo:#54626D;   --st-todo-bg:#EEF1F2;
+  --st-block:#B92531;  --st-block-bg:#FBEAEB;
+  /* type */
+  --display:'Big Shoulders Display','Arial Narrow','Avenir Next Condensed',sans-serif;
+  --bodyf:'Archivo',-apple-system,'Segoe UI',sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,'SF Mono',Menlo,monospace;
+  /* direction preview surface variables (remapped by [data-direction]) */
+  --dir-accent:#693ee0;         /* semantic action.primary  → purple.600 */
+  --dir-accent-hover:#5b2cc9;   /* action.primaryHover      → purple.700 */
+  --dir-surface:#ffffff;        /* bg.default */
+  --dir-surface-subtle:#f5f7fa; /* bg.subtle  → slate.50 */
+  --dir-text:#181b25;           /* text.primary → slate.900 */
+  --dir-border:#eaecf0;         /* border.default → slate.200 */
+  --dir-radius-control:8px;     /* radius.control → radius.md */
+  --dir-radius-container:12px;  /* radius.container → radius.lg */
+}
+/* o1/o2/o3 remap hooks — mechanism is live, values are identical
+   until the direction definitions land (S1-T03). Swap values per
+   direction here when Naman's research locks them. */
+html[data-direction="o1"],
+html[data-direction="o2"],
+html[data-direction="o3"]{ /* pending S1-T03 — intentionally identical */ }
+
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--bodyf);font-size:15px;line-height:1.55;color:var(--text);
+  background:var(--paper);-webkit-font-smoothing:antialiased;
+}
+img,svg{max-width:100%}
+a{color:var(--orange-deep)}
+button{font:inherit;cursor:pointer;background:none;border:none;color:inherit}
+:focus-visible{outline:2px solid var(--orange);outline-offset:2px;border-radius:1px}
+::selection{background:var(--bp);color:var(--ink)}
+
+.skip{position:absolute;left:-9999px;top:0;background:var(--ink);color:#fff;padding:10px 16px;z-index:99;font-family:var(--mono);font-size:12px}
+.skip:focus{left:8px;top:8px}
+
+/* ---------- frame ---------- */
+.frame{display:grid;grid-template-columns:272px minmax(0,1fr);min-height:100vh}
+
+/* ---------- rail (signature: drawing-set sheet index) ---------- */
+.rail{
+  position:sticky;top:0;height:100vh;overflow-y:auto;overflow-x:hidden;
+  background:
+    linear-gradient(var(--bp-faint) 1px,transparent 1px),
+    linear-gradient(90deg,var(--bp-faint) 1px,transparent 1px),
+    var(--ink);
+  background-size:28px 28px,28px 28px,auto;
+  color:#C9D9E5;display:flex;flex-direction:column;
+  border-right:3px solid var(--ink);
+  scrollbar-width:thin;scrollbar-color:var(--panel) var(--ink);
+}
+.rail-inner{display:flex;flex-direction:column;min-height:100%;padding:22px 0 18px}
+
+.brand{padding:0 22px 16px;border-bottom:1px solid var(--bp-soft)}
+.brand-mark{display:flex;align-items:center;gap:10px}
+.brand-glyph{flex:none;width:34px;height:34px;border:1.5px solid var(--bp);display:grid;place-items:center}
+.brand-glyph svg{display:block}
+.brand-name{font-family:var(--display);font-weight:700;font-size:26px;letter-spacing:.04em;color:#fff;line-height:1;text-transform:uppercase}
+.brand-sub{font-family:var(--mono);font-size:10px;letter-spacing:.22em;color:var(--bp);margin-top:6px;text-transform:uppercase}
+
+/* title block — like a drawing sheet's title block */
+.titleblock{margin:14px 22px 0;border:1px solid var(--bp-soft);font-family:var(--mono);font-size:10.5px}
+.tb-row{display:grid;grid-template-columns:1fr 1fr}
+.tb-row + .tb-row{border-top:1px solid var(--bp-soft)}
+.tb-cell{padding:7px 9px;min-width:0}
+.tb-cell + .tb-cell{border-left:1px solid var(--bp-soft)}
+.tb-k{display:block;font-size:8.5px;letter-spacing:.18em;color:#7E97A8;text-transform:uppercase;margin-bottom:2px}
+.tb-v{color:#E8F0F5;letter-spacing:.03em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tb-v.hot{color:var(--orange)}
+#data-mode[data-mode="live"]{color:#7FE0A8}
+#data-mode[data-mode="mixed"]{color:#FFD268}
+
+/* sheet index nav */
+.sheetnav{margin-top:20px;flex:1}
+.sheetnav-label{font-family:var(--mono);font-size:9px;letter-spacing:.24em;color:#7E97A8;text-transform:uppercase;padding:0 22px;margin-bottom:8px}
+.sheet-tab{
+  display:flex;align-items:center;gap:12px;width:100%;text-align:left;
+  padding:11px 22px;color:#A7BCCB;border-left:3px solid transparent;
+  transition:background .15s,color .15s;
+}
+.sheet-tab:hover{background:rgba(127,180,217,.08);color:#fff}
+.sheet-tab[aria-selected="true"]{
+  background:linear-gradient(90deg,rgba(232,98,44,.14),transparent 70%);
+  border-left-color:var(--orange);color:#fff;
+}
+.sheet-tab .code{font-family:var(--mono);font-size:10px;letter-spacing:.08em;color:#7E97A8;width:44px;flex:none}
+.sheet-tab[aria-selected="true"] .code{color:var(--orange)}
+.sheet-tab .name{font-family:var(--display);font-weight:600;font-size:17px;letter-spacing:.06em;text-transform:uppercase;line-height:1}
+.sheet-tab .badge-n{margin-left:auto;font-family:var(--mono);font-size:9.5px;color:#7E97A8}
+
+/* direction switcher */
+.dirblock{margin:18px 22px 0;padding-top:16px;border-top:1px solid var(--bp-soft)}
+.dir-label{font-family:var(--mono);font-size:9px;letter-spacing:.24em;color:#7E97A8;text-transform:uppercase;margin-bottom:8px;display:flex;justify-content:space-between}
+.dir-label .pend{color:var(--orange)}
+.dirseg{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--bp-soft)}
+.dirseg button{
+  font-family:var(--mono);font-size:11px;padding:7px 0;color:#A7BCCB;letter-spacing:.06em;
+  border-right:1px solid var(--bp-soft);
+}
+.dirseg button:last-child{border-right:none}
+.dirseg button:hover{background:rgba(127,180,217,.10)}
+.dirseg button[aria-pressed="true"]{background:var(--bp);color:var(--ink);font-weight:600}
+
+/* countdown */
+.countdown{margin:18px 22px 0;border:1.5px solid var(--orange);padding:12px 14px;position:relative}
+.countdown::before{content:"";position:absolute;inset:4px;border:1px dashed rgba(232,98,44,.45);pointer-events:none}
+.cd-num{font-family:var(--display);font-weight:700;font-size:44px;line-height:.9;color:var(--orange);letter-spacing:.02em}
+.cd-lbl{font-family:var(--mono);font-size:9.5px;letter-spacing:.18em;color:#E8F0F5;text-transform:uppercase;margin-top:6px;line-height:1.6}
+
+.rail-foot{margin:16px 22px 0;font-family:var(--mono);font-size:9px;color:#5F7585;letter-spacing:.06em;line-height:1.7}
+
+/* ---------- content ---------- */
+.content{min-width:0}
+.wrap{max-width:1180px;margin:0 auto;padding:34px 44px 110px}
+
+/* data banner (snapshot fallback) */
+.databar{display:none;margin-bottom:22px;border:1px solid var(--orange);background:var(--orange-bg);
+  padding:10px 14px;font-family:var(--mono);font-size:11.5px;color:var(--orange-deep);letter-spacing:.02em}
+.databar.show{display:block}
+
+/* sheet header per tab */
+.sheet-head{display:flex;align-items:flex-end;gap:18px;padding-bottom:14px;border-bottom:2.5px solid var(--ink)}
+.sheet-code{flex:none;font-family:var(--mono);font-size:12px;letter-spacing:.1em;border:1.5px solid var(--ink);padding:6px 9px;color:var(--ink)}
+.sheet-head h1{font-family:var(--display);font-weight:700;font-size:46px;line-height:.92;letter-spacing:.02em;text-transform:uppercase;color:var(--ink)}
+.sheet-sub{font-family:var(--mono);font-size:11px;color:var(--sub);letter-spacing:.06em;margin-top:7px;text-transform:uppercase}
+.sheet-sub .hot{color:var(--orange-deep)}
+.ruler{height:9px;margin-top:5px;background:
+  repeating-linear-gradient(90deg,var(--ink) 0 1px,transparent 1px 10px);
+  -webkit-mask-image:linear-gradient(90deg,#000 60%,transparent);mask-image:linear-gradient(90deg,#000 60%,transparent);
+  opacity:.5}
+
+/* section label inside a sheet */
+.sec{margin-top:44px}
+.sec-label{display:flex;align-items:baseline;gap:12px;margin-bottom:16px}
+.sec-label .no{font-family:var(--mono);font-size:11px;color:var(--orange-deep);letter-spacing:.08em}
+.sec-label h2{font-family:var(--display);font-weight:600;font-size:24px;letter-spacing:.04em;text-transform:uppercase;color:var(--ink)}
+.sec-label .rule{flex:1;height:1px;background:var(--hair);align-self:center}
+.sec-note{font-size:13px;color:var(--sub);max-width:70ch;margin:-8px 0 16px}
+
+/* generic card */
+.card{background:var(--card);border:1px solid var(--hair);border-radius:2px}
+
+/* pills, chips */
+.pill{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;
+  text-transform:uppercase;padding:3px 9px;border-radius:2px;white-space:nowrap}
+.pill::before{content:"";width:7px;height:7px;flex:none}
+.pill.todo{background:var(--st-todo-bg);color:var(--st-todo)}
+.pill.todo::before{border:1.5px solid var(--st-todo);border-radius:50%}
+.pill.prog{background:var(--st-prog-bg);color:var(--st-prog)}
+.pill.prog::before{background:linear-gradient(90deg,var(--st-prog) 50%,transparent 50%);border:1.5px solid var(--st-prog);border-radius:50%}
+.pill.done{background:var(--st-done-bg);color:var(--st-done)}
+.pill.done::before{background:var(--st-done);border-radius:50%}
+.pill.block{background:var(--st-block-bg);color:var(--st-block)}
+.pill.block::before{background:var(--st-block);clip-path:polygon(50% 0,100% 100%,0 100%)}
+.chip{display:inline-block;font-family:var(--mono);font-size:10.5px;letter-spacing:.04em;
+  border:1px solid var(--hair);background:var(--card);padding:1px 7px;border-radius:2px;color:var(--sub);white-space:nowrap}
+.chip.id{color:var(--ink);border-color:#B9C4C9}
+.chip.owner{background:var(--ink);color:#fff;border-color:var(--ink)}
+.chip.dep{color:var(--sub)}
+code{font-family:var(--mono);font-size:.9em;background:var(--hair-2);padding:1px 5px;border-radius:2px}
+
+/* stat strip */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;background:var(--hair);border:1px solid var(--hair);margin-top:24px}
+.stat{background:var(--card);padding:14px 16px}
+.stat .v{font-family:var(--display);font-weight:700;font-size:34px;line-height:1;color:var(--ink)}
+.stat .v .dim{color:#B9C4C9}
+.stat .v.hot{color:var(--orange)}
+.stat .k{font-family:var(--mono);font-size:9.5px;letter-spacing:.16em;color:var(--sub);text-transform:uppercase;margin-top:6px}
+
+/* progress bar */
+.meter{height:8px;background:var(--hair-2);border:1px solid var(--hair);position:relative;margin-top:8px}
+.meter > span{position:absolute;inset:0;background:repeating-linear-gradient(-45deg,var(--orange) 0 6px,var(--orange-deep) 6px 12px);width:0%}
+
+/* ---------- tasks tab ---------- */
+.task-card{margin-top:16px;padding:0}
+.task-head{display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:14px 18px;border-bottom:1px solid var(--hair-2)}
+.task-head .tid{font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:.04em;color:var(--orange-deep);border:1.5px solid currentColor;padding:3px 8px}
+.task-head h3{font-family:var(--bodyf);font-weight:600;font-size:16.5px;color:var(--ink);flex:1;min-width:220px}
+.task-body{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:0}
+.task-col{padding:16px 18px;min-width:0}
+.task-col + .task-col{border-left:1px solid var(--hair-2)}
+.task-col h4{font-family:var(--mono);font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--sub);margin-bottom:9px}
+.task-col h4:not(:first-child){margin-top:18px}
+.task-context{font-size:13.5px;color:var(--text);max-width:64ch}
+.task-meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
+.cl{list-style:none}
+.cl li{display:flex;gap:9px;font-size:13px;padding:3.5px 0;color:var(--text)}
+.cl li.indent{padding-left:24px}
+.cl .bx{flex:none;width:14px;height:14px;margin-top:2.5px;border:1.5px solid #9AA7AE;border-radius:2px;position:relative}
+.cl li.x .bx{background:var(--st-done);border-color:var(--st-done)}
+.cl li.x .bx::after{content:"";position:absolute;inset:2px 3px 4px 3px;border:solid #fff;border-width:0 0 2px 2px;transform:rotate(-45deg)}
+.cl li.x{color:var(--sub);text-decoration:line-through;text-decoration-color:#B9C4C9;text-decoration-thickness:1px}
+.cl li.tilde .bx{border-color:var(--st-prog);background:linear-gradient(90deg,var(--st-prog) 50%,#fff 50%)}
+.cl li.bang .bx{border-color:var(--st-block);background:var(--st-block-bg)}
+.task-notes{border-top:1px dashed var(--hair);padding:10px 18px;font-size:12.5px;color:var(--sub)}
+.task-notes strong{color:var(--text)}
+
+.daygrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin-top:16px}
+.daycol{border:1px solid var(--hair);background:var(--card)}
+.daycol.call{border:1.5px solid var(--orange)}
+.day-head{padding:9px 13px;border-bottom:1px solid var(--hair-2);font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink);display:flex;justify-content:space-between;gap:8px}
+.daycol.call .day-head{background:var(--orange-bg);color:var(--orange-deep)}
+.mini{padding:10px 13px;border-bottom:1px solid var(--hair-2);font-size:12.5px}
+.mini:last-child{border-bottom:none}
+.mini .row1{display:flex;align-items:center;gap:8px;margin-bottom:4px}
+.mini .deps{margin-top:5px;display:flex;flex-wrap:wrap;gap:4px}
+
+.callout{margin-top:24px;border:1.5px dashed var(--orange);background:var(--orange-bg);padding:14px 18px}
+.callout h4{font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--orange-deep);margin-bottom:8px}
+.callout ul{list-style:none}
+.callout li{font-size:13px;padding:2px 0;display:flex;gap:8px}
+.callout li::before{content:"→";font-family:var(--mono);color:var(--orange-deep)}
+
+/* ---------- roadmap tab ---------- */
+.sprint-band{margin-top:16px;border:1.5px solid var(--ink);background:var(--card)}
+.sprint-band-head{display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding:13px 18px;border-bottom:1px solid var(--hair);background:linear-gradient(90deg,#F0F3F0,transparent)}
+.sprint-band-head h3{font-family:var(--display);font-weight:600;font-size:22px;letter-spacing:.03em;text-transform:uppercase;color:var(--ink);margin-right:auto}
+.sprint-desc{padding:12px 18px;border-bottom:1px solid var(--hair-2);font-size:13px;color:var(--sub);max-width:100ch}
+.phase{margin-top:14px;display:grid;grid-template-columns:150px minmax(0,1fr);border:1px solid var(--hair);background:var(--card)}
+.phase-side{border-right:1px solid var(--hair);padding:16px;display:flex;flex-direction:column;gap:8px}
+.phase-side .pno{font-family:var(--display);font-weight:700;font-size:38px;line-height:1;color:#C6CFD3}
+.phase.active .phase-side .pno{color:var(--orange)}
+.phase.active{border-color:var(--orange)}
+.phase-side .pst{font-family:var(--mono);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--sub)}
+.phase-main{padding:14px 18px;min-width:0}
+.phase-main h3{font-family:var(--bodyf);font-weight:600;font-size:15.5px;color:var(--ink)}
+.phase-main .pdesc{font-size:12.5px;color:var(--sub);margin:5px 0 10px;max-width:90ch}
+.ph-task{display:flex;gap:9px;align-items:flex-start;font-size:13px;padding:3px 0}
+.ph-task .chip{margin-top:1px}
+
+/* ---------- architecture tab ---------- */
+.legend{display:flex;flex-wrap:wrap;gap:18px;margin-top:14px;font-family:var(--mono);font-size:10.5px;color:var(--sub);letter-spacing:.04em}
+.legend span{display:inline-flex;align-items:center;gap:7px}
+.lg-solid{width:22px;height:12px;border:1.5px solid var(--ink);background:var(--card)}
+.lg-dash{width:22px;height:12px;border:1.5px dashed #9AA7AE;background:transparent}
+.lg-orange{width:22px;height:12px;border:1.5px solid var(--orange);background:var(--orange-bg)}
+.diagram{margin-top:16px;border:1px solid var(--hair);background:
+  linear-gradient(var(--hair-2) 1px,transparent 1px),
+  linear-gradient(90deg,var(--hair-2) 1px,transparent 1px),
+  var(--card);
+  background-size:26px 26px;padding:28px}
+.dg-layer{border:1.5px solid var(--ink);background:var(--card);padding:14px 18px;position:relative;max-width:760px;margin:0 auto}
+.dg-layer.planned{border-style:dashed;border-color:#9AA7AE}
+.dg-tag{position:absolute;top:-9px;left:14px;background:var(--ink);color:#fff;font-family:var(--mono);font-size:9px;letter-spacing:.14em;padding:2px 8px;text-transform:uppercase}
+.dg-layer.planned .dg-tag{background:#9AA7AE}
+.dg-layer h3{font-family:var(--display);font-weight:600;font-size:19px;letter-spacing:.04em;text-transform:uppercase;color:var(--ink);margin-bottom:3px}
+.dg-layer.planned h3{color:var(--sub)}
+.dg-layer p{font-size:12.5px;color:var(--sub);max-width:70ch}
+.dg-items{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px}
+.dg-items .chip.built{border-color:var(--ink);color:var(--ink);font-weight:500}
+.dg-items .chip.plan{border-style:dashed}
+.dg-items .chip.hot{border-color:var(--orange);color:var(--orange-deep);background:var(--orange-bg)}
+.dg-arrow{display:flex;flex-direction:column;align-items:center;max-width:760px;margin:0 auto;padding:2px 0}
+.dg-arrow .lbl{font-family:var(--mono);font-size:10px;color:var(--sub);letter-spacing:.05em;padding:3px 0}
+.dg-arrow svg{display:block}
+.pipe{display:flex;align-items:stretch;gap:0;margin-top:16px;overflow-x:auto;padding-bottom:6px}
+.pipe-stage{flex:1;min-width:150px;border:1.5px solid var(--ink);background:var(--card);padding:12px 14px;position:relative}
+.pipe-stage.planned{border-style:dashed;border-color:#9AA7AE}
+.pipe-stage .pnum{font-family:var(--mono);font-size:9px;letter-spacing:.14em;color:var(--orange-deep)}
+.pipe-stage h4{font-family:var(--bodyf);font-weight:600;font-size:13.5px;color:var(--ink);margin:3px 0 4px}
+.pipe-stage.planned h4{color:var(--sub)}
+.pipe-stage p{font-size:11.5px;color:var(--sub)}
+.pipe-join{flex:none;display:flex;align-items:center;padding:0 2px;color:var(--ink)}
+.synctable{width:100%;border-collapse:collapse;margin-top:16px;background:var(--card);font-size:12.5px}
+.synctable th{font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--sub);text-align:left;padding:9px 12px;border:1px solid var(--hair);background:#F0F3F0}
+.synctable td{padding:9px 12px;border:1px solid var(--hair);vertical-align:top}
+.synctable td:first-child{font-weight:500;color:var(--ink)}
+.tablewrap{overflow-x:auto;margin-top:0}
+.reality{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px}
+.reality .card{padding:16px 18px}
+.reality h3{font-family:var(--display);font-weight:600;font-size:20px;letter-spacing:.04em;text-transform:uppercase;margin-bottom:10px}
+.reality .built-h{color:var(--st-done)}
+.reality .plan-h{color:var(--sub)}
+.reality ul{list-style:none}
+.reality li{font-size:13px;padding:3px 0;display:flex;gap:9px}
+.reality .built-l li::before{content:"■";color:var(--st-done);font-size:10px;line-height:1.9}
+.reality .plan-l li::before{content:"□";color:#9AA7AE;font-size:10px;line-height:1.9}
+.reality .plan-l{color:var(--sub)}
+
+/* ---------- changelog tab ---------- */
+.timeline{margin-top:18px;position:relative;padding-left:26px}
+.timeline::before{content:"";position:absolute;left:7px;top:6px;bottom:6px;width:1.5px;
+  background:repeating-linear-gradient(var(--ink) 0 7px,transparent 7px 12px)}
+.log-entry{position:relative;margin-bottom:18px}
+.log-entry::before{content:"";position:absolute;left:-26px;top:8px;width:15px;height:15px;background:var(--paper);
+  border:2px solid var(--ink);border-radius:50%}
+.log-entry.latest::before{background:var(--orange);border-color:var(--orange)}
+.log-date{font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:.05em;color:var(--ink);display:flex;gap:10px;align-items:baseline}
+.log-date .dw{color:var(--sub);font-weight:400;font-size:10.5px;text-transform:uppercase;letter-spacing:.14em}
+.log-body{margin-top:8px;padding:12px 16px}
+.log-body ul{list-style:none}
+.log-body li{font-size:13px;padding:4px 0;display:flex;gap:10px}
+.log-body li::before{content:"·";font-family:var(--mono);color:var(--orange-deep);font-weight:600;flex:none}
+.era{position:relative;margin:26px 0 26px;border-top:2px solid var(--ink);text-align:center}
+.era span{position:relative;top:-11px;background:var(--paper);padding:0 14px;font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--sub)}
+
+/* ---------- tokens tab ---------- */
+.tk-note{font-family:var(--mono);font-size:11px;color:var(--sub);margin-top:12px;letter-spacing:.02em}
+.ramp{margin-top:14px}
+.ramp-head{display:flex;align-items:baseline;gap:10px;margin-bottom:6px}
+.ramp-head h3{font-family:var(--mono);font-size:12.5px;font-weight:600;letter-spacing:.05em;color:var(--ink)}
+.ramp-head .use{font-size:11.5px;color:var(--sub)}
+.ramp-row{display:grid;grid-template-columns:repeat(11,minmax(0,1fr));border:1px solid var(--hair)}
+.ramp-row.n2{grid-template-columns:repeat(2,minmax(0,120px))}
+.sw{aspect-ratio:1/.95;display:flex;flex-direction:column;justify-content:space-between;padding:6px 7px;
+  font-family:var(--mono);font-size:9px;letter-spacing:.02em;border:none;text-align:left;position:relative}
+.sw:hover::after{content:"copy";position:absolute;right:5px;bottom:5px;font-size:8px;opacity:.75;letter-spacing:.1em;text-transform:uppercase}
+.sw .stp{font-weight:600;font-size:10px}
+.sw .hex{opacity:.85}
+.semgroup{margin-top:14px}
+.semrow{display:flex;align-items:center;gap:12px;padding:8px 14px;border:1px solid var(--hair);border-top:none;background:var(--card);font-size:12.5px;flex-wrap:wrap}
+.semrow:first-of-type{border-top:1px solid var(--hair)}
+.semrow .swx{flex:none;width:30px;height:30px;border:1px solid rgba(0,0,0,.12);border-radius:2px}
+.semrow .tname{font-family:var(--mono);font-size:12px;color:var(--ink);font-weight:500;min-width:230px}
+.semrow .chain{font-family:var(--mono);font-size:11px;color:var(--sub)}
+.semrow .chain b{color:var(--orange-deep);font-weight:500}
+.spec{margin-top:12px;padding:16px 20px;display:flex;align-items:baseline;gap:22px;flex-wrap:wrap}
+.spec .render{color:#181b25;flex:1;min-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.spec .meta{font-family:var(--mono);font-size:10.5px;color:var(--sub);text-align:right;line-height:1.8;flex:none}
+.scalebars{margin-top:12px;border:1px solid var(--hair);background:var(--card);padding:14px 18px}
+.sbar{display:grid;grid-template-columns:64px 1fr 56px;align-items:center;gap:14px;padding:4px 0;font-family:var(--mono);font-size:11px}
+.sbar .nm{color:var(--ink);font-weight:500}
+.sbar .bar{height:13px;background:repeating-linear-gradient(-45deg,var(--ink) 0 5px,#2E4A63 5px 10px)}
+.sbar .vv{color:var(--sub);text-align:right}
+.radgrid{display:flex;flex-wrap:wrap;gap:14px;margin-top:12px}
+.radbox{width:104px;text-align:center}
+.radbox .box{height:76px;border:2px solid var(--ink);background:var(--card);margin-bottom:6px}
+.radbox .lbl{font-family:var(--mono);font-size:10.5px;color:var(--sub)}
+.radbox .lbl b{color:var(--ink);font-weight:600}
+.missing{margin-top:16px;border:1.5px dashed #9AA7AE;padding:16px 18px;background:transparent}
+.missing h3{font-family:var(--mono);font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--sub);margin-bottom:10px}
+.missing ul{list-style:none;columns:2;column-gap:32px}
+.missing li{font-size:12.5px;color:var(--sub);padding:3px 0;display:flex;gap:8px;break-inside:avoid}
+.missing li::before{content:"□";color:#9AA7AE}
+.missing li b{color:var(--text);font-weight:500}
+
+/* ---------- components tab ---------- */
+.zero{display:flex;align-items:center;gap:26px;margin-top:18px;border:1.5px solid var(--ink);background:var(--card);padding:18px 22px;flex-wrap:wrap}
+.zero .big{font-family:var(--display);font-weight:700;font-size:58px;line-height:.9;color:var(--ink)}
+.zero .big .dim{color:#C6CFD3}
+.zero .zr{flex:1;min-width:240px}
+.zero p{font-size:13px;color:var(--sub);max-width:70ch}
+.invgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(255px,1fr));gap:14px;margin-top:16px}
+.inv{padding:14px 16px;position:relative}
+.inv h3{font-family:var(--display);font-weight:600;font-size:21px;letter-spacing:.03em;text-transform:uppercase;color:var(--ink)}
+.inv .role{font-size:12px;color:var(--sub);margin:4px 0 10px;min-height:2.6em}
+.inv .kv{font-family:var(--mono);font-size:10px;color:var(--sub);line-height:1.9;letter-spacing:.02em}
+.inv .kv b{color:var(--ink);font-weight:500}
+.inv .sig{position:absolute;top:12px;right:12px}
+.pipe2{margin-top:16px}
+
+/* ---------- directions tab ---------- */
+.dir-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-top:18px}
+.dir-card{position:relative;overflow:hidden}
+.dir-card .dc-head{padding:14px 18px;border-bottom:1px solid var(--hair-2);display:flex;align-items:baseline;gap:10px}
+.dir-card .dc-head .o{font-family:var(--display);font-weight:700;font-size:34px;color:var(--ink);line-height:1}
+.dir-card .dc-head .nm{font-family:var(--mono);font-size:11px;color:var(--sub);letter-spacing:.06em}
+.stamp{position:absolute;top:22px;right:-34px;transform:rotate(32deg);background:var(--orange);color:#fff;
+  font-family:var(--mono);font-size:9px;letter-spacing:.2em;padding:4px 40px;text-transform:uppercase}
+.dc-body{padding:14px 18px;font-size:12.5px;color:var(--sub)}
+.dc-body h4{font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--sub);margin:12px 0 6px}
+.dc-body h4:first-child{margin-top:0}
+/* the live preview surface — styled ONLY by --dir-* variables */
+.preview{border:1px solid var(--dir-border);background:var(--dir-surface);border-radius:var(--dir-radius-container);padding:14px;font-family:'Geist',var(--bodyf)}
+.preview .p-btn{display:inline-block;background:var(--dir-accent);color:#fff;border-radius:var(--dir-radius-control);
+  padding:7px 14px;font-size:12.5px;font-weight:500;transition:background .12s}
+.preview .p-btn:hover{background:var(--dir-accent-hover)}
+.preview .p-pill{display:inline-block;margin-left:8px;background:var(--dir-surface-subtle);border:1px solid var(--dir-border);
+  color:var(--dir-text);border-radius:999px;padding:4px 11px;font-size:11px}
+.preview .p-bar{margin-top:12px;height:6px;background:var(--dir-surface-subtle);border-radius:3px;overflow:hidden}
+.preview .p-bar span{display:block;height:100%;width:64%;background:var(--dir-accent)}
+.preview .p-cap{margin-top:6px;font-size:10.5px;color:var(--dir-text);opacity:.65}
+.axes{margin-top:18px}
+.axes-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
+.axes .card{padding:16px 18px}
+.axes h3{font-family:var(--display);font-weight:600;font-size:20px;letter-spacing:.04em;text-transform:uppercase;margin-bottom:10px}
+.axes .lock-h{color:var(--st-block)}
+.axes .free-h{color:var(--st-done)}
+.axes ul{list-style:none}
+.axes li{font-size:13px;padding:3px 0;display:flex;gap:9px}
+.axes .lock-l li::before{content:"⊘";color:var(--st-block);font-family:var(--mono)}
+.axes .free-l li::before{content:"↺";color:var(--st-done);font-family:var(--mono)}
+
+/* ---------- misc ---------- */
+.toast{position:fixed;bottom:20px;right:20px;background:var(--ink);color:#fff;font-family:var(--mono);font-size:11.5px;
+  padding:9px 15px;border-left:3px solid var(--orange);opacity:0;transform:translateY(8px);transition:.2s;pointer-events:none;z-index:50}
+.toast.show{opacity:1;transform:none}
+[role="tabpanel"]{display:none}
+[role="tabpanel"].active{display:block;animation:sheetin .3s ease}
+@keyframes sheetin{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* ---------- responsive ---------- */
+@media (max-width:980px){
+  .frame{grid-template-columns:1fr}
+  .rail{position:static;height:auto}
+  .rail-inner{padding:18px 0 14px}
+  .sheetnav{display:flex;overflow-x:auto;gap:0;margin-top:14px;flex:none}
+  .sheetnav-label{display:none}
+  .sheet-tab{flex:none;border-left:none;border-bottom:3px solid transparent;padding:10px 14px}
+  .sheet-tab[aria-selected="true"]{border-left-color:transparent;border-bottom-color:var(--orange);background:none}
+  .sheet-tab .code{width:auto;margin-right:2px}
+  .countdown{margin-top:14px}
+  .wrap{padding:26px 20px 90px}
+  .sheet-head h1{font-size:34px}
+  .task-body{grid-template-columns:1fr}
+  .task-col + .task-col{border-left:none;border-top:1px solid var(--hair-2)}
+  .reality{grid-template-columns:1fr}
+  .axes-grid{grid-template-columns:1fr}
+  .phase{grid-template-columns:1fr}
+  .phase-side{flex-direction:row;align-items:baseline;border-right:none;border-bottom:1px solid var(--hair)}
+  .ramp-row{grid-template-columns:repeat(6,minmax(0,1fr))}
+  .missing ul{columns:1}
+  .semrow .tname{min-width:0}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  html{scroll-behavior:auto}
+}
+@media print{
+  .rail{display:none}.frame{grid-template-columns:1fr}
+  [role="tabpanel"]{display:block!important;page-break-before:always}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#content">Skip to content</a>
+<div class="frame">
+
+  <!-- ============ RAIL — sheet index / title block ============ -->
+  <aside class="rail" aria-label="Sheet index">
+    <div class="rail-inner">
+      <div class="brand">
+        <div class="brand-mark">
+          <span class="brand-glyph" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 20 20"><path d="M2.5 14.5 L10 3.5 L17.5 14.5 Z" fill="none" stroke="#E8622C" stroke-width="1.8"/><line x1="2.5" y1="17.5" x2="17.5" y2="17.5" stroke="#7FB4D9" stroke-width="1.6"/></svg>
+          </span>
+          <span class="brand-name">Standardly-DS</span>
+        </div>
+        <div class="brand-sub">Design System · Drawing Set</div>
+      </div>
+
+      <div class="titleblock" aria-label="Project title block">
+        <div class="tb-row">
+          <div class="tb-cell"><span class="tb-k">Phase</span><span class="tb-v hot">1 — Tokens only</span></div>
+          <div class="tb-cell"><span class="tb-k">Sprint</span><span class="tb-v">S1 · active</span></div>
+        </div>
+        <div class="tb-row">
+          <div class="tb-cell"><span class="tb-k">Data</span><span class="tb-v" id="data-mode" data-mode="">loading…</span></div>
+          <div class="tb-cell"><span class="tb-k">Rev</span><span class="tb-v" id="rev-date">—</span></div>
+        </div>
+      </div>
+
+      <nav class="sheetnav" role="tablist" aria-label="Dashboard sections" id="sheetnav">
+        <div class="sheetnav-label">Sheet index</div>
+        <button class="sheet-tab" role="tab" id="tab-btn-tasks" aria-controls="tab-tasks" aria-selected="true" data-tab="tasks">
+          <span class="code">SD-01</span><span class="name">Tasks</span><span class="badge-n" id="nav-n-tasks"></span>
+        </button>
+        <button class="sheet-tab" role="tab" id="tab-btn-roadmap" aria-controls="tab-roadmap" aria-selected="false" tabindex="-1" data-tab="roadmap">
+          <span class="code">SD-02</span><span class="name">Roadmap</span>
+        </button>
+        <button class="sheet-tab" role="tab" id="tab-btn-architecture" aria-controls="tab-architecture" aria-selected="false" tabindex="-1" data-tab="architecture">
+          <span class="code">SD-03</span><span class="name">Architecture</span>
+        </button>
+        <button class="sheet-tab" role="tab" id="tab-btn-changelog" aria-controls="tab-changelog" aria-selected="false" tabindex="-1" data-tab="changelog">
+          <span class="code">SD-04</span><span class="name">Changelog</span>
+        </button>
+        <button class="sheet-tab" role="tab" id="tab-btn-tokens" aria-controls="tab-tokens" aria-selected="false" tabindex="-1" data-tab="tokens">
+          <span class="code">SD-05</span><span class="name">Tokens</span><span class="badge-n" id="nav-n-tokens"></span>
+        </button>
+        <button class="sheet-tab" role="tab" id="tab-btn-components" aria-controls="tab-components" aria-selected="false" tabindex="-1" data-tab="components">
+          <span class="code">SD-06</span><span class="name">Components</span><span class="badge-n">0/13</span>
+        </button>
+        <button class="sheet-tab" role="tab" id="tab-btn-directions" aria-controls="tab-directions" aria-selected="false" tabindex="-1" data-tab="directions">
+          <span class="code">SD-07</span><span class="name">Directions</span>
+        </button>
+      </nav>
+
+      <div class="dirblock">
+        <div class="dir-label"><span>Direction set</span><span class="pend" id="dir-pend">pending S1-T03</span></div>
+        <div class="dirseg" role="group" aria-label="Design direction preview switcher" id="dirseg">
+          <button aria-pressed="true" data-dir="system" title="System defaults (current tokens.json semantic mapping)">SYS</button>
+          <button aria-pressed="false" data-dir="o1" title="Direction o1 — remap pending S1-T03">O1</button>
+          <button aria-pressed="false" data-dir="o2" title="Direction o2 — remap pending S1-T03">O2</button>
+          <button aria-pressed="false" data-dir="o3" title="Direction o3 — remap pending S1-T03">O3</button>
+        </div>
+      </div>
+
+      <div class="countdown" id="countdown" aria-live="off">
+        <div class="cd-num" id="cd-num">T-—</div>
+        <div class="cd-lbl" id="cd-lbl">Days to team call<br>Tue 2026-07-14</div>
+      </div>
+
+      <div class="rail-foot">
+        SHEET SET SD · STANDARDLY DESIGN SYSTEM<br>
+        SOURCE OF TRUTH: tokens.json @ repo root<br>
+        DRAWN BY CLAUDE · CHECKED BY NAMAN
+      </div>
+    </div>
+  </aside>
+
+  <!-- ============ CONTENT ============ -->
+  <main class="content" id="content">
+    <div class="wrap">
+      <div class="databar" id="databar" role="status"></div>
+
+      <!-- ============ SD-01 TASKS ============ -->
+      <section id="tab-tasks" role="tabpanel" aria-labelledby="tab-btn-tasks" class="active">
+        <header class="sheet-head">
+          <span class="sheet-code">SD-01</span>
+          <div style="flex:1;min-width:0">
+            <h1>Sprint Tasks</h1>
+            <p class="sheet-sub" id="tasks-sub">Source <span class="hot">tasks.md</span> · Sprint S1 — Design-Direction Explorations · Fri 2026-07-10 → Tue 2026-07-14</p>
+            <div class="ruler" aria-hidden="true"></div>
+          </div>
+        </header>
+
+        <div class="stats" id="task-stats"></div>
+
+        <div class="callout">
+          <h4>Inputs the sprint is waiting on — Naman</h4>
+          <ul>
+            <li>Prototype dashboard page pick + screenshots (unblocks S1-T02 component inventory)</li>
+            <li>Three direction definitions from research (unblocks S1-T03 → S1-T04 semantic remaps)</li>
+            <li>Deploy target — Vercel vs Netlify (decide at S1-T11)</li>
+          </ul>
+        </div>
+
+        <div class="sec">
+          <div class="sec-label"><span class="no">01.1</span><h2>In focus — full detail</h2><span class="rule"></span></div>
+          <div id="focus-tasks"></div>
+        </div>
+
+        <div class="sec">
+          <div class="sec-label"><span class="no">01.2</span><h2>Rest of sprint</h2><span class="rule"></span></div>
+          <p class="sec-note">One-liners until their day arrives — each is promoted into full detail when it enters focus. Dependencies chain left to right through the weekend.</p>
+          <div class="daygrid" id="rest-days"></div>
+        </div>
+      </section>
+
+      <!-- ============ SD-02 ROADMAP ============ -->
+      <section id="tab-roadmap" role="tabpanel" aria-labelledby="tab-btn-roadmap">
+        <header class="sheet-head">
+          <span class="sheet-code">SD-02</span>
+          <div style="flex:1;min-width:0">
+            <h1>Roadmap</h1>
+            <p class="sheet-sub">Source <span class="hot">roadmap.md</span> · Weekly sprints carved just-in-time + long-term phase backlogs P1–P4</p>
+            <div class="ruler" aria-hidden="true"></div>
+          </div>
+        </header>
+
+        <div class="sec">
+          <div class="sec-label"><span class="no">02.1</span><h2>Sprints</h2><span class="rule"></span></div>
+          <p class="sec-note">The delivery unit. Defined only 1–2 weeks ahead; sprint tasks pull from the phase backlogs (keeping their P IDs) or get sprint-specific S IDs.</p>
+          <div id="sprints"></div>
+        </div>
+
+        <div class="sec">
+          <div class="sec-label"><span class="no">02.2</span><h2>Phase backlogs</h2><span class="rule"></span></div>
+          <p class="sec-note">Unscheduled long-term record — goals, tasks and milestones per phase from architecture.md §11. No dates until a task is pulled into a sprint.</p>
+          <div id="phases"></div>
+        </div>
+      </section>
+
+      <!-- ============ SD-03 ARCHITECTURE ============ -->
+      <section id="tab-architecture" role="tabpanel" aria-labelledby="tab-btn-architecture">
+        <header class="sheet-head">
+          <span class="sheet-code">SD-03</span>
+          <div style="flex:1;min-width:0">
+            <h1>Architecture</h1>
+            <p class="sheet-sub">Source <span class="hot">architecture.md</span> · How tokens flow from Figma to consuming apps — and what actually exists today</p>
+            <div class="ruler" aria-hidden="true"></div>
+          </div>
+        </header>
+
+        <div class="legend" aria-hidden="true">
+          <span><span class="lg-solid"></span> built — exists today</span>
+          <span><span class="lg-dash"></span> planned — Phase 2–4, not built</span>
+          <span><span class="lg-orange"></span> Sprint S1 — in flight this week</span>
+        </div>
+
+        <div class="sec">
+          <div class="sec-label"><span class="no">03.1</span><h2>The three layers</h2><span class="rule"></span></div>
+          <div class="diagram">
+            <div class="dg-layer">
+              <span class="dg-tag">Layer 1 · design</span>
+              <h3>Figma</h3>
+              <p>Visual source of truth for design. Variables, text styles and component definitions stay in lock-step with the repo via the Tokens Studio plugin.</p>
+              <div class="dg-items">
+                <span class="chip built">Figma Variables</span>
+                <span class="chip built">Text Styles</span>
+                <span class="chip plan">Component specs → MCP</span>
+              </div>
+            </div>
+            <div class="dg-arrow" aria-hidden="true">
+              <span class="lbl">⇅ Tokens Studio plugin — bidirectional sync against main</span>
+              <svg width="18" height="26" viewBox="0 0 18 26"><path d="M9 0 v26 M4 6 L9 1 L14 6 M4 20 L9 25 L14 20" stroke="#1B2733" stroke-width="1.5" fill="none"/></svg>
+            </div>
+            <div class="dg-layer">
+              <span class="dg-tag">Layer 2 · this repo</span>
+              <h3>standardly-ds</h3>
+              <p>Single source of truth for design tokens — <code>tokens.json</code> at repo root, W3C DTCG format, two sets: <code>primitive</code> → <code>semantic</code>. Component code arrives in Phase 2.</p>
+              <div class="dg-items">
+                <span class="chip built">tokens.json — canonical</span>
+                <span class="chip built">doc suite (9 files)</span>
+                <span class="chip hot">explorations/ — Sprint S1</span>
+                <span class="chip plan">src/components — Phase 2</span>
+                <span class="chip plan">src/styles/tokens.css — Phase 2</span>
+                <span class="chip plan">.storybook — Phase 2</span>
+              </div>
+            </div>
+            <div class="dg-arrow" aria-hidden="true">
+              <span class="lbl">↓ private npm package — Phase 3</span>
+              <svg width="18" height="22" viewBox="0 0 18 22"><path d="M9 0 v20 M4 15 L9 21 L14 15" stroke="#9AA7AE" stroke-width="1.5" fill="none" stroke-dasharray="3 3"/></svg>
+            </div>
+            <div class="dg-layer planned">
+              <span class="dg-tag">Layer 3 · consumers</span>
+              <h3>Consuming apps</h3>
+              <p>Standardly web app, marketing site and AI tools install <code>@syscore-solutions/standardly-ds</code> (name TBD), import one CSS file and the React components.</p>
+              <div class="dg-items">
+                <span class="chip plan">Standardly platform</span>
+                <span class="chip plan">Marketing site</span>
+                <span class="chip plan">White-label tenants — Phase 4</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sec">
+          <div class="sec-label"><span class="no">03.2</span><h2>Token pipeline</h2><span class="rule"></span></div>
+          <p class="sec-note">One direction only: primitives hold raw values, semantics may reference primitives — never the reverse, never semantic→semantic. Figma <code>$extensions</code> are stripped at build time.</p>
+          <div class="pipe">
+            <div class="pipe-stage">
+              <span class="pnum">STAGE 1 · BUILT</span>
+              <h4>tokens.json</h4>
+              <p>W3C DTCG. primitive (raw values) + semantic ({refs} to primitives). $themes: [] — single light theme.</p>
+            </div>
+            <div class="pipe-join" aria-hidden="true">→</div>
+            <div class="pipe-stage" style="border-color:var(--orange)">
+              <span class="pnum">STAGE 2 · SPRINT S1</span>
+              <h4>build-tokens.mjs</h4>
+              <p>Parses ../tokens.json, strips com.figma.* $extensions, resolves set-name-less {refs}.</p>
+            </div>
+            <div class="pipe-join" aria-hidden="true">→</div>
+            <div class="pipe-stage" style="border-color:var(--orange)">
+              <span class="pnum">STAGE 3 · SPRINT S1</span>
+              <h4>primitives.css + semantic.css ×3</h4>
+              <p>CSS custom properties; one semantic remap per direction o1/o2/o3, referencing primitives only.</p>
+            </div>
+            <div class="pipe-join" aria-hidden="true">→</div>
+            <div class="pipe-stage planned">
+              <span class="pnum">STAGE 4 · PHASE 2</span>
+              <h4>React + Radix components</h4>
+              <p>Every visual property from a CSS variable. Stories cover all variants × states.</p>
+            </div>
+            <div class="pipe-join" aria-hidden="true">→</div>
+            <div class="pipe-stage planned">
+              <span class="pnum">STAGE 5 · PHASE 3</span>
+              <h4>npm package</h4>
+              <p>ESM + CJS + tokens.css. Semver: token rename = MAJOR.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="sec">
+          <div class="sec-label"><span class="no">03.3</span><h2>Figma ↔ GitHub sync rules</h2><span class="rule"></span></div>
+          <p class="sec-note">Bidirectional, with an owner per change type so the two sides never fight. Never push from Tokens Studio while unpushed local <code>tokens.json</code> edits exist.</p>
+          <div class="tablewrap">
+            <table class="synctable">
+              <thead><tr><th>Change type</th><th>Make the change in</th><th>Then sync to</th></tr></thead>
+              <tbody>
+                <tr><td>New token (value, scale step, semantic role)</td><td>tokens.json — code</td><td>Figma · Tokens Studio “Pull from GitHub”</td></tr>
+                <tr><td>Value tweaked by a designer</td><td>Figma Variables</td><td>GitHub · “Push to GitHub” → commit to main</td></tr>
+                <tr><td>Token renamed / deleted</td><td>tokens.json — code</td><td>Figma + all consumers · MAJOR semver bump</td></tr>
+                <tr><td>New component (design-first)</td><td>Figma</td><td>Read via Figma MCP → React stub → implement</td></tr>
+                <tr><td>Component bug fix / API change</td><td>src/components — code</td><td>Notify designer · update Figma spec manually</td></tr>
+                <tr><td>Typography style change</td><td>tokens.json — semantic.typography</td><td>Figma · pull updates Text Styles</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="sec">
+          <div class="sec-label"><span class="no">03.4</span><h2>Reality check</h2><span class="rule"></span></div>
+          <div class="reality">
+            <div class="card">
+              <h3 class="built-h">Exists today</h3>
+              <ul class="built-l">
+                <li>tokens.json — 9 color ramps, full primitive scales, semantic color / typography / radius</li>
+                <li>Bidirectional Figma sync via Tokens Studio, against main</li>
+                <li>Complete doc suite: brief, architecture, roadmap, tasks, changelog, memory</li>
+                <li>Placeholder scaffolds: src/, .storybook/ (READMEs only)</li>
+                <li>This dashboard — index.html at repo root</li>
+              </ul>
+            </div>
+            <div class="card">
+              <h3 class="plan-h">Planned — not built</h3>
+              <ul class="plan-l">
+                <li>Any component code, package.json, or build step (Phase 2)</li>
+                <li>Storybook + Chromatic visual regression (Phase 2)</li>
+                <li>npm package + private registry (Phase 3)</li>
+                <li>CI/CD, white-label token layer (Phase 4)</li>
+                <li>Motion, elevation, confidence-meter tokens; semantic.border / semantic.space; design.md rationale</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ SD-04 CHANGELOG ============ -->
+      <section id="tab-changelog" role="tabpanel" aria-labelledby="tab-btn-changelog">
+        <header class="sheet-head">
+          <span class="sheet-code">SD-04</span>
+          <div style="flex:1;min-width:0">
+            <h1>Changelog</h1>
+            <p class="sheet-sub">Source <span class="hot">changelog.md</span> · Daily work log — one entry per day, newest first · backfilled to 2026-06-08</p>
+            <div class="ruler" aria-hidden="true"></div>
+          </div>
+        </header>
+        <div class="timeline" id="timeline"></div>
+      </section>
+
+      <!-- ============ SD-05 TOKENS ============ -->
+      <section id="tab-tokens" role="tabpanel" aria-labelledby="tab-btn-tokens">
+        <header class="sheet-head">
+          <span class="sheet-code">SD-05</span>
+          <div style="flex:1;min-width:0">
+            <h1>Tokens</h1>
+            <p class="sheet-sub">Source <span class="hot">tokens.json</span> · W3C DTCG · primitive → semantic · $themes: [] — single light theme</p>
+            <div class="ruler" aria-hidden="true"></div>
+          </div>
+        </header>
+        <p class="tk-note">Rendered live from the canonical file — swatches, chains and specimens below are parsed, not hand-copied. Click any swatch to copy its hex. Figma $extensions are stripped on read.</p>
+
+        <div class="sec">
+          <div class="sec-label"><span class="no">05.1</span><h2>Primitive color ramps</h2><span class="rule"></span></div>
+          <div id="ramps"></div>
+        </div>
+
+        <div class="sec">
+          <div class="sec-label"><span class="no">05.2</span><h2>Semantic color roles</h2><span class="rule"></span></div>
+          <p class="sec-note">What consuming code actually uses. Every value is a reference to a primitive — the chain below each token is resolved from the file, never hand-written.</p>
+          <div id="semantics"></div>
+        </div>
+
+        <div class="sec">
+          <div class="sec-label"><span class="no">05.3</span><h2>Typography composites</h2><span class="rule"></span></div>
+          <p class="sec-note">Cal Sans carries headings; Geist carries body, labels and captions. Specimens render in the true families (webfont-loaded for fidelity — system fallback offline).</p>
+          <div id="typography"></div>
+        </div>
+
+        <div class="sec">
+          <div class="sec-label"><span class="no">05.4</span><h2>Scales</h2><span class="rule"></span></div>
+          <div id="scales"></div>
+        </div>
+
+        <div class="sec">
+          <div class="sec-label"><span class="no">05.5</span><h2>Semantic radius roles</h2><span class="rule"></span></div>
+          <div class="radgrid" id="radii"></div>
+        </div>
+
+        <div class="missing">
+          <h3>Not yet defined — do not assume these exist</h3>
+          <ul>
+            <li><b>semantic.border / semantic.space</b> — reference primitive border/space directly (P1-T04)</li>
+            <li><b>Motion tokens</b> — durations, easings (P1-T02; AI-streaming is the one expressive moment)</li>
+            <li><b>Elevation / shadow tokens</b> (P1-T03)</li>
+            <li><b>Confidence-meter language</b> — continuous 0–100%, distinct from discrete status (P1-T05)</li>
+            <li><b>Dark mode</b> — deliberately out of scope for v1, not a gap</li>
+            <li><b>design.md rationale</b> — genuinely unwritten; never invent it (P1-T01)</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- ============ SD-06 COMPONENTS ============ -->
+      <section id="tab-components" role="tabpanel" aria-labelledby="tab-btn-components">
+        <header class="sheet-head">
+          <span class="sheet-code">SD-06</span>
+          <div style="flex:1;min-width:0">
+            <h1>Components</h1>
+            <p class="sheet-sub">Planned inventory per <span class="hot">brief.md §17</span> · Stack: React + TypeScript + Radix UI + CSS variables · no Tailwind, no shadcn/ui</p>
+            <div class="ruler" aria-hidden="true"></div>
+          </div>
+        </header>
+
+        <div class="zero">
+          <div class="big">0<span class="dim">/13</span></div>
+          <div class="zr">
+            <p><strong>No components are built yet — and that's accurate, not a gap.</strong> The repo is at Phase 1 (tokens only); <code>src/components/</code> is an empty scaffold. The winning Sprint S1 direction seeds the real library in Phase 2, when this sheet becomes a live playground backed by Storybook.</p>
+            <div class="meter" aria-hidden="true"><span style="width:0%"></span></div>
+          </div>
+        </div>
+
+        <div class="sec">
+          <div class="sec-label"><span class="no">06.1</span><h2>Planned inventory</h2><span class="rule"></span></div>
+          <div class="invgrid" id="inventory"></div>
+        </div>
+
+        <div class="sec pipe2">
+          <div class="sec-label"><span class="no">06.2</span><h2>How each component will ship</h2><span class="rule"></span></div>
+          <div class="pipe">
+            <div class="pipe-stage planned"><span class="pnum">1</span><h4>Design in Figma</h4><p>All variants, auto-layout, token connections defined first.</p></div>
+            <div class="pipe-join" aria-hidden="true">→</div>
+            <div class="pipe-stage planned"><span class="pnum">2</span><h4>Figma MCP → stub</h4><p>AI reads the spec, generates a typed React stub + stories file.</p></div>
+            <div class="pipe-join" aria-hidden="true">→</div>
+            <div class="pipe-stage planned"><span class="pnum">3</span><h4>Implement on Radix</h4><p>ARIA, keyboard nav and focus handled by primitives; styling via CSS variables only.</p></div>
+            <div class="pipe-join" aria-hidden="true">→</div>
+            <div class="pipe-stage planned"><span class="pnum">4</span><h4>Stories × states</h4><p>Every variant × default / hover / focus / disabled — the visual contract.</p></div>
+            <div class="pipe-join" aria-hidden="true">→</div>
+            <div class="pipe-stage planned"><span class="pnum">5</span><h4>Chromatic gate</h4><p>Visual diffs need designer sign-off before any baseline update.</p></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ SD-07 DIRECTIONS ============ -->
+      <section id="tab-directions" role="tabpanel" aria-labelledby="tab-btn-directions">
+        <header class="sheet-head">
+          <span class="sheet-code">SD-07</span>
+          <div style="flex:1;min-width:0">
+            <h1>Directions</h1>
+            <p class="sheet-sub">Sprint S1 creative core · three directions <span class="hot">o1 / o2 / o3</span> for the Tue 2026-07-14 team call · definitions pending S1-T03</p>
+            <div class="ruler" aria-hidden="true"></div>
+          </div>
+        </header>
+
+        <p class="sec-note" style="margin-top:16px;max-width:80ch">Each direction is a <strong>semantic remap + component styling treatment</strong> over the same fixed primitives — proving the token architecture can carry three distinct visual personalities without touching a single raw value. The switcher in the rail drives the preview surfaces below; the mechanism is wired, but all three map identically until Naman's direction research (S1-T03) lands.</p>
+
+        <div class="dir-grid" id="dir-cards"></div>
+
+        <div class="sec axes">
+          <div class="sec-label"><span class="no">07.1</span><h2>The rules of the game</h2><span class="rule"></span></div>
+          <div class="axes-grid">
+            <div class="card">
+              <h3 class="lock-h">Locked — every direction obeys</h3>
+              <ul class="lock-l">
+                <li>Purple stays the brand primary (confirmed 2026-07-10)</li>
+                <li>Primitives are fixed — no new ramps, fonts or scales</li>
+                <li>Single light theme; no dark mode</li>
+                <li>WCAG 2.1 AA contrast; visible focus rings</li>
+                <li>Status never by color alone — icon or shape always pairs</li>
+              </ul>
+            </div>
+            <div class="card">
+              <h3 class="free-h">Free — where directions differ</h3>
+              <ul class="free-l">
+                <li>Semantic mapping — which primitive each role points at</li>
+                <li>Radius & density — sharp-tight through soft-airy</li>
+                <li>Shadow / elevation treatment</li>
+                <li>Motion character (restrained per brief §10)</li>
+                <li>Composition — how the same components assemble a page</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+<!-- ::CHUNK:: -->
+    </div>
+  </main>
+</div>
+<div class="toast" id="toast" role="status"></div>
+</body>
+</html>
