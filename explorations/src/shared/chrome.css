@@ -1,0 +1,182 @@
+/* Shared sprint chrome — PRIMITIVES ONLY.
+   This shell must stay visually neutral: it sits above all three directions
+   and must never bias how a direction reads. No semantic vars here. */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+}
+
+body {
+  font-family: var(--font-family-body), system-ui, sans-serif;
+  color: var(--color-slate-900);
+  background: var(--color-slate-100);
+}
+
+.sprint-shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* ── Top rail ── */
+
+.sprint-rail {
+  display: flex;
+  align-items: center;
+  gap: var(--space-lg);
+  padding: var(--space-2xs) var(--space-md);
+  background: var(--color-slate-950);
+  color: var(--color-slate-300);
+  font-size: var(--font-size-xs);
+  min-height: 36px;
+}
+
+.sprint-rail__home {
+  color: var(--color-neutral-white);
+  text-decoration: none;
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.02em;
+}
+
+.sprint-rail__home:hover {
+  text-decoration: underline;
+}
+
+.sprint-rail__sep {
+  color: var(--color-slate-500);
+  font-weight: var(--font-weight-regular);
+}
+
+.sprint-rail__nav,
+.sprint-rail__sub {
+  display: flex;
+  gap: var(--space-3xs);
+}
+
+.sprint-rail__sub {
+  margin-left: auto;
+}
+
+.sprint-rail__link {
+  color: var(--color-slate-300);
+  text-decoration: none;
+  padding: var(--space-3xs) var(--space-xs);
+  border-radius: var(--radius-sm);
+}
+
+.sprint-rail__link:hover {
+  background: var(--color-slate-800);
+  color: var(--color-neutral-white);
+}
+
+.sprint-rail__link.is-active {
+  background: var(--color-slate-700);
+  color: var(--color-neutral-white);
+}
+
+.sprint-rail__link.is-pending {
+  color: var(--color-slate-500);
+}
+
+.sprint-rail__link:focus-visible,
+.sprint-rail__home:focus-visible {
+  outline: var(--border-md) solid var(--color-purple-400);
+  outline-offset: 2px;
+}
+
+.sprint-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Sprint index page (neutral, primitives only) ── */
+
+.sprint-index {
+  max-width: 880px;
+  margin: 0 auto;
+  padding: var(--space-5xl) var(--space-xl);
+}
+
+.sprint-index h1 {
+  font-family: var(--font-family-heading), var(--font-family-body), system-ui, sans-serif;
+  font-size: var(--font-size-4xl);
+  font-weight: var(--font-weight-bold);
+  margin: 0 0 var(--space-sm);
+}
+
+.sprint-index__lede {
+  color: var(--color-slate-600);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-relaxed);
+  margin: 0 0 var(--space-2xl);
+  max-width: 60ch;
+}
+
+.sprint-index__lede code {
+  background: var(--color-slate-200);
+  padding: 0 var(--space-3xs);
+  border-radius: var(--radius-sm);
+  font-size: 0.9em;
+}
+
+.sprint-index__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--space-md);
+}
+
+.sprint-index__card {
+  background: var(--color-neutral-white);
+  border: var(--border-sm) solid var(--color-slate-200);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+}
+
+.sprint-index__card.is-pending {
+  background: var(--color-slate-50);
+  color: var(--color-slate-500);
+}
+
+.sprint-index__card h2 {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  margin: 0 0 var(--space-xs);
+}
+
+.sprint-index__card p {
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-normal);
+  color: var(--color-slate-600);
+  margin: 0;
+}
+
+.sprint-index__card.is-pending p {
+  color: var(--color-slate-400);
+}
+
+.sprint-index__links {
+  margin-top: var(--space-md) !important;
+  display: flex;
+  gap: var(--space-md);
+}
+
+.sprint-index__links a {
+  color: var(--color-purple-700);
+  font-weight: var(--font-weight-medium);
+}
+
+.sprint-index__links a:focus-visible {
+  outline: var(--border-md) solid var(--color-purple-400);
+  outline-offset: 2px;
+}

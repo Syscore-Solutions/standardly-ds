@@ -1,0 +1,33 @@
+{
+  "name": "standardly-explorations",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Sprint S1 design-direction explorations (o1/o2/o3) — throwaway workspace, not the Phase-2 library",
+  "type": "module",
+  "scripts": {
+    "build:tokens": "node scripts/build-tokens.mjs",
+    "predev": "npm run build:tokens",
+    "dev": "vite",
+    "prebuild": "npm run build:tokens",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@fontsource/geist-mono": "^5.2.8",
+    "@fontsource/geist-sans": "^5.2.5",
+    "cal-sans": "^1.0.1",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "react-router-dom": "^7.6.3"
+  },
+  "devDependencies": {
+    "@types/react": "^19.1.8",
+    "@types/react-dom": "^19.1.6",
+    "@vitejs/plugin-react": "^4.6.0",
+    "typescript": "~5.8.3",
+    "vite": "^7.0.3"
+  },
+  "allowScripts": {
+    "esbuild@0.28.1": true
+  }
+}
